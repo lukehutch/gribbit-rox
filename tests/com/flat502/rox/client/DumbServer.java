@@ -34,7 +34,8 @@ public class DumbServer extends Thread {
 		start();
 	}
 
-	public void run() {
+	@Override
+    public void run() {
 		try {
 			this.serverSocket = new ServerSocket(this.port);
 			log.trace("DumbServer: listening on "+serverSocket);

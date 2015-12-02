@@ -65,7 +65,8 @@ public class HttpRequestBuffer extends HttpMessageBuffer {
 		return this.uri;
 	}
 
-	public boolean isComplete() throws Exception {
+	@Override
+    public boolean isComplete() throws Exception {
 		try {
 			return super.isComplete();
 		} catch (MissingHeaderException e) {
@@ -123,14 +124,16 @@ public class HttpRequestBuffer extends HttpMessageBuffer {
 		return this.encoding;
 	}
 
-	public InputStream getContentStream() throws IOException {
+	@Override
+    public InputStream getContentStream() throws IOException {
 		if (this.encoding != null) {
 			return this.encoding.getDecoder(super.getContentStream());
 		}
 		return super.getContentStream();
 	}
 
-	public String toString() {
+	@Override
+    public String toString() {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		pw.println(this.method + " " + this.uri + " " + String.valueOf(this.httpVersion));
@@ -138,7 +141,8 @@ public class HttpRequestBuffer extends HttpMessageBuffer {
 		return sw.toString();
 	}
 
-	protected void unpackPreamble(String line) throws HttpResponseException {
+	@Override
+    protected void unpackPreamble(String line) throws HttpResponseException {
 		// Method SP Request-URI SP HTTP-Version CRLF
 		try {
 			int splitIdx = line.indexOf(' ');
@@ -213,15 +217,18 @@ public class HttpRequestBuffer extends HttpMessageBuffer {
 		//		}
 	}
 
-	public double getHttpVersion() {
+	@Override
+    public double getHttpVersion() {
 		return this.httpVersion;
 	}
 
-	public String getHttpVersionString() {
+	@Override
+    public String getHttpVersionString() {
 		return this.httpVersionString;
 	}
 
-	protected void validateHeaders() throws HttpBufferException {
+	@Override
+    protected void validateHeaders() throws HttpBufferException {
 		super.validateHeaders();
 		
 		if (!this.getMethod().equals(HttpConstants.Methods.GET)
@@ -282,7 +289,7 @@ public class HttpRequestBuffer extends HttpMessageBuffer {
 				}
 
 				if (this.acceptedEncodings.containsKey(name)) {
-					Float prevQvalue = (Float) this.acceptedEncodings.get(name);
+					Float prevQvalue = this.acceptedEncodings.get(name);
 					if (QVALUE_CMP.compare(qvalue, prevQvalue) > 0) {
 						this.acceptedEncodings.put(name, qvalue);
 					}
@@ -295,7 +302,8 @@ public class HttpRequestBuffer extends HttpMessageBuffer {
 			// associated qvalues.
 			List<String> keys = new ArrayList<String>(this.acceptedEncodings.keySet());
 			Comparator<String> cmp2 = new Comparator<String>() {
-				public int compare(String name1, String name2) {
+				@Override
+                public int compare(String name1, String name2) {
 					Object q1 = acceptedEncodings.get(name1);
 					Object q2 = acceptedEncodings.get(name2);
 					// We want them sorted highest to lowest and they can't be equal 

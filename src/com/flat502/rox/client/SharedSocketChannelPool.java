@@ -4,12 +4,22 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URL;
 import java.nio.channels.SocketChannel;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.flat502.rox.log.Log;
 import com.flat502.rox.log.LogFactory;
-import com.flat502.rox.utils.*;
+import com.flat502.rox.utils.CaptureTimeoutException;
+import com.flat502.rox.utils.MinHeap;
+import com.flat502.rox.utils.Profiler;
+import com.flat502.rox.utils.ThreadQueue;
 
 class SharedSocketChannelPool {
 	private static Log log = LogFactory.getLog(SharedSocketChannelPool.class);
@@ -299,7 +309,8 @@ class SharedSocketChannelPool {
 		}
 	}
 
-	public String toString() {
+	@Override
+    public String toString() {
 		int total = this.channelMap.size();
 		return "Pool[size=" + total + ", active=" + this.activeConnections + ", pooled=" + this.availableConnections + ", max=" + this.maxConnections + "]";
 	}

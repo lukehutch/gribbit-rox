@@ -12,11 +12,13 @@ class NanoXmlNode implements XmlNode {
 		this.element = element;
 	}
 
-	public String getFullName() {
+	@Override
+    public String getFullName() {
 		return this.element.getFullName();
 	}
 
-	public String getContent() {
+	@Override
+    public String getContent() {
 		String content = this.element.getContent();
 		if (content == null) {
 			return "";
@@ -24,15 +26,18 @@ class NanoXmlNode implements XmlNode {
 		return content;
 	}
 
-	public int getChildrenCount() {
+	@Override
+    public int getChildrenCount() {
 		return this.element.getChildrenCount();
 	}
 
-	public XmlNode getChildAtIndex(int index) {
+	@Override
+    public XmlNode getChildAtIndex(int index) {
 		return new NanoXmlNode(this.element.getChildAtIndex(index));
 	}
 
-	public Iterator enumerateChildren() {
+	@Override
+    public Iterator enumerateChildren() {
 		return new NanoIterator(this.element.enumerateChildren());
 	}
 
@@ -43,15 +48,18 @@ class NanoXmlNode implements XmlNode {
 			this.enumeration = enumeration;
 		}
 
-		public boolean hasNext() {
+		@Override
+        public boolean hasNext() {
 			return this.enumeration.hasMoreElements();
 		}
 
-		public Object next() {
+		@Override
+        public Object next() {
 			return new NanoXmlNode((IXMLElement) this.enumeration.nextElement());
 		}
 
-		public void remove() {
+		@Override
+        public void remove() {
 			throw new UnsupportedOperationException();
 		}
 	}

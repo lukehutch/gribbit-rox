@@ -3,7 +3,8 @@ package com.flat502.rox.http;
 import java.util.Comparator;
 
 public class HttpQValueComparator implements Comparator {
-	public int compare(Object a, Object b) {
+	@Override
+    public int compare(Object a, Object b) {
 		Float qvalue1 = (Float) a;
 		Float qvalue2 = (Float) b;
 		

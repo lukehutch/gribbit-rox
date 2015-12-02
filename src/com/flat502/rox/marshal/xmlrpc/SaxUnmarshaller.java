@@ -9,7 +9,12 @@ import org.xml.sax.AttributeList;
 import org.xml.sax.HandlerBase;
 import org.xml.sax.SAXException;
 
-import com.flat502.rox.marshal.*;
+import com.flat502.rox.marshal.Fault;
+import com.flat502.rox.marshal.FieldNameCodec;
+import com.flat502.rox.marshal.MarshallingException;
+import com.flat502.rox.marshal.MethodCallUnmarshallerAid;
+import com.flat502.rox.marshal.MethodResponseUnmarshallerAid;
+import com.flat502.rox.marshal.UnmarshallerAid;
 import com.flat502.rox.utils.Utils;
 
 /**
@@ -18,103 +23,122 @@ import com.flat502.rox.utils.Utils;
 public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 	private static enum State {
 		ROOT, METHOD_CALL {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.METHOD_CALL;
 			}
 		},
 		METHOD_NAME {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.METHOD_NAME;
 			}
 		},
 		PARAMS {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.PARAMS;
 			}
 		},
 		PARAM {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.PARAM;
 			}
 		},
 
 		METHOD_RSP {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.METHOD_RESPONSE;
 			}
 		},
 
 		FAULT {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.FAULT;
 			}
 		},
 
 		VALUE {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.VALUE;
 			}
 		},
 
 		STRING {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.STRING;
 			}
 		},
 		INT {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.INT;
 			}
 		},
 		I4 {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.I4;
 			}
 		},
 		BOOLEAN {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.BOOLEAN;
 			}
 		},
 		DOUBLE {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.DOUBLE;
 			}
 		},
 		DATETIME {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.DATETIME;
 			}
 		},
 		BASE64 {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.BASE64;
 			}
 		},
 
 		STRUCT {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.STRUCT;
 			}
 		},
 		MEMBER {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.MEMBER;
 			}
 		},
 		NAME {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.NAME;
 			}
 		},
 
 		ARRAY {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.ARRAY;
 			}
 		},
 		DATA {
-			public String tagName() {
+			@Override
+            public String tagName() {
 				return Tags.DATA;
 			}
 		};
@@ -381,7 +405,8 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 
 	//////////////////////////////////////// DocumentHandler ////////////////////////////////////////////
 
-	protected Class getStructMemberType(Object structObject, String name) throws MarshallingException {
+	@Override
+    protected Class getStructMemberType(Object structObject, String name) throws MarshallingException {
 		if (!this.isFault) {
 			name = this.decodeFieldName(name);
 		}
@@ -715,23 +740,28 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 	}
 	
 	private class Handler extends HandlerBase {
-		public void startDocument() throws SAXException {
+		@Override
+        public void startDocument() throws SAXException {
 			SaxUnmarshaller.this.startDocument();
 		}
 		
-		public void endDocument() throws SAXException {
+		@Override
+        public void endDocument() throws SAXException {
 			SaxUnmarshaller.this.endDocument();
 		}
 		
-		public void startElement(String name, AttributeList attributes) throws SAXException {
+		@Override
+        public void startElement(String name, AttributeList attributes) throws SAXException {
 			SaxUnmarshaller.this.startElement(name, attributes);
 		}
 		
-		public void endElement(String name) throws SAXException {
+		@Override
+        public void endElement(String name) throws SAXException {
 			SaxUnmarshaller.this.endElement(name);
 		}
 		
-		public void characters(char[] ch, int start, int length) throws SAXException {
+		@Override
+        public void characters(char[] ch, int start, int length) throws SAXException {
 			SaxUnmarshaller.this.characters(ch, start, length);
 		}
 	}

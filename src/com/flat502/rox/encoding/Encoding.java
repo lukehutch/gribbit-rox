@@ -1,6 +1,8 @@
 package com.flat502.rox.encoding;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * An interface representing an arbitrary HTTP encoding.

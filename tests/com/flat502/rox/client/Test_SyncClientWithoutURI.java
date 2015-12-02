@@ -15,12 +15,14 @@ public class Test_SyncClientWithoutURI extends TestCase {
 
 	private TestServer server;
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		ThreadUtils.assertZeroThreads();
 		this.server = new TestServer(null, PREFIX, PORT);
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		this.server.stop();
 		ThreadUtils.assertZeroThreads();
 	}

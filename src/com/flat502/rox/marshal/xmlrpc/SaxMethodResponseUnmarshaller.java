@@ -9,7 +9,13 @@ import javax.xml.parsers.SAXParser;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.flat502.rox.marshal.*;
+import com.flat502.rox.marshal.ExtendedMethodResponseUnmarshaller;
+import com.flat502.rox.marshal.Fault;
+import com.flat502.rox.marshal.FieldNameCodec;
+import com.flat502.rox.marshal.HyphenatedFieldNameCodec;
+import com.flat502.rox.marshal.MarshallingException;
+import com.flat502.rox.marshal.MethodResponseUnmarshallerAid;
+import com.flat502.rox.marshal.RpcResponse;
 
 /**
  * Parse XML RPC method response using SAX.
@@ -59,7 +65,8 @@ public class SaxMethodResponseUnmarshaller implements ExtendedMethodResponseUnma
 		}
 	}
 
-	public RpcResponse unmarshal(InputStream in, MethodResponseUnmarshallerAid aid) throws Exception {
+	@Override
+    public RpcResponse unmarshal(InputStream in, MethodResponseUnmarshallerAid aid) throws Exception {
 		return unmarshalAny(in, aid);
 	}
 
@@ -67,27 +74,33 @@ public class SaxMethodResponseUnmarshaller implements ExtendedMethodResponseUnma
 		return unmarshalAny(in, aid);
 	}
 
-	public RpcResponse unmarshal(Reader in, MethodResponseUnmarshallerAid aid) throws Exception {
+	@Override
+    public RpcResponse unmarshal(Reader in, MethodResponseUnmarshallerAid aid) throws Exception {
 		return unmarshal(new InputSource(in), aid);
 	}
 
-	public RpcResponse unmarshal(String xml, MethodResponseUnmarshallerAid aid) throws Exception {
+	@Override
+    public RpcResponse unmarshal(String xml, MethodResponseUnmarshallerAid aid) throws Exception {
 		return unmarshal(new StringReader(xml), aid);
 	}
 
-	public RpcResponse unmarshal(InputStream in) throws Exception {
+	@Override
+    public RpcResponse unmarshal(InputStream in) throws Exception {
 		return unmarshal(in, (MethodResponseUnmarshallerAid) null);
 	}
 
-	public RpcResponse unmarshal(Reader in) throws Exception {
+	@Override
+    public RpcResponse unmarshal(Reader in) throws Exception {
 		return unmarshal(in, (MethodResponseUnmarshallerAid) null);
 	}
 
-	public RpcResponse unmarshal(String xml) throws Exception {
+	@Override
+    public RpcResponse unmarshal(String xml) throws Exception {
 		return unmarshal(xml, (MethodResponseUnmarshallerAid) null);
 	}
 
-	public FieldNameCodec getDefaultFieldNameCodec() {
+	@Override
+    public FieldNameCodec getDefaultFieldNameCodec() {
 		return new HyphenatedFieldNameCodec();
 	}
 }

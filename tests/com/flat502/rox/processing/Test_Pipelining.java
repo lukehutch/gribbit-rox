@@ -32,12 +32,14 @@ public class Test_Pipelining extends TestCase {
 
 	private XmlRpcServer server;
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		ThreadUtils.assertZeroThreads();
 		this.server = new XmlRpcServer(PORT);
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		this.server.stop();
 		Thread.sleep(50);
 		ThreadUtils.assertZeroThreads();
@@ -286,7 +288,8 @@ public class Test_Pipelining extends TestCase {
 		private List<ResponseChannel> channels = new ArrayList<ResponseChannel>();
 		private List<XmlRpcMethodResponse> rsps = new ArrayList<XmlRpcMethodResponse>();
 		
-		public synchronized void handleRequest(RpcCall call, RpcCallContext context, ResponseChannel rspChannel) throws Exception {
+		@Override
+        public synchronized void handleRequest(RpcCall call, RpcCallContext context, ResponseChannel rspChannel) throws Exception {
 			try {
 				this.calls.add(call);
 				//System.out.println(System.identityHashCode(context.getHttpRequest().getSocket()));

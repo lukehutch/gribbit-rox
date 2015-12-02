@@ -1,6 +1,5 @@
 package com.flat502.rox.log;
 
-import com.flat502.rox.log.Log;
 
 /**
  * A {@link com.flat502.rox.log.Log} implementation that swallows
@@ -10,53 +9,68 @@ import com.flat502.rox.log.Log;
  * for a null log handle everywhere.
  */
 public class NullLog implements Log {
-	public void trace(String msg) {
+	@Override
+    public void trace(String msg) {
 	}
 
-	public void trace(String msg, Throwable e) {
+	@Override
+    public void trace(String msg, Throwable e) {
 	}
 
-	public void debug(String msg) {
+	@Override
+    public void debug(String msg) {
 	}
 
-	public void debug(String msg, Throwable e) {
+	@Override
+    public void debug(String msg, Throwable e) {
 	}
 
-	public void info(String msg) {
+	@Override
+    public void info(String msg) {
 	}
 
-	public void info(String msg, Throwable e) {
+	@Override
+    public void info(String msg, Throwable e) {
 	}
 
-	public void warn(String msg) {
+	@Override
+    public void warn(String msg) {
 	}
 
-	public void warn(String msg, Throwable e) {
+	@Override
+    public void warn(String msg, Throwable e) {
 	}
 
-	public void error(String msg) {
+	@Override
+    public void error(String msg) {
 	}
 
-	public void error(String msg, Throwable e) {
+	@Override
+    public void error(String msg, Throwable e) {
 	}
 
-	public boolean logTrace() {
+	@Override
+    public boolean logTrace() {
 		return false;
 	}
 
-	public boolean logDebug() {
+	@Override
+    public boolean logDebug() {
 		return false;
 	}
 
-	public boolean logInfo() {
+	@Override
+    public boolean logInfo() {
 		return false;
 	}
 
-	public boolean logWarn() {
+	@Override
+    public boolean logWarn() {
 		return false;
 	}
 
-	public boolean logError() {
+	@Override
+    public boolean logError() {
 		return false;
 	}
 }

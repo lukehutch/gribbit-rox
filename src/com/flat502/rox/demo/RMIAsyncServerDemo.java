@@ -6,7 +6,12 @@ import java.util.Date;
 import com.flat502.rox.marshal.FieldNameCodec;
 import com.flat502.rox.marshal.MethodCallUnmarshallerAid;
 import com.flat502.rox.marshal.RpcCall;
-import com.flat502.rox.server.*;
+import com.flat502.rox.server.AsynchronousRequestHandler;
+import com.flat502.rox.server.DeferredMethodCall;
+import com.flat502.rox.server.ResponseChannel;
+import com.flat502.rox.server.RpcCallContext;
+import com.flat502.rox.server.XmlRpcMethodProxy;
+import com.flat502.rox.server.XmlRpcServer;
 import com.flat502.rox.utils.Utils;
 
 /**
@@ -25,7 +30,8 @@ public class RMIAsyncServerDemo extends MethodCallUnmarshallerAid implements Asy
 		this.proxy = new XmlRpcMethodProxy(NAME_PATTERN, this);
 	}
 	
-	public void handleRequest(RpcCall call, RpcCallContext context, ResponseChannel rspChannel) throws Exception {
+	@Override
+    public void handleRequest(RpcCall call, RpcCallContext context, ResponseChannel rspChannel) throws Exception {
 		// A deferred method call can be handed off to an application thread ...
 		DeferredMethodCall defCall = new DeferredMethodCall(this.proxy, call, rspChannel);
 		
@@ -40,11 +46,13 @@ public class RMIAsyncServerDemo extends MethodCallUnmarshallerAid implements Asy
 		defCall.invoke();
 	}
 
-	public Class getType(String methodName, int index) {
+	@Override
+    public Class getType(String methodName, int index) {
 		return this.proxy.getType(methodName, index);
 	}
 
-	public FieldNameCodec getFieldNameCodec(String methodName) {
+	@Override
+    public FieldNameCodec getFieldNameCodec(String methodName) {
 		// The default codec is fine.
 		return null;
 	}
@@ -56,7 +64,8 @@ public class RMIAsyncServerDemo extends MethodCallUnmarshallerAid implements Asy
 	 * @return
 	 * 	The sum of the input list of values.
 	 */
-	public int sum(int[] list) {
+	@Override
+    public int sum(int[] list) {
 		System.out.print("sum(" + Utils.toString(list) + ") invoked ... ");
 		int total = 0;
 		for (int i = 0; i < list.length; i++) {
@@ -74,7 +83,8 @@ public class RMIAsyncServerDemo extends MethodCallUnmarshallerAid implements Asy
 	 * @return
 	 * 	A version string
 	 */
-	public String getVersionInfo(boolean verbose) {
+	@Override
+    public String getVersionInfo(boolean verbose) {
 		System.out.print("getVersionInfo(" + verbose + ") invoked ... ");
 		String version = "1.0";
 		if (verbose) {
@@ -90,7 +100,8 @@ public class RMIAsyncServerDemo extends MethodCallUnmarshallerAid implements Asy
 	 * 	A new {@link Date} instance set to
 	 * 	the current date and time.
 	 */
-	public Date getDate() {
+	@Override
+    public Date getDate() {
 		System.out.print("getDate() invoked ... ");
 		Date today = new Date();
 		System.out.println("returning " + today);

@@ -12,7 +12,8 @@ public class TimeInfo {
 	public Date today = new Date();
 	public String info = "Brought to you by " + this.getClass().getName();
 
-	public String toString() {
+	@Override
+    public String toString() {
 		return "TimeInfo[today=" + today + ", info=" + info + "]";
 	}
 }

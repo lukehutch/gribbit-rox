@@ -31,7 +31,8 @@ public class Test_MultiFunctionServer extends TestCase {
 	private static class Cgi extends CgiRequestUnmarshaller {
 		public HttpRequestBuffer request;
 
-		public RpcCall unmarshal(HttpRequestBuffer request, MethodCallUnmarshallerAid aid) throws Exception {
+		@Override
+        public RpcCall unmarshal(HttpRequestBuffer request, MethodCallUnmarshallerAid aid) throws Exception {
 			this.request = request;
 			return super.unmarshal(request, aid);
 		}
@@ -44,13 +45,15 @@ public class Test_MultiFunctionServer extends TestCase {
 			super(new SaxMethodCallUnmarshaller());
 		}
 
-		public RpcCall unmarshal(HttpRequestBuffer request, MethodCallUnmarshallerAid aid) throws Exception {
+		@Override
+        public RpcCall unmarshal(HttpRequestBuffer request, MethodCallUnmarshallerAid aid) throws Exception {
 			this.request = request;
 			return super.unmarshal(request, aid);
 		}
 	}
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		this.cgi = new Cgi();
 		this.xmlrpc = new XmlRpc();
 		this.handler = new ManualSynchronousHandler();
@@ -62,7 +65,8 @@ public class Test_MultiFunctionServer extends TestCase {
 		this.server.start();
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		this.server.stop();
 		Thread.sleep(50);
 	}

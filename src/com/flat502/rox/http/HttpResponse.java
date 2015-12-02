@@ -48,7 +48,8 @@ public class HttpResponse extends HttpMessage {
 		this.reasonPhrase = reasonPhrase;
 	}
 
-	protected String getVersionString() {
+	@Override
+    protected String getVersionString() {
 		if (this.rspHttpVersionString != null) {
 			return this.rspHttpVersionString;
 		}
@@ -69,7 +70,8 @@ public class HttpResponse extends HttpMessage {
 	 * <li>The reason phrase set in the {@link #HttpResponse(int, String) constructor}.</li>
 	 * </ol>
 	 */
-	protected void marshalStartLine(OutputStream os) throws IOException {
+	@Override
+    protected void marshalStartLine(OutputStream os) throws IOException {
 		// HTTP-Version SP Status-Code SP Reason-Phrase CRLF
 		os.write(this.getVersionString().getBytes());
 		os.write(' ');

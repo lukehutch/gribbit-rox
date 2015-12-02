@@ -14,7 +14,8 @@ import com.flat502.rox.server.XmlRpcServer;
  * interface.
  */
 public class AsyncServerDemo implements AsynchronousRequestHandler {
-	public void handleRequest(RpcCall call, RpcCallContext context, ResponseChannel rspChannel) throws Exception {
+	@Override
+    public void handleRequest(RpcCall call, RpcCallContext context, ResponseChannel rspChannel) throws Exception {
 		Object[] params = call.getParameters();
 		System.out.println("Method [" + call.getName() + "] called with "
 				+ params.length + " parameters");

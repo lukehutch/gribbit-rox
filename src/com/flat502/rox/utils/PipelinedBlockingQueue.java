@@ -1,6 +1,12 @@
 package com.flat502.rox.utils;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class provides a pipelined implementation of the core functionality
@@ -91,7 +97,7 @@ public class PipelinedBlockingQueue {
 		// Find the first free item
 		ListIterator<ElementWithOrigin> iter = this.queue.listIterator();
 		while (iter.hasNext()) {
-			ElementWithOrigin element = (ElementWithOrigin) iter.next();
+			ElementWithOrigin element = iter.next();
 			if (!this.ownedOrigins.contains(element.origin)) {
 				// This is a free element
 				iter.remove();

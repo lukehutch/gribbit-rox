@@ -17,11 +17,13 @@ public class Test_ThreadCounts extends TestCase {
 	private static final int PORT = 8080;
 	private static final String URL = "http://localhost:" + PORT + "/";
 	
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		ThreadUtils.assertZeroThreads();
 	}
 	
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		ThreadUtils.assertZeroThreads();
 	}
 	

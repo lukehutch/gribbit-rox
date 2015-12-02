@@ -1,7 +1,5 @@
 package com.flat502.rox.marshal;
 
-import java.util.Date;
-
 public class PrimitivesStruct {
 	public byte byteVal;
 	public short shortVal;

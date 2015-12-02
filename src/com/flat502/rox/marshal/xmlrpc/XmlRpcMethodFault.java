@@ -39,7 +39,8 @@ public class XmlRpcMethodFault extends XmlRpcMethodResponse implements RpcFault 
 		this.fault = this.newFault(faultCode, faultString);
 	}
 
-	protected void marshalImpl(XmlPrinter out) throws MarshallingException, IOException {
+	@Override
+    protected void marshalImpl(XmlPrinter out) throws MarshallingException, IOException {
 		out.openTag("methodResponse");
 		out.openTag("fault");
 		this.marshalValue(out, 3, this.fault);
@@ -50,14 +51,16 @@ public class XmlRpcMethodFault extends XmlRpcMethodResponse implements RpcFault 
 	/*
 	 * Documented by interface
 	 */
-	public String getFaultString() {
+	@Override
+    public String getFaultString() {
 		return this.fault.faultString;
 	}
 
 	/*
 	 * Documented by interface
 	 */
-	public int getFaultCode() {
+	@Override
+    public int getFaultCode() {
 		return this.fault.faultCode;
 	}
 

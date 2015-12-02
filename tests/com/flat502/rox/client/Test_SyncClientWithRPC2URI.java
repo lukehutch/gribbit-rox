@@ -13,11 +13,13 @@ public class Test_SyncClientWithRPC2URI extends TestCase {
 
 	private TestServer server;
 	
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		this.server = new TestServer("/RPC2", PREFIX, PORT);
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		this.server.stop();
 	}
 

@@ -8,7 +8,8 @@ public class SimpleLogFactory extends LogFactoryImpl {
 		this.log = log;
 	}
 	
-	public Log newLog(String name) {
+	@Override
+    public Log newLog(String name) {
 		return this.log;
 	}
 }

@@ -16,12 +16,14 @@ public class Test_ManualSynchronousServer extends TestCase {
 	
 	private XmlRpcServer server;
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		ThreadUtils.assertZeroThreads();
 		this.server = new XmlRpcServer(PORT);
 	}
 	
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		this.server.stop();
 		Thread.sleep(50);
 		ThreadUtils.assertZeroThreads();

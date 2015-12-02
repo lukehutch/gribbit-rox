@@ -1,23 +1,5 @@
 package com.flat502.rox.marshal.xmlrpc;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import com.flat502.rox.marshal.FirstLevel;
-import com.flat502.rox.marshal.IntegerArraysStruct;
-import com.flat502.rox.marshal.JaggedCustomTypeArraysStruct;
-import com.flat502.rox.marshal.JaggedIntArraysStruct;
-import com.flat502.rox.marshal.JaggedObjectArraysStruct;
-import com.flat502.rox.marshal.ListStruct;
-import com.flat502.rox.marshal.PrimitiveArraysStruct;
-import com.flat502.rox.marshal.SecondLevel;
-import com.flat502.rox.marshal.SimpleStruct;
-import com.flat502.rox.marshal.TestObject;
-import com.flat502.rox.marshal.TestStruct;
-import com.flat502.rox.marshal.TwoStrings;
-import com.flat502.rox.marshal.TypedArrayStruct;
-
 public class Test_Base64Codec extends TestBase_XmlRpcMethod {
 	public Test_Base64Codec(String name) {
 		super(name);

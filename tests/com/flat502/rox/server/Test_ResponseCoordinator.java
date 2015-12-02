@@ -84,16 +84,19 @@ public class Test_ResponseCoordinator extends TestCase {
 			this.value = value;
 		}
 		
-		public Object getReturnValue() {
+		@Override
+        public Object getReturnValue() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
-		public void marshal(OutputStream out, Charset charSet) throws IOException, MarshallingException {
+		@Override
+        public void marshal(OutputStream out, Charset charSet) throws IOException, MarshallingException {
 			out.write(value.getBytes());
 		}
 
-		public String getContentType() {
+		@Override
+        public String getContentType() {
 			return "text/xml";
 		}
 	}

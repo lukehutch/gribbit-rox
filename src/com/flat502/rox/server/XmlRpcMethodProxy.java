@@ -1,6 +1,5 @@
 package com.flat502.rox.server;
 
-import com.flat502.rox.marshal.FieldNameCodec;
 import com.flat502.rox.marshal.FieldNameEncoder;
 import com.flat502.rox.marshal.RpcFault;
 import com.flat502.rox.marshal.RpcResponse;
@@ -23,11 +22,13 @@ public class XmlRpcMethodProxy extends RpcMethodProxy {
 		this.fieldNameEncoder = fieldNameEncoder;
 	}
 
-	protected RpcResponse newRpcResponse(Object returnValue) {
+	@Override
+    protected RpcResponse newRpcResponse(Object returnValue) {
 		return new XmlRpcMethodResponse(returnValue, this.fieldNameEncoder);
 	}
 
-	public RpcFault newRpcFault(Throwable e) {
+	@Override
+    public RpcFault newRpcFault(Throwable e) {
 		return new XmlRpcMethodFault(e);
 	}
 }

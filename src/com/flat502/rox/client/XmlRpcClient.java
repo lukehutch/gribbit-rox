@@ -78,7 +78,8 @@ public class XmlRpcClient extends HttpRpcClient {
 		this.setUnmarshaller(new SaxMethodResponseUnmarshaller());
 	}
 
-	protected RpcCall newRpcCall(String name, Object[] params) {
+	@Override
+    protected RpcCall newRpcCall(String name, Object[] params) {
 		XmlRpcMethodCall call = new XmlRpcMethodCall(name, params, this.selectCodec());
 		call.setCompactXml(this.marshalCompactXml);
 		return call;
@@ -117,7 +118,8 @@ public class XmlRpcClient extends HttpRpcClient {
 		this.fieldNameCodec = codec;
 	}
 
-	protected MethodResponseUnmarshaller getMethodResponseUnmarshaller() {
+	@Override
+    protected MethodResponseUnmarshaller getMethodResponseUnmarshaller() {
 		return unmarshaller;
 	}
 

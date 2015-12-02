@@ -1,7 +1,12 @@
 package com.flat502.rox.marshal.xmlrpc;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TimeZone;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
@@ -10,8 +15,6 @@ import javax.xml.transform.TransformerException;
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.xml.sax.SAXException;
-
-import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodCall;
 
 public class TestBase_XmlRpcMethod extends XMLTestCase {
 	public TestBase_XmlRpcMethod(String name) {

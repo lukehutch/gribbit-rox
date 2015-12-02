@@ -1,10 +1,7 @@
 package com.flat502.rox.marshal.xmlrpc;
 
-import java.beans.IntrospectionException;
 import java.io.IOException;
-import java.util.Map;
 
-import com.flat502.rox.marshal.ClassDescriptor;
 import com.flat502.rox.marshal.FieldNameEncoder;
 import com.flat502.rox.marshal.MarshallingException;
 import com.flat502.rox.utils.XmlPrinter;

@@ -19,7 +19,8 @@ public class StreamLog extends AbstractLog {
 		this.out = new PrintWriter(os);
 	}
 
-	protected void traceImpl(String msg, Throwable e) {
+	@Override
+    protected void traceImpl(String msg, Throwable e) {
 		this.out.println(this.format(now()+" [trace]", msg));
 		if (e != null) {
 			e.printStackTrace(this.out);
@@ -27,7 +28,8 @@ public class StreamLog extends AbstractLog {
 		this.out.flush();
 	}
 
-	protected void debugImpl(String msg, Throwable e) {
+	@Override
+    protected void debugImpl(String msg, Throwable e) {
 		this.out.println(this.format(now()+" [debug]", msg));
 		if (e != null) {
 			e.printStackTrace(this.out);
@@ -35,7 +37,8 @@ public class StreamLog extends AbstractLog {
 		this.out.flush();
 	}
 
-	protected void infoImpl(String msg, Throwable e) {
+	@Override
+    protected void infoImpl(String msg, Throwable e) {
 		this.out.println(this.format(now()+" [info]", msg));
 		if (e != null) {
 			e.printStackTrace(this.out);
@@ -43,7 +46,8 @@ public class StreamLog extends AbstractLog {
 		this.out.flush();
 	}
 
-	protected void warnImpl(String msg, Throwable e) {
+	@Override
+    protected void warnImpl(String msg, Throwable e) {
 		this.out.println(this.format(now()+" [warn]", msg));
 		if (e != null) {
 			e.printStackTrace(this.out);
@@ -51,7 +55,8 @@ public class StreamLog extends AbstractLog {
 		this.out.flush();
 	}
 
-	protected void errorImpl(String msg, Throwable e) {
+	@Override
+    protected void errorImpl(String msg, Throwable e) {
 		this.out.println(this.format(now()+" [error]", msg));
 		if (e != null) {
 			e.printStackTrace(this.out);

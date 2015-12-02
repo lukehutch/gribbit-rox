@@ -1,10 +1,7 @@
 package com.flat502.rox.demo;
 
 import java.net.InetAddress;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 
 import com.flat502.rox.server.XmlRpcServer;
 import com.flat502.rox.utils.Utils;
@@ -21,7 +18,8 @@ public class RMISyncServerDemo implements RMIServerInterface {
 	 * @return
 	 * 	The sum of the input list of values.
 	 */
-	public int sum(int[] list) {
+	@Override
+    public int sum(int[] list) {
 		System.out.print("sum(" + Utils.toString(list) + ") invoked ... ");
 		int total = 0;
 		for (int i = 0; i < list.length; i++) {
@@ -39,7 +37,8 @@ public class RMISyncServerDemo implements RMIServerInterface {
 	 * @return
 	 * 	A version string
 	 */
-	public String getVersionInfo(boolean verbose) {
+	@Override
+    public String getVersionInfo(boolean verbose) {
 		System.out.print("getVersionInfo(" + verbose + ") invoked ... ");
 		String version = "1.0";
 		if (verbose) {
@@ -55,7 +54,8 @@ public class RMISyncServerDemo implements RMIServerInterface {
 	 * 	A new {@link Date} instance set to
 	 * 	the current date and time.
 	 */
-	public Date getDate() {
+	@Override
+    public Date getDate() {
 		System.out.print("getDate() invoked ... ");
 		Date today = new Date();
 		System.out.println("returning " + today);

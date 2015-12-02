@@ -1,9 +1,5 @@
 package com.flat502.rox.marshal;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
-
 /**
  * An abstract implementation of the {@link com.flat502.rox.marshal.RpcCall}
  * interface.
@@ -39,11 +35,13 @@ public abstract class AbstractRpcCall implements RpcCall {
 		}
 	}
 
-	public String getName() {
+	@Override
+    public String getName() {
 		return this.name;
 	}
 
-	public Object[] getParameters() {
+	@Override
+    public Object[] getParameters() {
 		return this.params;
 	}
 }

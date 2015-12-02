@@ -76,7 +76,8 @@ public class Level {
 		return level.value <= this.value;
 	}
 
-	public String toString() {
+	@Override
+    public String toString() {
 		return "Level[" + this.name + ":" + this.value + "]";
 	}
 	

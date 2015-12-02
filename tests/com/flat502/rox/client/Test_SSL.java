@@ -1,6 +1,12 @@
 package com.flat502.rox.client;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -20,8 +26,8 @@ import junit.framework.TestCase;
 
 import com.flat502.rox.client.SSLUtils.Identity;
 import com.flat502.rox.processing.SSLConfiguration;
-import com.flat502.rox.processing.ThreadUtils;
 import com.flat502.rox.processing.SSLConfiguration.ClientAuth;
+import com.flat502.rox.processing.ThreadUtils;
 import com.flat502.rox.server.ManualSynchronousHandler;
 import com.flat502.rox.server.SimpleSSLSessionPolicy;
 import com.flat502.rox.server.XmlRpcServer;
@@ -33,11 +39,13 @@ public class Test_SSL extends TestCase {
 	private static final String HTTP_URL = "http://localhost:" + PORT + "/";
 	private static final String HTTPS_URL = "https://localhost:" + PORT + "/";
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		ThreadUtils.assertZeroThreads();
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		ThreadUtils.assertZeroThreads();
 	}
 
@@ -376,10 +384,10 @@ public class Test_SSL extends TestCase {
 			List<String> rspLines = readMessage(is);
 			assertEquals(7, rspLines.size());
 			assertEquals("HTTP/1.0 200 OK", rspLines.get(0));
-			assertTrue(Pattern.compile("^Date: ").matcher((String) rspLines.get(1)).find());
-			assertTrue(Pattern.compile("^Server: ").matcher((String) rspLines.get(2)).find());
-			assertTrue(Pattern.compile("^Content-Type: text/xml").matcher((String) rspLines.get(3)).find());
-			assertTrue(Pattern.compile("^Content-Length: 146").matcher((String) rspLines.get(4)).find());
+			assertTrue(Pattern.compile("^Date: ").matcher(rspLines.get(1)).find());
+			assertTrue(Pattern.compile("^Server: ").matcher(rspLines.get(2)).find());
+			assertTrue(Pattern.compile("^Content-Type: text/xml").matcher(rspLines.get(3)).find());
+			assertTrue(Pattern.compile("^Content-Length: 146").matcher(rspLines.get(4)).find());
 			assertEquals("", rspLines.get(5));
 
 			// Make sure we get disconnected immediately.

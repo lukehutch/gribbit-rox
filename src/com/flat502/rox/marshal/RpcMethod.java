@@ -2,7 +2,6 @@ package com.flat502.rox.marshal;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URL;
 import java.nio.charset.Charset;
 
 /**

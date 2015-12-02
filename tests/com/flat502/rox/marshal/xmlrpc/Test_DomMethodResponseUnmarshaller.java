@@ -10,17 +10,21 @@ public class Test_DomMethodResponseUnmarshaller extends TestBase_MethodResponseU
 		super(name);
 	}
 	
-	protected RpcResponse unmarshal(String xml, final Class type) throws Exception {
+	@Override
+    protected RpcResponse unmarshal(String xml, final Class type) throws Exception {
 		return new DomMethodResponseUnmarshaller().unmarshal(xml, new MethodResponseUnmarshallerAid() {
-			public Class getReturnType() {
+			@Override
+            public Class getReturnType() {
 				return type;
 			}
 		});
 	}
 	
-	protected RpcResponse unmarshal(InputStream xml, final Class type) throws Exception {
+	@Override
+    protected RpcResponse unmarshal(InputStream xml, final Class type) throws Exception {
 		return new DomMethodResponseUnmarshaller().unmarshal(xml, new MethodResponseUnmarshallerAid() {
-			public Class getReturnType() {
+			@Override
+            public Class getReturnType() {
 				return type;
 			}
 		});

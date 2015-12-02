@@ -10,7 +10,8 @@ public class ProxyObject implements IProxyObject {
 		return "Done";
 	}
 
-	public Object returnsObject(String name) {
+	@Override
+    public Object returnsObject(String name) {
 		this.lastMethod = "returnsObject";
 		this.lastParams = new String[] { name };
 		return "Done";

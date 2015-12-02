@@ -1,17 +1,5 @@
 package com.flat502.rox.marshal.xmlrpc;
 
-import java.io.IOException;
-import java.util.*;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-
-import org.custommonkey.xmlunit.XMLTestCase;
-import org.xml.sax.SAXException;
-
-import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodCall;
-import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodFault;
 
 public class Test_XmlRpcMethodFault extends TestBase_XmlRpcMethod {
 	public Test_XmlRpcMethodFault(String name) {

@@ -47,7 +47,8 @@ public abstract class HttpMessageHandler implements Runnable {
 	 * {@link #handleHttpMessageException(HttpMessageBuffer, Throwable)} for processing.</li>
 	 * </ol>
 	 */
-	public void run() {
+	@Override
+    public void run() {
 		synchronized(this.terminateMutex) {
 			if (this.shouldTerminate) {
 				return;

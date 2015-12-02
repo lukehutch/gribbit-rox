@@ -1,19 +1,29 @@
 package com.flat502.rox.processing;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
-import java.nio.channels.*;
+import java.nio.channels.ClosedSelectorException;
+import java.nio.channels.SelectableChannel;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.security.GeneralSecurityException;
-import java.util.*;
-import java.util.regex.Pattern;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.Timer;
 
-import javax.net.ssl.*;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
+import javax.net.ssl.SSLException;
 
 import com.flat502.rox.http.HttpMessageBuffer;
 import com.flat502.rox.log.Log;
@@ -63,13 +73,15 @@ public abstract class HttpRpcProcessor {
 	 * allow for anonymous key exchange.
 	 * @deprecated use {@link SSLConfiguration#ANON_CIPHER_SUITES} instead.
 	 */
-	public static final String ANON_CIPHER_SUITES = SSLConfiguration.ANON_CIPHER_SUITES;
+	@Deprecated
+    public static final String ANON_CIPHER_SUITES = SSLConfiguration.ANON_CIPHER_SUITES;
 
 	/**
 	 * A regular expression that matches all cipher suites.
 	 * @deprecated use {@link SSLConfiguration#ALL_CIPHER_SUITES} instead.
 	 */
-	public static final String ALL_CIPHER_SUITES = SSLConfiguration.ALL_CIPHER_SUITES;
+	@Deprecated
+    public static final String ALL_CIPHER_SUITES = SSLConfiguration.ALL_CIPHER_SUITES;
 
 	private static final String CLOSE_AFTER_WRITE = "CloseAfterWrite";
 

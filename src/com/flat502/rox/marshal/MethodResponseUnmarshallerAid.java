@@ -1,5 +1,7 @@
 package com.flat502.rox.marshal;
 
+import com.flat502.rox.client.ResponseHandler;
+
 
 /**
  * An assistive interface intended to support unmarshalling.

@@ -8,8 +8,11 @@ import java.util.regex.Pattern;
 
 import com.flat502.rox.http.HttpConstants;
 import com.flat502.rox.http.HttpResponseException;
-import com.flat502.rox.marshal.*;
-import com.flat502.rox.processing.SSLSession;
+import com.flat502.rox.marshal.FieldNameCodec;
+import com.flat502.rox.marshal.MethodCallUnmarshallerAid;
+import com.flat502.rox.marshal.RpcCall;
+import com.flat502.rox.marshal.RpcFault;
+import com.flat502.rox.marshal.RpcResponse;
 import com.flat502.rox.utils.Utils;
 
 /**
@@ -65,7 +68,8 @@ public abstract class RpcMethodProxy extends MethodCallUnmarshallerAid {
 	 * @throws Exception
 	 * @deprecated Override {@link #invoke(RpcCall, RpcCallContext)} instead.
 	 */
-	public RpcResponse invoke(RpcCall call) throws Exception {
+	@Deprecated
+    public RpcResponse invoke(RpcCall call) throws Exception {
 		return null;
 	}
 	
@@ -89,7 +93,7 @@ public abstract class RpcMethodProxy extends MethodCallUnmarshallerAid {
 		} catch (IndexOutOfBoundsException e) {
 			return this.newRpcFault(e);
 		}
-		Method method = (Method) this.methodMap.get(matchedName);
+		Method method = this.methodMap.get(matchedName);
 		if (method == null) {
 			throw new HttpResponseException(HttpConstants.StatusCodes._404_NOT_FOUND, "Not Found (" + matchedName + ")");
 		}
@@ -98,7 +102,7 @@ public abstract class RpcMethodProxy extends MethodCallUnmarshallerAid {
 			// Start with the parameters from the RPC call.
 			Object[] params = call.getParameters();
 			
-			Class[] targetParams = (Class[]) this.methodTypeMap.get(matchedName);
+			Class[] targetParams = this.methodTypeMap.get(matchedName);
 			if (params.length == targetParams.length-1) {
 				if (RpcCallContext.class.isAssignableFrom(targetParams[targetParams.length-1])) {
 					params = Utils.resize(params, params.length + 1);
@@ -117,7 +121,8 @@ public abstract class RpcMethodProxy extends MethodCallUnmarshallerAid {
 		return this.newRpcResponse(returnValue);
 	}
 
-	public Class getType(String methodName, int index) {
+	@Override
+    public Class getType(String methodName, int index) {
 		Matcher m = this.namePattern.matcher(methodName);
 		if (!m.find()) {
 			throw new IllegalStateException("No match on [" + methodName + "] using pattern ["
@@ -129,7 +134,7 @@ public abstract class RpcMethodProxy extends MethodCallUnmarshallerAid {
 		}
 
 		String lookupName = this.decodeRpcMethodName(m.group(1));
-		Class[] types = (Class[]) this.methodTypeMap.get(lookupName);
+		Class[] types = this.methodTypeMap.get(lookupName);
 		if (types == null || types.length <= index) {
 			return null;
 		}
@@ -145,7 +150,7 @@ public abstract class RpcMethodProxy extends MethodCallUnmarshallerAid {
 			}
 			String name = this.encodeJavaMethodName(methods[i].getName());
 			this.methodTypeMap.put(name, methods[i].getParameterTypes());
-			Method m = (Method) this.methodMap.put(name, methods[i]);
+			Method m = this.methodMap.put(name, methods[i]);
 			if (m != null) {
 				throw new IllegalArgumentException("Ambiguous method name: " + m.getName()
 						+ " (method overloading is not supported");
@@ -182,7 +187,8 @@ public abstract class RpcMethodProxy extends MethodCallUnmarshallerAid {
 	 * @return
 	 * 	this implementation always returns <code>null</code>.
 	 */
-	public FieldNameCodec getFieldNameCodec(String methodName) {
+	@Override
+    public FieldNameCodec getFieldNameCodec(String methodName) {
 		return null;
 	}
 

@@ -156,7 +156,8 @@ public class Test_ThreadQueue extends TestCase {
 			this.timeout = timeout;
 		}
 
-		public void run() {
+		@Override
+        public void run() {
 			if (!this.timeout) {
 				this.q.capture();
 				this.recorder.add(this.getName());

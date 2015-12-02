@@ -24,7 +24,8 @@ class AsynchronousNotifier implements Notifiable {
 		this.aid = aid;
 	}
 
-	public void notify(HttpResponseBuffer response, RpcResponseContext context) {
+	@Override
+    public void notify(HttpResponseBuffer response, RpcResponseContext context) {
 		RpcResponse rsp = null;
 		Exception exception = null;
 		try {
@@ -45,7 +46,8 @@ class AsynchronousNotifier implements Notifiable {
 		}
 	}
 
-	public void notify(Throwable e, RpcResponseContext context) {
+	@Override
+    public void notify(Throwable e, RpcResponseContext context) {
 		try {
 			this.handler.handleException(this.call, e, context);
 		} catch (Throwable t) {
@@ -61,7 +63,8 @@ class AsynchronousNotifier implements Notifiable {
 		}
 	}
 
-	public void notifyTimedOut(Throwable cause, RpcResponseContext context) {
+	@Override
+    public void notifyTimedOut(Throwable cause, RpcResponseContext context) {
 		this.notify(new RpcCallTimeoutException(cause), context);
 	}
 }

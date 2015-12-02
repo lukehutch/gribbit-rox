@@ -1,6 +1,5 @@
 package com.flat502.rox.server;
 
-import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
 /**

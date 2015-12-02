@@ -3,7 +3,6 @@
  */
 package com.flat502.rox.marshal;
 
-import java.util.Date;
 import java.util.List;
 
 public class ListStruct {

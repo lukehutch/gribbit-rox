@@ -13,7 +13,8 @@ public class HyphenatedFieldNameCodec implements FieldNameCodec {
 	 * @return The XML-RPC struct member name the associated value should be
 	 *         assigned to.
 	 */
-	public String encodeFieldName(String name) {
+	@Override
+    public String encodeFieldName(String name) {
 		StringBuffer sb = new StringBuffer();
 		int startIdx = 0;
 		for (int i = 0; i < name.length(); i++) {
@@ -41,7 +42,8 @@ public class HyphenatedFieldNameCodec implements FieldNameCodec {
 	 *            The XML-RPC struct member name.
 	 * @return The name of the field the associated value should be assigned to.
 	 */
-	public String decodeFieldName(String name) {
+	@Override
+    public String decodeFieldName(String name) {
 		StringBuffer sb = new StringBuffer();
 		int startIdx = 0;
 		boolean upcase = false;

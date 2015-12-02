@@ -13,7 +13,8 @@ class ServerEncodingMap implements EncodingMap {
 		return (Encoding) this.map.put(encoding.getName(), encoding);
 	}
 	
-	public Encoding getEncoding(String name) {
+	@Override
+    public Encoding getEncoding(String name) {
 		return (Encoding) this.map.get(name);
 	}
 }

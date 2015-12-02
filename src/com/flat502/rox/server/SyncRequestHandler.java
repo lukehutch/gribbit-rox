@@ -7,6 +7,7 @@ import com.flat502.rox.marshal.RpcResponse;
  * Interface for synchronous RPC method call handlers.
  * @deprecated Use {@link com.flat502.rox.server.SynchronousRequestHandler} instead. 
  */
+@Deprecated
 public interface SyncRequestHandler extends RequestHandler {
 	/**
 	 * Invoked to handle a method call.

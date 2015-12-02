@@ -1,7 +1,11 @@
 package com.flat502.rox.client;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import com.flat502.rox.encoding.Encoding;
 import com.flat502.rox.marshal.RpcCall;
@@ -82,7 +86,8 @@ public class TestServer implements SynchronousRequestHandler {
 		return struct;
 	}
 
-	public RpcResponse handleRequest(RpcCall call, RpcCallContext context) throws Exception {
+	@Override
+    public RpcResponse handleRequest(RpcCall call, RpcCallContext context) throws Exception {
 		this.call = call;
 		this.context = context;
 		if (call.getName().equalsIgnoreCase("test.stringResponse")) {

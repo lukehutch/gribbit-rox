@@ -57,7 +57,8 @@ public class SaxMethodCallUnmarshaller implements ExtendedMethodCallUnmarshaller
 		}
 	}
 
-	public RpcCall unmarshal(InputStream in, MethodCallUnmarshallerAid aid) throws Exception {
+	@Override
+    public RpcCall unmarshal(InputStream in, MethodCallUnmarshallerAid aid) throws Exception {
 		return unmarshalAny(in, aid);
 	}
 
@@ -65,39 +66,48 @@ public class SaxMethodCallUnmarshaller implements ExtendedMethodCallUnmarshaller
 		return unmarshalAny(in, aid);
 	}
 
-	public RpcCall unmarshal(Reader in, MethodCallUnmarshallerAid aid) throws Exception {
+	@Override
+    public RpcCall unmarshal(Reader in, MethodCallUnmarshallerAid aid) throws Exception {
 		return unmarshal(new InputSource(in), aid);
 	}
 
-	public RpcCall unmarshal(String xml, MethodCallUnmarshallerAid aid) throws Exception {
+	@Override
+    public RpcCall unmarshal(String xml, MethodCallUnmarshallerAid aid) throws Exception {
 		return unmarshal(new StringReader(xml), aid);
 	}
 
-	public RpcCall unmarshal(InputStream in) throws Exception {
+	@Override
+    public RpcCall unmarshal(InputStream in) throws Exception {
 		return unmarshal(in, (MethodCallUnmarshallerAid) null);
 	}
 
-	public RpcCall unmarshal(InputStream in, Class[] structClasses) throws Exception {
+	@Override
+    public RpcCall unmarshal(InputStream in, Class[] structClasses) throws Exception {
 		return unmarshal(in, new ArrayParameterTypeMapper(structClasses));
 	}
 
-	public RpcCall unmarshal(Reader in) throws Exception {
+	@Override
+    public RpcCall unmarshal(Reader in) throws Exception {
 		return unmarshal(in, (MethodCallUnmarshallerAid) null);
 	}
 
-	public RpcCall unmarshal(Reader in, Class[] structClasses) throws Exception {
+	@Override
+    public RpcCall unmarshal(Reader in, Class[] structClasses) throws Exception {
 		return unmarshal(in, new ArrayParameterTypeMapper(structClasses));
 	}
 
-	public RpcCall unmarshal(String xml) throws Exception {
+	@Override
+    public RpcCall unmarshal(String xml) throws Exception {
 		return unmarshal(xml, (MethodCallUnmarshallerAid) null);
 	}
 
-	public RpcCall unmarshal(String xml, Class[] structClasses) throws Exception {
+	@Override
+    public RpcCall unmarshal(String xml, Class[] structClasses) throws Exception {
 		return unmarshal(xml, new ArrayParameterTypeMapper(structClasses));
 	}
 
-	public FieldNameCodec getDefaultFieldNameCodec() {
+	@Override
+    public FieldNameCodec getDefaultFieldNameCodec() {
 		return new HyphenatedFieldNameCodec();
 	}
 

@@ -1,24 +1,43 @@
 package com.flat502.rox.marshal.xmlrpc;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URI;
-import java.net.URL;
+import java.util.Locale;
 
-import org.xml.sax.*;
-import javax.xml.parsers.*;
+import javax.xml.parsers.SAXParser;
+
+import org.xml.sax.AttributeList;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.DocumentHandler;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.Parser;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
 
 /**
  * Simple XML parser, for internal XML RPC usage. Doesn't support much.
  */
 public class XmlRpcSaxParser extends SAXParser implements Parser {
     private static class EmptyAttributeList implements AttributeList {
-	public int getLength () { return 0; }
-	public String getName (int i) { return null; }
-	public String getType (int i) { return null; }
-	public String getValue (int i) { return null; }
-	public String getType (String name) { return null; }
-	public String getValue (String name) { return null; }
+	@Override
+    public int getLength () { return 0; }
+	@Override
+    public String getName (int i) { return null; }
+	@Override
+    public String getType (int i) { return null; }
+	@Override
+    public String getValue (int i) { return null; }
+	@Override
+    public String getType (String name) { return null; }
+	@Override
+    public String getValue (String name) { return null; }
     }
 
     private static final int BUF_SIZE = 64*1024;
@@ -398,11 +417,11 @@ public class XmlRpcSaxParser extends SAXParser implements Parser {
 		this.state = STATE_CDATA;
 	    }
 	    else {
-		throw new SAXException( "Illegal character '" + (char)buf[pos] + "' after '/' in element starting \"" + new String( buf, start-1, pos-(start-1) ) + "\"" );
+		throw new SAXException( "Illegal character '" + buf[pos] + "' after '/' in element starting \"" + new String( buf, start-1, pos-(start-1) ) + "\"" );
 	    }
 	}
 	else {
-	    throw new SAXException( "Illegal character '" + (char)buf[pos] + "' in element starting \"" + new String( buf, start-1, pos-(start-1) ) + "\"" );
+	    throw new SAXException( "Illegal character '" + buf[pos] + "' in element starting \"" + new String( buf, start-1, pos-(start-1) ) + "\"" );
 	}
     }
 
@@ -433,7 +452,7 @@ public class XmlRpcSaxParser extends SAXParser implements Parser {
 	    this.state = STATE_CDATA;
 	}
 	else {
-	    throw new SAXException( "Illegal character '" + (char)buf[pos] + "' in close element starting \"" + new String( buf, start-2, pos-(start-2) ) + "...\"" );
+	    throw new SAXException( "Illegal character '" + buf[pos] + "' in close element starting \"" + new String( buf, start-2, pos-(start-2) ) + "...\"" );
 	}
     }
 
@@ -495,49 +514,61 @@ public class XmlRpcSaxParser extends SAXParser implements Parser {
 
     ///////////////////////////////////////// SAXParser Impl /////////////////////////////////////////
 
+    @Override
     public void reset() {
 	this.pos = this.limit = 0;
 	this.isReset = false;
 	this.state = STATE_CDATA;
     }
 
+    @Override
     public Parser getParser() throws SAXException { return this; }
 
+    @Override
     public XMLReader getXMLReader() throws SAXException {
 	throw new SAXException("XMLReader not yet supported");
     }
     
+    @Override
     public boolean isNamespaceAware() { return false; }
 
+    @Override
     public boolean isValidating() { return false; }
 
+    @Override
     public void setProperty(String name, Object value) throws SAXNotRecognizedException, SAXNotSupportedException {
 	throw new SAXNotSupportedException("setProperty is not supported");
     }
 
+    @Override
     public Object getProperty(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
 	throw new SAXNotSupportedException("getProperty is not supported");
     }
 
     ///////////////////////////////////////// Parser Impl ///////////////////////////////////////////
 
+    @Override
     public void setLocale (Locale locale) throws SAXException {
 	throw new UnsupportedOperationException();
     }
     
+    @Override
     public void setEntityResolver (EntityResolver resolver) {
 	this.entityResolver = resolver;
     }
     
+    @Override
     public void setDTDHandler (DTDHandler handler) {
 	this.dtdHandler = handler;
     }
     
     
+    @Override
     public void setDocumentHandler (DocumentHandler handler) {
 	this.documentHandler = handler;
     }
     
+    @Override
     public void setErrorHandler (ErrorHandler handler) {
 	this.errorHandler = handler;
     }
@@ -548,6 +579,7 @@ public class XmlRpcSaxParser extends SAXParser implements Parser {
     }
     
     // all roads lead to this function
+    @Override
     public void parse (InputSource source) throws SAXException, IOException {
 	Reader reader = source.getCharacterStream();
 	if( reader == null ) {
@@ -573,6 +605,7 @@ public class XmlRpcSaxParser extends SAXParser implements Parser {
 	parse(reader);
     }
     
+    @Override
     public void parse (String systemId) throws SAXException, IOException {
 	parse( new InputSource(systemId) );
     }

@@ -6,12 +6,7 @@ import java.net.URL;
 import junit.framework.TestCase;
 
 import com.flat502.rox.marshal.IProxyObject;
-import com.flat502.rox.marshal.RpcFault;
-import com.flat502.rox.marshal.RpcResponse;
-import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodFault;
-import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodResponse;
 import com.flat502.rox.processing.ThreadUtils;
-import com.flat502.rox.server.RpcMethodProxy;
 
 public class Test_RpcClientProxy extends TestCase {
 	private static class MockHttpRpcClient extends XmlRpcClient {
@@ -23,7 +18,8 @@ public class Test_RpcClientProxy extends TestCase {
 			super(new URL("http://localhost"));
 		}
 
-		public Object execute(String name, Object[] params, Class retClass) throws Exception {
+		@Override
+        public Object execute(String name, Object[] params, Class retClass) throws Exception {
 			this.name = name;
 			this.params = params;
 			this.retClass = retClass;
@@ -31,11 +27,13 @@ public class Test_RpcClientProxy extends TestCase {
 		}
 	}
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		ThreadUtils.assertZeroThreads();
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		ThreadUtils.assertZeroThreads();
 	}
 

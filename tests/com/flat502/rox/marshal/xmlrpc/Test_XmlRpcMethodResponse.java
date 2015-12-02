@@ -1,13 +1,11 @@
 package com.flat502.rox.marshal.xmlrpc;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.flat502.rox.marshal.DateStruct;
 import com.flat502.rox.marshal.MarshallingException;
 import com.flat502.rox.marshal.PrimitivesStruct;
 import com.flat502.rox.marshal.SimpleStruct;

@@ -8,7 +8,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Defines an interface for accessing members of a Java 
@@ -280,5 +284,6 @@ public class ClassDescriptor {
 		}
 	}
 
+    @Override
     public String toString() { return "[CD for " + clazz.getName() + "]"; }
 }

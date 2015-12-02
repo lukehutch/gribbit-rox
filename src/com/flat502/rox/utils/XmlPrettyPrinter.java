@@ -28,12 +28,14 @@ public class XmlPrettyPrinter implements XmlPrinter {
 		this.out = out;
 	}
 
-	public void writeHeader(String version, Charset charSet) {
+	@Override
+    public void writeHeader(String version, Charset charSet) {
 		this.out.println("<?xml version=\"" + version + "\" encoding=\""
 				+ charSet.name() + "\"?>");
 	}
 
-	public void openTag(String name) {
+	@Override
+    public void openTag(String name) {
 		if (this.currentTag != null) {
 			this.out
 					.println(this.indent(this.depth) + "<" + this.currentTag + ">");
@@ -48,7 +50,8 @@ public class XmlPrettyPrinter implements XmlPrinter {
 		this.closeCount = 0;
 	}
 
-	public void writeValue(String value) {
+	@Override
+    public void writeValue(String value) {
 		if (this.currentTag != null) {
 			this.out.print(this.indent(this.depth) + "<" + this.currentTag + ">");
 		}
@@ -56,7 +59,8 @@ public class XmlPrettyPrinter implements XmlPrinter {
 		this.currentValue = value;
 	}
 
-	public void closeTag(String name) {
+	@Override
+    public void closeTag(String name) {
 		if (this.closeCount > 0) {
 			this.depth--;
 		}
@@ -75,7 +79,8 @@ public class XmlPrettyPrinter implements XmlPrinter {
 		this.currentTag = null;
 	}
 
-	public void finishDocument() {
+	@Override
+    public void finishDocument() {
 	}
 
 	private String indent(int depth) {

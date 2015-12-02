@@ -2,7 +2,6 @@ package com.flat502.rox.marshal;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Map;
 
 /**
  * Extends the {@link com.flat502.rox.marshal.MethodResponseUnmarshaller}

@@ -3,14 +3,9 @@ package com.flat502.rox.http;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import org.custommonkey.xmlunit.XMLTestCase;
-
-import com.flat502.rox.utils.Utils;
 
 public class Test_HttpRequestBuffer extends XMLTestCase {
 	public void testSimplePOST() throws Exception {

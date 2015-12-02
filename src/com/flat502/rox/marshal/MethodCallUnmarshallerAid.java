@@ -1,5 +1,8 @@
 package com.flat502.rox.marshal;
 
+import com.flat502.rox.server.AsyncRequestHandler;
+import com.flat502.rox.server.SyncRequestHandler;
+
 
 /**
  * An assistive interface intended to support unmarshalling.

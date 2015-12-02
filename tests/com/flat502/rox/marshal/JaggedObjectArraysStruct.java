@@ -3,8 +3,6 @@
  */
 package com.flat502.rox.marshal;
 
-import java.util.Date;
-
 public class JaggedObjectArraysStruct {
 	public Object[][] publicObjectArray;
 

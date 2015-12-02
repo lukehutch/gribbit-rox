@@ -36,7 +36,8 @@ public class HttpResponseBuffer extends HttpMessageBuffer {
 		this.acceptableEncoding = acceptableEncoding;
 	}
 
-	protected void unpackPreamble(String line) throws Exception {
+	@Override
+    protected void unpackPreamble(String line) throws Exception {
 		// HTTP-Version SP Status-Code SP Reason-Phrase CRLF
 		try {
 			int splitIdx = line.indexOf(' ');
@@ -81,11 +82,13 @@ public class HttpResponseBuffer extends HttpMessageBuffer {
 //		this.reasonPhrase = m.group(3);
 	}
 	
-	public double getHttpVersion() {
+	@Override
+    public double getHttpVersion() {
 		return this.httpVersion;
 	}
 	
-	public String getHttpVersionString() {
+	@Override
+    public String getHttpVersionString() {
 		return this.httpVersionString;
 	}
 
@@ -110,14 +113,16 @@ public class HttpResponseBuffer extends HttpMessageBuffer {
 		return this.statusCode;
 	}
 	
-	public InputStream getContentStream() throws IOException {
+	@Override
+    public InputStream getContentStream() throws IOException {
 		if (this.responseEncoding != null) {
 			return this.responseEncoding.getDecoder(super.getContentStream());
 		}
 		return super.getContentStream();
 	}
 
-	public String toString() {
+	@Override
+    public String toString() {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		pw.println(this.httpVersion + " " + this.statusCode + " "
@@ -126,7 +131,8 @@ public class HttpResponseBuffer extends HttpMessageBuffer {
 		return sw.toString();
 	}
 
-	protected void validateHeaders() throws HttpBufferException {
+	@Override
+    protected void validateHeaders() throws HttpBufferException {
 		super.validateHeaders();
 		
 		if (this.getHeaderValue(HttpConstants.Headers.CONTENT_LENGTH) == null) {

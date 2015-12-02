@@ -18,7 +18,8 @@ import com.flat502.rox.server.XmlRpcServer;
  * the <a href="http://www.xmlrpc.com/validator1Docs">XML-RPC validation suite</a>.
  */
 public class ValidationSuiteServer implements IValidationSuite {
-	public int arrayOfStructsTest(MoeLarryAndCurly[] list) {
+	@Override
+    public int arrayOfStructsTest(MoeLarryAndCurly[] list) {
 		int total = 0;
 		for (int i = 0; i < list.length; i++) {
 			total += list[i].curly;
@@ -26,7 +27,8 @@ public class ValidationSuiteServer implements IValidationSuite {
 		return total;
 	}
 
-	public EntityInfo countTheEntities(String str) {
+	@Override
+    public EntityInfo countTheEntities(String str) {
 		EntityInfo result = new EntityInfo();
 		for (int i = 0; i < str.length(); i++) {
 			switch (str.charAt(i)) {
@@ -50,24 +52,29 @@ public class ValidationSuiteServer implements IValidationSuite {
 		return result;
 	}
 
-	public int easyStructTest(MoeLarryAndCurly struct) {
+	@Override
+    public int easyStructTest(MoeLarryAndCurly struct) {
 		return struct.curly + struct.larry + struct.moe;
 	}
 
-	public Map echoStructTest(Map struct) {
+	@Override
+    public Map echoStructTest(Map struct) {
 		return struct;
 	}
 
-	public Object[] manyTypesTest(Integer n, Boolean b, String s, Double d,
+	@Override
+    public Object[] manyTypesTest(Integer n, Boolean b, String s, Double d,
 			Date dt, byte[] b64) {
 		return new Object[] { n, b, s, d, dt, b64 };
 	}
 
-	public String moderateSizeArrayCheck(String[] list) {
+	@Override
+    public String moderateSizeArrayCheck(String[] list) {
 		return list[0] + list[list.length - 1];
 	}
 
-	public int nestedStructTest(Map calendar) {
+	@Override
+    public int nestedStructTest(Map calendar) {
 		Map months = (Map) calendar.get("2000");
 		Map days = (Map) months.get("04");
 		Map buriedStruct = (Map) days.get("01");
@@ -77,7 +84,8 @@ public class ValidationSuiteServer implements IValidationSuite {
 		return moe.intValue() + larry.intValue() + curly.intValue();
 	}
 
-	public MultipliedStruct simpleStructReturnTest(int n) {
+	@Override
+    public MultipliedStruct simpleStructReturnTest(int n) {
 		return new MultipliedStruct(n);
 	}
 

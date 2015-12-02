@@ -3,7 +3,6 @@ package com.flat502.rox.demo;
 import java.net.URL;
 
 import com.flat502.rox.client.XmlRpcClient;
-import com.flat502.rox.processing.HttpRpcProcessor;
 import com.flat502.rox.processing.SSLConfiguration;
 
 /**

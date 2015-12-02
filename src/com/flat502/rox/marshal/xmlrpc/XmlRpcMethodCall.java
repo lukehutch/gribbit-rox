@@ -41,7 +41,8 @@ public class XmlRpcMethodCall extends XmlRpcMethod implements RpcCall {
 		}
 	}
 
-	protected void marshalImpl(XmlPrinter out) throws MarshallingException, IOException {
+	@Override
+    protected void marshalImpl(XmlPrinter out) throws MarshallingException, IOException {
 		out.openTag("methodCall");
 		out.openTag("methodName");
 		out.writeValue(this.name);
@@ -58,11 +59,13 @@ public class XmlRpcMethodCall extends XmlRpcMethod implements RpcCall {
 		out.closeTag("methodCall");
 	}
 
-	public String getName() {
+	@Override
+    public String getName() {
 		return this.name;
 	}
 
-	public Object[] getParameters() {
+	@Override
+    public Object[] getParameters() {
 		return this.params;
 	}
 

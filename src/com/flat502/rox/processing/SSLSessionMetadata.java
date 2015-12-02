@@ -1,6 +1,5 @@
 package com.flat502.rox.processing;
 
-import java.io.IOException;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.util.TimerTask;
@@ -47,7 +46,8 @@ class SSLSessionMetadata {
 	}
 	
 	private class HandshakeTimerTask extends TimerTask {
-		public void run() {
+		@Override
+        public void run() {
 			if (log.logDebug()) {
 				log.debug(processor.getClass().getSimpleName() + ": SSL handshake timer expired on " + Utils.toString(socket));
 			}

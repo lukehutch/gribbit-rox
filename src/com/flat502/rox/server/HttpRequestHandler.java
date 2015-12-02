@@ -3,7 +3,11 @@ package com.flat502.rox.server;
 import java.nio.ByteBuffer;
 
 import com.flat502.rox.encoding.Encoding;
-import com.flat502.rox.http.*;
+import com.flat502.rox.http.HttpConstants;
+import com.flat502.rox.http.HttpMessageBuffer;
+import com.flat502.rox.http.HttpRequestBuffer;
+import com.flat502.rox.http.HttpResponse;
+import com.flat502.rox.http.HttpResponseException;
 import com.flat502.rox.log.Log;
 import com.flat502.rox.log.LogFactory;
 import com.flat502.rox.marshal.MarshallingException;
@@ -20,7 +24,8 @@ class HttpRequestHandler extends HttpMessageHandler {
 		super(queue);
 	}
 
-	protected void handleMessage(HttpMessageBuffer msg) throws Exception {
+	@Override
+    protected void handleMessage(HttpMessageBuffer msg) throws Exception {
 		if (!(msg instanceof HttpRequestBuffer)) {
 			throw new IllegalArgumentException("Expected instance of " + HttpRequestBuffer.class.getName() + ", got "
 					+ msg.getClass().getName());

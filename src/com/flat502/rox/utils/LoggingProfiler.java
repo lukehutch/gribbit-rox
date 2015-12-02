@@ -25,18 +25,21 @@ public class LoggingProfiler implements Profiler {
 		}
 	}
 	
-	public void begin(long id, String operation) {
+	@Override
+    public void begin(long id, String operation) {
 		this.begunMap.put(id, new Entry(operation));
 	}
 
-	public void end(long id, String operation) {
+	@Override
+    public void end(long id, String operation) {
 		Entry entry = this.begunMap.remove(id);
 		if (entry != null) {
 			log.info("DURATION: "  + operation + ": " + entry.elapsed() + "ms");
 		}
 	}
 
-	public void count(long id, String operation) {
+	@Override
+    public void count(long id, String operation) {
 		log.info("COUNT: " + operation);
 	}
 }

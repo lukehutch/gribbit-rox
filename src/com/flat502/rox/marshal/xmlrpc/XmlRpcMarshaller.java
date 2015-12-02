@@ -8,13 +8,21 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import com.flat502.rox.marshal.ClassDescriptor;
 import com.flat502.rox.marshal.FieldNameEncoder;
 import com.flat502.rox.marshal.HyphenatedFieldNameCodec;
 import com.flat502.rox.marshal.MarshallingException;
-import com.flat502.rox.utils.*;
+import com.flat502.rox.utils.DateFormatThreadLocal;
+import com.flat502.rox.utils.UTCSimpleDateFormat;
+import com.flat502.rox.utils.XmlPlainPrinter;
+import com.flat502.rox.utils.XmlPrettyPrinter;
+import com.flat502.rox.utils.XmlPrinter;
 
 /**
  * This class supports marshalling of XML-RPC values, <i>not</i>

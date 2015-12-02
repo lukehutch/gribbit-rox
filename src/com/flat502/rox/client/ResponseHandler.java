@@ -15,6 +15,7 @@ import com.flat502.rox.marshal.RpcResponse;
  * methods.
  * @deprecated Use {@link com.flat502.rox.client.AsynchronousResponseHandler} instead.
  */
+@Deprecated
 public interface ResponseHandler {
 	/**
 	 * This method is called when a successful response is received from the

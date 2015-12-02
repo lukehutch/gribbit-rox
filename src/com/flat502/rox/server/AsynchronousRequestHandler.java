@@ -1,10 +1,7 @@
 package com.flat502.rox.server;
 
-import java.net.URI;
-
 import com.flat502.rox.marshal.RpcCall;
 import com.flat502.rox.marshal.RpcResponse;
-import com.flat502.rox.processing.SSLSession;
 
 /**
  * Interface for asynchronous RPC method call handlers.

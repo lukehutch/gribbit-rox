@@ -8,7 +8,8 @@ public class MethodNotAllowedResponseException extends HttpResponseException {
 		this.allowed = allowed;
 	}
 
-	public HttpResponse toHttpResponse(String httpVersion) {
+	@Override
+    public HttpResponse toHttpResponse(String httpVersion) {
 		HttpResponse rsp = super.toHttpResponse(httpVersion);
 		// A 405 response requires that we set the Allow header and provide a list of allowable
 		// methods.

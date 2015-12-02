@@ -4,10 +4,6 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import com.flat502.rox.log.Level;
-import com.flat502.rox.log.LogFactory;
-import com.flat502.rox.log.SimpleLogFactory;
-import com.flat502.rox.log.StreamLog;
 import com.flat502.rox.marshal.MarshallingException;
 
 public class Test_ClientMiscellaneous extends TestCase {

@@ -5,7 +5,6 @@ import java.net.Socket;
 
 import com.flat502.rox.encoding.Encoding;
 import com.flat502.rox.http.HttpRequestBuffer;
-import com.flat502.rox.http.HttpResponse;
 import com.flat502.rox.http.HttpResponseException;
 import com.flat502.rox.marshal.MarshallingException;
 import com.flat502.rox.marshal.RpcResponse;
@@ -31,19 +30,22 @@ class SocketResponseChannel implements ResponseChannel {
 		this.encoding = encoding;
 	}
 	
-	public void respond(RpcResponse rsp) throws IOException, MarshallingException {
+	@Override
+    public void respond(RpcResponse rsp) throws IOException, MarshallingException {
 //		HttpResponse httpRsp = this.server.toHttpResponse(this.request, rsp, this.encoding);
 //		this.server.queueResponse(socket, httpRsp.marshal(), httpRsp.mustCloseConnection());
 		this.coord.respond(this.rspId, this.request, rsp, this.encoding);
 	}
 
-	public void respond(HttpResponseException e) throws IOException {
+	@Override
+    public void respond(HttpResponseException e) throws IOException {
 //		HttpResponse httpRsp = this.server.newHttpResponse(this.request, e);
 //		this.server.queueResponse(socket, httpRsp.marshal(), true);
 		this.coord.respond(this.rspId, this.request, e);
 	}
 
-	public void close() throws IOException {
+	@Override
+    public void close() throws IOException {
 //		this.socket.getChannel().close();
 		this.coord.close();
 	}

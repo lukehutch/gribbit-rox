@@ -3,7 +3,6 @@ package com.flat502.rox.marshal.xmlrpc;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.net.URL;
 import java.nio.charset.Charset;
 
@@ -11,8 +10,6 @@ import com.flat502.rox.http.HttpConstants;
 import com.flat502.rox.marshal.FieldNameEncoder;
 import com.flat502.rox.marshal.MarshallingException;
 import com.flat502.rox.marshal.RpcMethod;
-import com.flat502.rox.utils.XmlPlainPrinter;
-import com.flat502.rox.utils.XmlPrettyPrinter;
 import com.flat502.rox.utils.XmlPrinter;
 
 /**
@@ -59,7 +56,8 @@ public abstract class XmlRpcMethod implements RpcMethod, XmlRpcConstants {
 	 * @return
 	 * 	The value <code>text/xml</code>.
 	 */
-	public String getContentType() {
+	@Override
+    public String getContentType() {
 		return "text/xml";
 	}
 
@@ -128,7 +126,8 @@ public abstract class XmlRpcMethod implements RpcMethod, XmlRpcConstants {
 	 * @throws MarshallingException
 	 *             if an error occurs while marshalling this instance.
 	 */
-	public void marshal(OutputStream out, Charset charSet) throws IOException, MarshallingException {
+	@Override
+    public void marshal(OutputStream out, Charset charSet) throws IOException, MarshallingException {
 		XmlPrinter writer = this.marshaller.newXmlWriter(out, charSet);
 		writer.writeHeader("1.0", charSet);
 		this.marshalImpl(writer);

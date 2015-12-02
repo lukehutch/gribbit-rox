@@ -4,8 +4,6 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import com.flat502.rox.marshal.Test_ClassDescriptor;
-
 public class Test_ConnectionPoolTimeouts extends TestCase {
 	private static final Integer _1_SECOND = new Integer(1000);
 	private static final Integer _2_SECONDS = new Integer(2000);
@@ -17,11 +15,13 @@ public class Test_ConnectionPoolTimeouts extends TestCase {
 
 	private TestServer server;
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		this.server = new TestServer(null, PREFIX, PORT);
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		this.server.stop();
 	}
 

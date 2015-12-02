@@ -8,7 +8,8 @@ public class DateFormatThreadLocal {
 
 	public DateFormatThreadLocal(final DateFormat formatter) {
 		this.threadLocal = new ThreadLocal() {
-			protected Object initialValue() {
+			@Override
+            protected Object initialValue() {
 				return formatter.clone();
 			};
 		};

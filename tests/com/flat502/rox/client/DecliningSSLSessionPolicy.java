@@ -10,7 +10,8 @@ public class DecliningSSLSessionPolicy implements SSLSessionPolicy {
 	public SocketChannel channel;
 	public SSLSession session;
 
-	public boolean shouldRetain(SocketChannel channel, SSLSession session) {
+	@Override
+    public boolean shouldRetain(SocketChannel channel, SSLSession session) {
 		this.invoked = true;
 		this.channel = channel;
 		this.session = session;

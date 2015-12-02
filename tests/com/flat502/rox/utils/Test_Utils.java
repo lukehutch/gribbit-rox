@@ -1,6 +1,5 @@
 package com.flat502.rox.utils;
 
-import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 

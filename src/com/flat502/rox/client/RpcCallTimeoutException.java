@@ -1,7 +1,5 @@
 package com.flat502.rox.client;
 
-import java.io.IOException;
-
 /**
  * An exception raised when an RPC method call times out.
  * <p>

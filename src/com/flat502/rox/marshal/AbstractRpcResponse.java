@@ -1,9 +1,5 @@
 package com.flat502.rox.marshal;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
-
 /**
  * An abstract implementation of the {@link com.flat502.rox.marshal.RpcResponse}
  * interface.
@@ -18,7 +14,8 @@ public abstract class AbstractRpcResponse implements RpcResponse {
 		this.returnValue = returnValue;
 	}
 
-	public Object getReturnValue() {
+	@Override
+    public Object getReturnValue() {
 		return this.returnValue;
 	}
 }

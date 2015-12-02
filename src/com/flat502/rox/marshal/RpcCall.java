@@ -2,8 +2,6 @@ package com.flat502.rox.marshal;
 
 import java.net.URL;
 
-import com.flat502.rox.processing.SSLSession;
-
 /**
  * An interface representing a generalized RPC method
  * call.

@@ -2,10 +2,6 @@ package com.flat502.rox.server;
 
 import java.util.Date;
 
-import com.flat502.rox.marshal.RpcCall;
-import com.flat502.rox.marshal.RpcResponse;
-import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodResponse;
-
 public class ProxiedHandler {
 	public String toUpper(String s) {
 		return s.toUpperCase();

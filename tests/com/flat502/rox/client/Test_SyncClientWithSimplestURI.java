@@ -4,7 +4,6 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import com.flat502.rox.marshal.Test_ClassDescriptor;
 import com.flat502.rox.processing.RpcFaultException;
 
 public class Test_SyncClientWithSimplestURI extends TestCase {
@@ -14,11 +13,13 @@ public class Test_SyncClientWithSimplestURI extends TestCase {
 
 	private TestServer server;
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		this.server = new TestServer("/", PREFIX, PORT);
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		this.server.stop();
 	}
 

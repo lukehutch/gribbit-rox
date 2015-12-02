@@ -2,13 +2,9 @@ package com.flat502.rox.client;
 
 import java.net.URL;
 
-import com.flat502.rox.log.Level;
-import com.flat502.rox.log.LogFactory;
-import com.flat502.rox.log.SimpleLogFactory;
-import com.flat502.rox.log.StreamLog;
-import com.flat502.rox.processing.ThreadUtils;
-
 import junit.framework.TestCase;
+
+import com.flat502.rox.processing.ThreadUtils;
 
 public class Test_AsyncClientTimeouts extends TestCase {
 	private static final Integer _1_SECOND = new Integer(1000);
@@ -19,11 +15,13 @@ public class Test_AsyncClientTimeouts extends TestCase {
 	private static final int PORT = 8080;
 	private static final String URL = "http://localhost:" + PORT + "/";
 	
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		ThreadUtils.assertZeroThreads();
 	}
 	
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		ThreadUtils.assertZeroThreads();
 	}
 	

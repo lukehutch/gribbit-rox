@@ -33,7 +33,8 @@ public class ArrayParameterTypeMapper extends MethodCallUnmarshallerAid {
 	 * 	given index exceeds the size of the backing
 	 * 	array.
 	 */
-	public Class getType(String methodName, int index) {
+	@Override
+    public Class getType(String methodName, int index) {
 		if (this.types == null || index >= this.types.length) {
 			return null;
 		}
@@ -45,7 +46,8 @@ public class ArrayParameterTypeMapper extends MethodCallUnmarshallerAid {
 	 * @return
 	 * 	always returns <code>null</code>.
 	 */
-	public FieldNameCodec getFieldNameCodec(String methodName) {
+	@Override
+    public FieldNameCodec getFieldNameCodec(String methodName) {
 		return null;
 	}
 }

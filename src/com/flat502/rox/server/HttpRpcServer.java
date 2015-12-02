@@ -11,7 +11,14 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLEngine;
@@ -19,11 +26,26 @@ import javax.net.ssl.SSLException;
 
 import com.flat502.rox.Version;
 import com.flat502.rox.encoding.Encoding;
-import com.flat502.rox.http.*;
+import com.flat502.rox.http.HttpConstants;
+import com.flat502.rox.http.HttpMessageBuffer;
+import com.flat502.rox.http.HttpRequestBuffer;
+import com.flat502.rox.http.HttpResponse;
+import com.flat502.rox.http.HttpResponseException;
+import com.flat502.rox.http.MethodNotAllowedException;
+import com.flat502.rox.http.MethodNotAllowedResponseException;
 import com.flat502.rox.log.Log;
 import com.flat502.rox.log.LogFactory;
-import com.flat502.rox.marshal.*;
-import com.flat502.rox.processing.*;
+import com.flat502.rox.marshal.FieldNameCodec;
+import com.flat502.rox.marshal.MarshallingException;
+import com.flat502.rox.marshal.MethodCallUnmarshallerAid;
+import com.flat502.rox.marshal.RpcCall;
+import com.flat502.rox.marshal.RpcResponse;
+import com.flat502.rox.marshal.UnmarshallerAid;
+import com.flat502.rox.processing.HttpRpcProcessor;
+import com.flat502.rox.processing.RemoteSocketClosedException;
+import com.flat502.rox.processing.ResourcePool;
+import com.flat502.rox.processing.RpcFaultException;
+import com.flat502.rox.processing.SSLConfiguration;
 import com.flat502.rox.utils.Utils;
 
 /**
@@ -222,7 +244,8 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	 * @see #registerHandler(String, String, SyncRequestHandler, MethodCallUnmarshallerAid)
 	 * @deprecated Use {@link #registerHandler(String, String, AsynchronousRequestHandler)} instead.
 	 */
-	public RequestHandler registerHandler(String uriPath, String method, AsyncRequestHandler handler) {
+	@Deprecated
+    public RequestHandler registerHandler(String uriPath, String method, AsyncRequestHandler handler) {
 		return this.registerHandler(uriPath, method, new AsynchronousAsyncAdapter(handler), null);
 	}
 
@@ -272,7 +295,8 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	 * @see #registerHandler(String, String, SyncRequestHandler, MethodCallUnmarshallerAid)
 	 * @deprecated Use {@link #registerHandler(String, String, AsynchronousRequestHandler, MethodCallUnmarshallerAid)} instead.
 	 */
-	public RequestHandler registerHandler(String uriPath, String method, AsyncRequestHandler handler, MethodCallUnmarshallerAid aid) {
+	@Deprecated
+    public RequestHandler registerHandler(String uriPath, String method, AsyncRequestHandler handler, MethodCallUnmarshallerAid aid) {
 		return this.registerHandler(uriPath, method, new AsynchronousAsyncAdapter(handler), aid);
 	}
 
@@ -322,7 +346,8 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	 * @see #registerHandler(String, String, SyncRequestHandler, MethodCallUnmarshallerAid)
 	 * @deprecated Use {@link #registerHandler(String, String, SynchronousRequestHandler)} instead.
 	 */
-	public RequestHandler registerHandler(String uriPath, String method, SyncRequestHandler handler) {
+	@Deprecated
+    public RequestHandler registerHandler(String uriPath, String method, SyncRequestHandler handler) {
 		return this.registerHandler(uriPath, method, new SynchronousSyncAdapter(handler), null);
 	}
 
@@ -384,7 +409,8 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	 *    were identical)
 	 * @deprecated Use {@link #registerHandler(String, String, SynchronousRequestHandler, MethodCallUnmarshallerAid)} instead.
 	 */
-	public RequestHandler registerHandler(String uriPath, String method, SyncRequestHandler handler, MethodCallUnmarshallerAid aid) {
+	@Deprecated
+    public RequestHandler registerHandler(String uriPath, String method, SyncRequestHandler handler, MethodCallUnmarshallerAid aid) {
 		return this.registerHandler(uriPath, method, new SynchronousSyncAdapter(handler), aid);
 	}
 
@@ -647,7 +673,8 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 		return null;
 	}
 
-	protected ResourcePool newWorkerPool() {
+	@Override
+    protected ResourcePool newWorkerPool() {
 		return new ServerResourcePool();
 	}
 
@@ -662,7 +689,8 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	 * @throws IOException
 	 * 	if an error occurs while processing the pending event.
 	 */
-	protected void handleSelectionKeyOperation(SelectionKey key) throws IOException {
+	@Override
+    protected void handleSelectionKeyOperation(SelectionKey key) throws IOException {
 		if (key.isValid() && key.isAcceptable()) {
 			this.accept(key);
 		} else {
@@ -670,19 +698,22 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 		}
 	}
 	
-	protected void read(SelectionKey key) throws IOException {
+	@Override
+    protected void read(SelectionKey key) throws IOException {
 		SocketChannel socketChannel = (SocketChannel) key.channel();
 		this.resetClientTimer(socketChannel.socket());
 		super.read(key);
 	}
 	
-	protected void write(SelectionKey key) throws IOException {
+	@Override
+    protected void write(SelectionKey key) throws IOException {
 		SocketChannel socketChannel = (SocketChannel) key.channel();
 		this.resetClientTimer(socketChannel.socket());
 		super.write(key);
 	}
 	
-	protected void deregisterSocket(Socket socket) {
+	@Override
+    protected void deregisterSocket(Socket socket) {
 		TimerTask task = (TimerTask) this.socketActivity.remove(socket);
 		if (task != null) {
 			task.cancel();
@@ -773,12 +804,13 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 			this.socket = socket;
 		}
 
-		public void run() {
+		@Override
+        public void run() {
 			try {
 				if (log.logTrace()) {
 					log.trace("Idle client timer expired: " + System.identityHashCode(socket));
 				}
-				SocketChannel socketChannel = (SocketChannel) this.socket.getChannel();
+				SocketChannel socketChannel = this.socket.getChannel();
 				socketChannel.keyFor(HttpRpcServer.this.getSocketSelector()).cancel();
 				// This (shutting down the output stream) seems unnecessary but 
 				// without it the client never sees a disconnect under Linux.
@@ -809,7 +841,8 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	 * 	if an error occurs marshalling or writing
 	 * 	the response.
 	 */
-	protected void handleMessageException(HttpMessageBuffer msg, Exception e) throws IOException {
+	@Override
+    protected void handleMessageException(HttpMessageBuffer msg, Exception e) throws IOException {
 		HttpResponse httpRsp;
 		if (e instanceof HttpResponseException) {
 			if (log.logWarn()) {
@@ -831,19 +864,23 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 		}
 	}
 
-	protected void handleProcessingException(Socket socket, Exception e) {
+	@Override
+    protected void handleProcessingException(Socket socket, Exception e) {
 		log.error("Exception on selecting thread (socket=" + Utils.toString(socket) + ")", e);
 	}
 
-	protected void handleTimeout(Socket socket, Exception cause) {
+	@Override
+    protected void handleTimeout(Socket socket, Exception cause) {
 		log.debug("Timeout on " + Utils.toString(socket), cause);
 	}
 	
-	protected void handleSSLHandshakeFinished(Socket socket, SSLEngine engine) {
+	@Override
+    protected void handleSSLHandshakeFinished(Socket socket, SSLEngine engine) {
 		this.queueRead(socket);
 	}
 
-	protected void stopImpl() throws IOException {
+	@Override
+    protected void stopImpl() throws IOException {
 		this.deregisterChannel(this.serverChannel);
 		
 		this.serverChannel.close();
@@ -856,7 +893,8 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	 * Creates and initializes a {@link ServerSocketChannel}
 	 * for accepting connections on.
 	 */
-	protected void initSelector(Selector selector) throws IOException {
+	@Override
+    protected void initSelector(Selector selector) throws IOException {
 		// Create a new server socket and set to non blocking mode
 		this.serverChannel = ServerSocketChannel.open();
 		serverChannel.configureBlocking(false);
@@ -874,7 +912,8 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 		this.registerChannel(serverChannel);
 	}
 	
-	protected SSLEngine initSocketSSLEngine(Socket socket) throws SSLException {
+	@Override
+    protected SSLEngine initSocketSSLEngine(Socket socket) throws SSLException {
 		SSLEngine engine = super.initSocketSSLEngine(socket);
 		engine.setUseClientMode(false);
 
@@ -894,7 +933,8 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 		return engine;
 	}
 
-	protected HttpMessageBuffer getReadBuffer(Socket socket) {
+	@Override
+    protected HttpMessageBuffer getReadBuffer(Socket socket) {
 		synchronized (this.requestBuffers) {
 			HttpRequestBuffer request = (HttpRequestBuffer) this.requestBuffers.get(socket);
 			if (request == null) {
@@ -905,17 +945,20 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 		}
 	}
 
-	protected void removeReadBuffer(Socket socket) {
+	@Override
+    protected void removeReadBuffer(Socket socket) {
 		synchronized (this.requestBuffers) {
 			this.requestBuffers.remove(socket);
 		}
 	}
 
-	protected void removeReadBuffers(Socket socket) {
+	@Override
+    protected void removeReadBuffers(Socket socket) {
 		this.removeReadBuffer(socket);
 	}
 
-	protected void putWriteBuffer(Socket socket, ByteBuffer data) {
+	@Override
+    protected void putWriteBuffer(Socket socket, ByteBuffer data) {
 		synchronized (this.responseBuffers) {
 			List<ByteBuffer> existing = this.responseBuffers.get(socket);
 			if (existing != null) {
@@ -928,19 +971,22 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 		}
 	}
 
-	protected boolean isWriteQueued(Socket socket) {
+	@Override
+    protected boolean isWriteQueued(Socket socket) {
 		synchronized (this.responseBuffers) {
 			return this.responseBuffers.containsKey(socket);
 		}
 	}
 
-	protected ByteBuffer getWriteBuffer(Socket socket) {
+	@Override
+    protected ByteBuffer getWriteBuffer(Socket socket) {
 		synchronized (this.responseBuffers) {
 			return this.responseBuffers.get(socket).get(0);
 		}
 	}
 
-	protected void removeWriteBuffer(Socket socket) {
+	@Override
+    protected void removeWriteBuffer(Socket socket) {
 		synchronized (this.responseBuffers) {
 			List<ByteBuffer> existing = this.responseBuffers.get(socket);
 			if (existing != null && !existing.isEmpty()) {
@@ -951,7 +997,8 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 		}
 	}
 
-	protected void removeWriteBuffers(Socket socket) {
+	@Override
+    protected void removeWriteBuffers(Socket socket) {
 		synchronized (this.responseBuffers) {
 			this.responseBuffers.remove(socket);
 		}
@@ -965,7 +1012,8 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 			this.uri = uri;
 		}
 
-		public Class getType(String methodName, int index) {
+		@Override
+        public Class getType(String methodName, int index) {
 			MethodCallUnmarshallerAid aid = this.lookupAid(methodName);
 			if (aid == null) {
 				return null;
@@ -973,7 +1021,8 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 			return aid.getType(methodName, index);
 		}
 
-		public FieldNameCodec getFieldNameCodec(String methodName) {
+		@Override
+        public FieldNameCodec getFieldNameCodec(String methodName) {
 			UnmarshallerAid aid = this.lookupAid(methodName);
 			if (aid == null) {
 				return null;

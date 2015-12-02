@@ -1,7 +1,5 @@
 package com.flat502.rox.server;
 
-import java.net.URI;
-
 import com.flat502.rox.marshal.RpcCall;
 import com.flat502.rox.marshal.RpcResponse;
 
@@ -10,6 +8,7 @@ import com.flat502.rox.marshal.RpcResponse;
  * @see com.flat502.rox.server.HttpRpcServer#registerHandler(String, String, AsyncRequestHandler)
  * @deprecated Use {@link com.flat502.rox.server.AsynchronousRequestHandler} instead. 
  */
+@Deprecated
 public interface AsyncRequestHandler extends RequestHandler {
 	/**
 	 * Invoked to handle a method call.

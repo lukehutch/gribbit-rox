@@ -2,13 +2,8 @@ package com.flat502.rox.http;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.net.URI;
-import java.nio.charset.Charset;
 
 import org.custommonkey.xmlunit.XMLTestCase;
-
-import com.flat502.rox.encoding.Encoding;
 
 public class Test_HttpMessage extends XMLTestCase {
 	public void testNormalizeHeaders() throws Exception {
@@ -27,11 +22,13 @@ public class Test_HttpMessage extends XMLTestCase {
 			super(null);
 		}
 
-		public String normalizeHeaderName(String name) {
+		@Override
+        public String normalizeHeaderName(String name) {
 			return super.normalizeHeaderName(name);
 		}
 
-		protected void marshalStartLine(OutputStream os) throws IOException {
+		@Override
+        protected void marshalStartLine(OutputStream os) throws IOException {
 		}
 	}
 

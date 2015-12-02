@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import com.flat502.rox.marshal.RpcResponse;
 
@@ -93,8 +93,10 @@ public class TestUnmarshallingPerf {
 //						);
 		map.put("SAX(JDK1.5) ",
 				new Exec(
-						new Runnable() {public void run() { System.getProperties().setProperty("javax.xml.parsers.SAXParserFactory", "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl"); SaxParserPool.reset(); }},
-						new Runnable() {public void run() { saxUnmarshal(xml); }}
+						new Runnable() {@Override
+                        public void run() { System.getProperties().setProperty("javax.xml.parsers.SAXParserFactory", "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl"); SaxParserPool.reset(); }},
+						new Runnable() {@Override
+                        public void run() { saxUnmarshal(xml); }}
 						)
 						);
 //		map.put("SAX(Xerces) ",

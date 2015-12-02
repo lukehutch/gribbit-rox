@@ -11,11 +11,13 @@ class AsynchronousResponseHandlerAdaptor implements AsynchronousResponseHandler 
 		this.target = target;
 	}
 
-	public void handleResponse(RpcCall call, RpcResponse rsp, RpcResponseContext context) {
+	@Override
+    public void handleResponse(RpcCall call, RpcResponse rsp, RpcResponseContext context) {
 		this.target.handleResponse(call, rsp);
 	}
 
-	public void handleException(RpcCall call, Throwable e, RpcResponseContext context) {
+	@Override
+    public void handleException(RpcCall call, Throwable e, RpcResponseContext context) {
 		this.target.handleException(call, e);
 	}
 }

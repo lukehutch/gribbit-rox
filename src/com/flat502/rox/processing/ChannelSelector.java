@@ -2,10 +2,18 @@ package com.flat502.rox.processing;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.*;
+import java.nio.channels.NotYetConnectedException;
+import java.nio.channels.SelectableChannel;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.flat502.rox.log.Log;
 import com.flat502.rox.log.LogFactory;
@@ -94,7 +102,8 @@ class ChannelSelector implements Runnable {
 		this.socketSelector.wakeup();
 	}
 
-	public void run() {
+	@Override
+    public void run() {
 		while (true) {
 			if (this.shouldShutdown) {
 				break;

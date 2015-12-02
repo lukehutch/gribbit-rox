@@ -1,6 +1,13 @@
 package com.flat502.rox.http;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.Collections;
@@ -193,7 +200,7 @@ public abstract class HttpMessageBuffer {
 		if (this.headers == null) {
 			throw new IllegalStateException("This request is incomplete");
 		}
-		return (String) this.headers.get(this.normalizeHeaderName(name));
+		return this.headers.get(this.normalizeHeaderName(name));
 	}
 
 	public byte[] getContent() {
@@ -225,7 +232,8 @@ public abstract class HttpMessageBuffer {
 		return this.contentCharset;
 	}
 
-	public String toString() {
+	@Override
+    public String toString() {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		if (this.headers != null) {
@@ -319,7 +327,7 @@ public abstract class HttpMessageBuffer {
 			// key:value pair where value is all the values
 			// of duplicate keys are comma separated (in
 			// the order in which they occur in the request)
-			String prevValue = (String) headers.get(name);
+			String prevValue = headers.get(name);
 			value = prevValue + ", " + value;
 		}
 		headers.put(name, value);
@@ -353,7 +361,7 @@ public abstract class HttpMessageBuffer {
 			}
 		}
 
-		String lenStr = (String) this.headers.get(this.normalizeHeaderName(HttpConstants.Headers.CONTENT_LENGTH));
+		String lenStr = this.headers.get(this.normalizeHeaderName(HttpConstants.Headers.CONTENT_LENGTH));
 		try {
 			if (lenStr != null) {
 				this.contentLength = Integer.parseInt(lenStr);

@@ -20,12 +20,14 @@ public class Test_SharedSocketChannelPool extends TestCase {
 
 	private Server server;
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		this.server = new Server();
 		this.server.start();
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		this.server.shutdown();
 	}
 
@@ -312,7 +314,8 @@ public class Test_SharedSocketChannelPool extends TestCase {
 		try {
 			SocketChannel ch1 = pool.getChannel(client);
 			new Thread() {
-				public void run() {
+				@Override
+                public void run() {
 					try {
 						SocketChannel ch2 = pool.getChannel(client);
 						// Should block here and eventually time out
@@ -343,7 +346,8 @@ public class Test_SharedSocketChannelPool extends TestCase {
 		try {
 			SocketChannel ch1 = pool.getChannel(client);
 			new Thread() {
-				public void run() {
+				@Override
+                public void run() {
 					try {
 						SocketChannel ch2 = pool.getChannel(client);
 						// Should block here but we don't expect a timeout
@@ -374,11 +378,13 @@ public class Test_SharedSocketChannelPool extends TestCase {
 			super(new URL(urlString), null);
 		}
 
-		protected RpcCall newRpcCall(String name, Object[] params) {
+		@Override
+        protected RpcCall newRpcCall(String name, Object[] params) {
 			return null;
 		}
 
-		protected MethodResponseUnmarshaller getMethodResponseUnmarshaller() {
+		@Override
+        protected MethodResponseUnmarshaller getMethodResponseUnmarshaller() {
 			return null;
 		}
 
@@ -386,10 +392,12 @@ public class Test_SharedSocketChannelPool extends TestCase {
 			return null;
 		}
 
-		void register(SocketChannel channel) {
+		@Override
+        void register(SocketChannel channel) {
 		}
 
-		void cancel(SocketChannel channel) {
+		@Override
+        void cancel(SocketChannel channel) {
 		}
 	}
 
@@ -409,7 +417,8 @@ public class Test_SharedSocketChannelPool extends TestCase {
 			this.useHttps = useHttps;
 		}
 
-		public void run() {
+		@Override
+        public void run() {
 			try {
 				if (this.useHttps) {
 					this.serverSocket = SSLServerSocketFactory.getDefault().createServerSocket(this.port);

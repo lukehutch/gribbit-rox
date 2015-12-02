@@ -15,17 +15,21 @@ public class Test_SaxMethodResponseUnmarshallerWithXerces extends TestBase_Metho
 		super(name);
 	}
 	
-	protected RpcResponse unmarshal(String xml, final Class type) throws Exception {
+	@Override
+    protected RpcResponse unmarshal(String xml, final Class type) throws Exception {
 		return new SaxMethodResponseUnmarshaller().unmarshal(xml, new MethodResponseUnmarshallerAid() {
-			public Class getReturnType() {
+			@Override
+            public Class getReturnType() {
 				return type;
 			}
 		});
 	}
 	
-	protected RpcResponse unmarshal(InputStream xml, final Class type) throws Exception {
+	@Override
+    protected RpcResponse unmarshal(InputStream xml, final Class type) throws Exception {
 		return new SaxMethodResponseUnmarshaller().unmarshal(xml, new MethodResponseUnmarshallerAid() {
-			public Class getReturnType() {
+			@Override
+            public Class getReturnType() {
 				return type;
 			}
 		});

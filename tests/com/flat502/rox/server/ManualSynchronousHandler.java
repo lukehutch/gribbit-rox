@@ -15,7 +15,8 @@ public class ManualSynchronousHandler implements SynchronousRequestHandler {
 	public List<RpcCall> calls = new ArrayList<RpcCall>();
 	public RpcCallContext context;
 
-	public RpcResponse handleRequest(RpcCall call, RpcCallContext context) throws Exception {
+	@Override
+    public RpcResponse handleRequest(RpcCall call, RpcCallContext context) throws Exception {
 		this.calls.add(call);
 		this.call = call;
 		this.context = context;

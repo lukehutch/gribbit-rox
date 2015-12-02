@@ -5,8 +5,6 @@ import java.nio.charset.Charset;
 
 import junit.framework.TestCase;
 
-import com.flat502.rox.utils.XmlPlainPrinter;
-
 public class Test_XmlPlainPrinter extends TestCase {
 	public void testUnmarshalMethodName() throws Exception {
 		ByteArrayOutputStream byteOs = new ByteArrayOutputStream();

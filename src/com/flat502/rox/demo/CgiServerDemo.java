@@ -8,7 +8,11 @@ import com.flat502.rox.http.HttpConstants;
 import com.flat502.rox.marshal.RpcCall;
 import com.flat502.rox.marshal.RpcResponse;
 import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodResponse;
-import com.flat502.rox.server.*;
+import com.flat502.rox.server.CgiRequestUnmarshaller;
+import com.flat502.rox.server.HttpRequestUnmarshaller;
+import com.flat502.rox.server.RpcCallContext;
+import com.flat502.rox.server.SynchronousRequestHandler;
+import com.flat502.rox.server.XmlRpcServer;
 
 /**
  * A demo synchronous server illustrating the 
@@ -16,7 +20,8 @@ import com.flat502.rox.server.*;
  * method.
  */
 public class CgiServerDemo implements SynchronousRequestHandler {
-	public RpcResponse handleRequest(RpcCall call, RpcCallContext context) throws Exception {
+	@Override
+    public RpcResponse handleRequest(RpcCall call, RpcCallContext context) throws Exception {
 		Object[] params = call.getParameters();
 		System.out.println("Method [" + call.getName() + "] called with "
 				+ params.length + " parameters");

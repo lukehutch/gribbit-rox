@@ -1,6 +1,8 @@
 package com.flat502.rox.marshal.xmlrpc;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EmptyStackException;
+import java.util.List;
 
 /**
  * A simple replacement for java.util.Stack that isn't synchronized.
@@ -44,7 +46,8 @@ class Stack {
 		return items.size();
 	}
 
-	public String toString() {
+	@Override
+    public String toString() {
 		return this.items.toString();
 	}
 }

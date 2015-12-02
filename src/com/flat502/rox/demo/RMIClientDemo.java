@@ -1,7 +1,6 @@
 package com.flat502.rox.demo;
 
 import java.net.URL;
-import java.util.Arrays;
 
 import com.flat502.rox.client.XmlRpcClient;
 import com.flat502.rox.utils.Utils;

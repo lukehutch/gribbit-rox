@@ -5,7 +5,6 @@ import junit.framework.TestCase;
 import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodCall;
 import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodFault;
 import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodResponse;
-import com.flat502.rox.processing.SSLSession;
 import com.flat502.rox.server.RpcCallContext;
 import com.flat502.rox.server.RpcMethodProxy;
 
@@ -33,11 +32,13 @@ public class Test_RpcMethodProxy extends TestCase {
 			super(namePattern, target);
 		}
 
-		public RpcFault newRpcFault(Throwable e) {
+		@Override
+        public RpcFault newRpcFault(Throwable e) {
 			return new XmlRpcMethodFault(e);
 		}
 
-		protected RpcResponse newRpcResponse(Object returnValue) {
+		@Override
+        protected RpcResponse newRpcResponse(Object returnValue) {
 			return new XmlRpcMethodResponse(returnValue);
 		}
 	}

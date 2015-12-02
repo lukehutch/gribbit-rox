@@ -16,7 +16,8 @@ import com.flat502.rox.server.XmlRpcServer;
  * interface using SSL.
  */
 public class SSLServerDemo implements SynchronousRequestHandler {
-	public RpcResponse handleRequest(RpcCall call, RpcCallContext context) throws Exception {
+	@Override
+    public RpcResponse handleRequest(RpcCall call, RpcCallContext context) throws Exception {
 		Object[] params = call.getParameters();
 		System.out.println("Method [" + call.getName() + "] called with "
 				+ params.length + " parameters");

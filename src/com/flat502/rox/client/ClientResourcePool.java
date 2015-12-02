@@ -18,7 +18,8 @@ public class ClientResourcePool extends ResourcePool {
 
 	private SharedSocketChannelPool connPool;
 	
-	public void registerProfiler(Profiler p) {
+	@Override
+    public void registerProfiler(Profiler p) {
 		synchronized (this.notifierMutex) {
 			if (this.connPool != null) {
 				// Too late, exec* has been called
@@ -141,7 +142,8 @@ public class ClientResourcePool extends ResourcePool {
 		return new SharedSocketChannelPool(mutex, limit, timeout, this.getProfilers());
 	}
 
-	public void shutdown() {
+	@Override
+    public void shutdown() {
 		synchronized (this.notifierMutex) {
 			if (this.connPool != null) {
 				this.connPool.close();
@@ -150,11 +152,13 @@ public class ClientResourcePool extends ResourcePool {
 		super.shutdown();
 	}
 	
-	protected HttpMessageHandler newWorker() {
+	@Override
+    protected HttpMessageHandler newWorker() {
 		return new HttpResponseHandler(this.getQueue());
 	}
 
-	protected Thread newProcessingThread(Runnable target) {
+	@Override
+    protected Thread newProcessingThread(Runnable target) {
 		Thread t = super.newProcessingThread(target);
 		t.setDaemon(true);
 		return t;
@@ -169,7 +173,8 @@ public class ClientResourcePool extends ResourcePool {
 		super.detach(client);
 	}
 
-	protected void notifyUnownedChannelClosure(SocketChannel channel) {
+	@Override
+    protected void notifyUnownedChannelClosure(SocketChannel channel) {
 		synchronized (this.notifierMutex) {
 			if (this.connPool != null) {
 				this.connPool.removeClosedChannel(channel);

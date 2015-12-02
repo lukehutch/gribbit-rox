@@ -2,12 +2,8 @@ package com.flat502.rox.http;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.URI;
 
 import com.flat502.rox.encoding.Encoding;
-import com.flat502.rox.encoding.EncodingMap;
 import com.flat502.rox.utils.Utils;
 
 /**
@@ -67,7 +63,8 @@ public class HttpRequest extends HttpMessage {
 	 * </ol>
 	 * @throws IOException 
 	 */
-	protected void marshalStartLine(OutputStream os) throws IOException {
+	@Override
+    protected void marshalStartLine(OutputStream os) throws IOException {
 		// Method SP Request-URI SP HTTP-Version
 		os.write(this.method.getBytes());
 		os.write(' ');

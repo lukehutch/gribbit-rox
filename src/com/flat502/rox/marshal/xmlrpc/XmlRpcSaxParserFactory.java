@@ -12,7 +12,8 @@ import org.xml.sax.SAXNotSupportedException;
  * SAXParserFactory for instantiating XmlRpcSaxParser's
  */
 public class XmlRpcSaxParserFactory extends SAXParserFactory {
-	public SAXParser newSAXParser() throws ParserConfigurationException, SAXException {
+	@Override
+    public SAXParser newSAXParser() throws ParserConfigurationException, SAXException {
 		if (isValidating()) {
 			throw new ParserConfigurationException("No support for validation.");
 		}
@@ -23,12 +24,14 @@ public class XmlRpcSaxParserFactory extends SAXParserFactory {
 		return new XmlRpcSaxParser();
 	}
 
-	public void setFeature(String name, boolean value) throws ParserConfigurationException, SAXNotRecognizedException,
+	@Override
+    public void setFeature(String name, boolean value) throws ParserConfigurationException, SAXNotRecognizedException,
 			SAXNotSupportedException {
 		throw new SAXNotRecognizedException("No feature support (and specifically no support for \"" + name + "\")");
 	}
 
-	public boolean getFeature(String name) throws ParserConfigurationException, SAXNotRecognizedException,
+	@Override
+    public boolean getFeature(String name) throws ParserConfigurationException, SAXNotRecognizedException,
 			SAXNotSupportedException {
 		throw new SAXNotRecognizedException("No feature support (and specifically no support for \"" + name + "\")");
 	}

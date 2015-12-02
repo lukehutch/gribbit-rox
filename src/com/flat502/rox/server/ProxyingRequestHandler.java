@@ -4,7 +4,6 @@ import com.flat502.rox.marshal.FieldNameCodec;
 import com.flat502.rox.marshal.MethodCallUnmarshallerAid;
 import com.flat502.rox.marshal.RpcCall;
 import com.flat502.rox.marshal.RpcResponse;
-import com.flat502.rox.processing.SSLSession;
 
 /**
  * A {@link com.flat502.rox.server.SynchronousRequestHandler} implementation
@@ -25,11 +24,13 @@ public abstract class ProxyingRequestHandler extends MethodCallUnmarshallerAid i
 	/**
 	 * @deprecated Override {@link #handleRequest(RpcCall, RpcCallContext)} instead.
 	 */
-	public RpcResponse handleRequest(RpcCall call) throws Exception {
+	@Deprecated
+    public RpcResponse handleRequest(RpcCall call) throws Exception {
 		return null;
 	}
 
-	public RpcResponse handleRequest(RpcCall call, RpcCallContext context) throws Exception {
+	@Override
+    public RpcResponse handleRequest(RpcCall call, RpcCallContext context) throws Exception {
 		// Defer to the previous handler method for backwards compatibility.
 		RpcResponse rsp = this.handleRequest(call);
 		
@@ -42,7 +43,8 @@ public abstract class ProxyingRequestHandler extends MethodCallUnmarshallerAid i
 		return this.proxy.invoke(call, context);
 	}
 
-	public Class getType(String methodName, int index) {
+	@Override
+    public Class getType(String methodName, int index) {
 		return this.proxy.getType(methodName, index);
 	}
 
@@ -50,7 +52,8 @@ public abstract class ProxyingRequestHandler extends MethodCallUnmarshallerAid i
 	 * @return
 	 * 	this implementation always returns <code>null</code>.
 	 */
-	public FieldNameCodec getFieldNameCodec(String methodName) {
+	@Override
+    public FieldNameCodec getFieldNameCodec(String methodName) {
 		return null;
 	}
 }

@@ -13,7 +13,8 @@ public class ProfilerCollection implements Profiler {
 		this.profilers.add(p);
 	}
 
-	public void begin(long id, String operation) {
+	@Override
+    public void begin(long id, String operation) {
 		if (this.profilers == null) {
 			return;
 		}
@@ -22,7 +23,8 @@ public class ProfilerCollection implements Profiler {
 		}
 	}
 
-	public void end(long id, String operation) {
+	@Override
+    public void end(long id, String operation) {
 		if (this.profilers == null) {
 			return;
 		}
@@ -31,7 +33,8 @@ public class ProfilerCollection implements Profiler {
 		}
 	}
 
-	public void count(long id, String operation) {
+	@Override
+    public void count(long id, String operation) {
 		if (this.profilers == null) {
 			return;
 		}

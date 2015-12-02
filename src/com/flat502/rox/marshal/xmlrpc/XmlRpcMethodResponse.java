@@ -1,23 +1,10 @@
 package com.flat502.rox.marshal.xmlrpc;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.nio.charset.Charset;
-import java.util.Iterator;
 
-import net.n3.nanoxml.IXMLElement;
-import net.n3.nanoxml.IXMLParser;
-import net.n3.nanoxml.IXMLReader;
-import net.n3.nanoxml.StdXMLReader;
-import net.n3.nanoxml.XMLParserFactory;
-
-import com.flat502.rox.http.HttpConstants;
 import com.flat502.rox.marshal.FieldNameEncoder;
 import com.flat502.rox.marshal.MarshallingException;
 import com.flat502.rox.marshal.RpcResponse;
-import com.flat502.rox.utils.Utils;
 import com.flat502.rox.utils.XmlPrinter;
 
 /**
@@ -57,11 +44,13 @@ public class XmlRpcMethodResponse extends XmlRpcMethod implements RpcResponse {
 	 * 	the return value for this instance,
 	 * 	never <code>null</code>.
 	 */
-	public Object getReturnValue() {
+	@Override
+    public Object getReturnValue() {
 		return this.retVal;
 	}
 	
-	protected void marshalImpl(XmlPrinter out) throws MarshallingException, IOException {
+	@Override
+    protected void marshalImpl(XmlPrinter out) throws MarshallingException, IOException {
 		out.openTag("methodResponse");
 		out.openTag("params");
 		out.openTag("param");

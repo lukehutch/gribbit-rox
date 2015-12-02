@@ -33,7 +33,8 @@ public class Fault {
 	 * 	A string representation of this object that includes the
 	 * 	underlying fault code and fault string.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return "Fault[" + this.faultCode + ": " + this.faultString + "]";
 	}
 }

@@ -10,7 +10,8 @@ class ReturnTypeMapper extends MethodResponseUnmarshallerAid {
 		this.retClass = retClass;
 	}
 	
-	public Class getReturnType() {
+	@Override
+    public Class getReturnType() {
 		return this.retClass;
 	}
 }

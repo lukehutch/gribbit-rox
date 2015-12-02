@@ -35,21 +35,24 @@ class SynchronousNotifier implements Notifiable {
 		}
 	}
 
-	public void notify(HttpResponseBuffer rsp, RpcResponseContext context) {
+	@Override
+    public void notify(HttpResponseBuffer rsp, RpcResponseContext context) {
 		synchronized (this) {
 			this.rsp = rsp;
 			this.notify();
 		}
 	}
 
-	public void notify(Throwable e, RpcResponseContext context) {
+	@Override
+    public void notify(Throwable e, RpcResponseContext context) {
 		synchronized (this) {
 			this.exception = e;
 			this.notify();
 		}
 	}
 	
-	public void notifyTimedOut(Throwable cause, RpcResponseContext context) {
+	@Override
+    public void notifyTimedOut(Throwable cause, RpcResponseContext context) {
 		synchronized (this) {
 			this.timeOut = true;
 			this.exception = cause;

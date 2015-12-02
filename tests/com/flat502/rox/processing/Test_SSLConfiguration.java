@@ -1,8 +1,8 @@
 package com.flat502.rox.processing;
 
-import com.flat502.rox.processing.SSLConfiguration.ClientAuth;
-
 import junit.framework.TestCase;
+
+import com.flat502.rox.processing.SSLConfiguration.ClientAuth;
 
 
 public class Test_SSLConfiguration extends TestCase {

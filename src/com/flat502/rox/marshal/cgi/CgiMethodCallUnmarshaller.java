@@ -1,8 +1,11 @@
 package com.flat502.rox.marshal.cgi;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import com.flat502.rox.http.MethodCallURI;
 import com.flat502.rox.marshal.ClassDescriptor;

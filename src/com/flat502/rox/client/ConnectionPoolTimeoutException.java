@@ -1,7 +1,5 @@
 package com.flat502.rox.client;
 
-import java.io.IOException;
-
 /**
  * An exception raised to indicate a timeout occurred waiting for
  * a connection from the underlying connection pool.

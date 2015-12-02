@@ -8,7 +8,23 @@ import java.util.List;
 import java.util.Map;
 
 import com.flat502.rox.demo.validation.MoeLarryAndCurly;
-import com.flat502.rox.marshal.*;
+import com.flat502.rox.marshal.FirstLevel;
+import com.flat502.rox.marshal.IntegerArraysStruct;
+import com.flat502.rox.marshal.JaggedCustomTypeArraysStruct;
+import com.flat502.rox.marshal.JaggedIntArraysStruct;
+import com.flat502.rox.marshal.JaggedObjectArraysStruct;
+import com.flat502.rox.marshal.LinkedListStruct;
+import com.flat502.rox.marshal.ListStruct;
+import com.flat502.rox.marshal.MapStruct;
+import com.flat502.rox.marshal.MarshallingException;
+import com.flat502.rox.marshal.MethodCallUnmarshallerAid;
+import com.flat502.rox.marshal.PrimitiveArraysStruct;
+import com.flat502.rox.marshal.Reservation;
+import com.flat502.rox.marshal.RpcCall;
+import com.flat502.rox.marshal.TestObject;
+import com.flat502.rox.marshal.TestStruct;
+import com.flat502.rox.marshal.TreeMapStruct;
+import com.flat502.rox.marshal.TypedArrayStruct;
 import com.flat502.rox.utils.Utils;
 
 public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshaller {
@@ -2330,11 +2346,13 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 		String xml = toString(xmlLines);
 
 		MethodCallUnmarshallerAid aid = new MethodCallUnmarshallerAid() {
-			public Class getType(String methodName, int index) {
+			@Override
+            public Class getType(String methodName, int index) {
 				return TestObject.class;
 			}
 			
-			public boolean ignoreMissingFields() {
+			@Override
+            public boolean ignoreMissingFields() {
 				return true;
 			}
 		};
@@ -2404,11 +2422,13 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 		String xml = toString(xmlLines);
 
 		MethodCallUnmarshallerAid aid = new MethodCallUnmarshallerAid() {
-			public Class getType(String methodName, int index) {
+			@Override
+            public Class getType(String methodName, int index) {
 				return TestStruct.class;
 			}
 			
-			public boolean ignoreMissingFields() {
+			@Override
+            public boolean ignoreMissingFields() {
 				return true;
 			}
 		};
@@ -2513,7 +2533,8 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 
 	public Testes() {}
 
-	public String toString() { return "Testes: " + i + ", " + b + ", " + d + ", \"" + s + "\", \"" + s2 + "\", " + o1 + ", " + o2 + ", " + o3 + ", " + o4 + ", " + o5 + ", " + o6 + ", " + Utils.toString(ai) + ", " + Utils.toString(aab) + ", " + Utils.toString(oi) + ", (" + innerTestes + "), " + Utils.toString(innerTestesArray) ; }
+	@Override
+    public String toString() { return "Testes: " + i + ", " + b + ", " + d + ", \"" + s + "\", \"" + s2 + "\", " + o1 + ", " + o2 + ", " + o3 + ", " + o4 + ", " + o5 + ", " + o6 + ", " + Utils.toString(ai) + ", " + Utils.toString(aab) + ", " + Utils.toString(oi) + ", (" + innerTestes + "), " + Utils.toString(innerTestesArray) ; }
     }
 
     public static class Testes2 {
@@ -2526,7 +2547,8 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 
 	public Testes2() {}
 
-	public String toString() { return "Testes2: " + i + ", " + b + ", " + d + ", " + intValue + ", " + booleanValue + ", " + doubleValue; }
+	@Override
+    public String toString() { return "Testes2: " + i + ", " + b + ", " + d + ", " + intValue + ", " + booleanValue + ", " + doubleValue; }
     }
 
     public void testValidationSuiteComplicatedNestedStructsAndArrays() throws Exception {

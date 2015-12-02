@@ -15,7 +15,8 @@ class HttpResponseHandler extends HttpMessageHandler {
 		super(queue);
 	}
 
-	protected void handleMessage(HttpMessageBuffer msg) throws Exception {
+	@Override
+    protected void handleMessage(HttpMessageBuffer msg) throws Exception {
 		HttpResponseBuffer response = getResponse(msg);
 		if (!response.isComplete()) {
 			throw new IllegalStateException("Incomplete request on my queue");
@@ -24,12 +25,14 @@ class HttpResponseHandler extends HttpMessageHandler {
 		this.getClient(response).handleResponse(response);
 	}
 
-	protected void handleHttpMessageException(HttpMessageBuffer msg, Throwable exception) {
+	@Override
+    protected void handleHttpMessageException(HttpMessageBuffer msg, Throwable exception) {
 		HttpResponseBuffer response = getResponse(msg);
 		this.getClient(response).handleException((HttpResponseBuffer) msg, exception);
 	}
 	
-	protected void handleProcessingException(ProcessingException exception) {
+	@Override
+    protected void handleProcessingException(ProcessingException exception) {
 		((HttpRpcClient)exception.getProcessor()).handleException(exception);
 	}
 	

@@ -1,6 +1,5 @@
 package com.flat502.rox.marshal;
 
-import com.flat502.rox.processing.SSLSession;
 import com.flat502.rox.server.RpcCallContext;
 
 public class ContextualProxyObject {

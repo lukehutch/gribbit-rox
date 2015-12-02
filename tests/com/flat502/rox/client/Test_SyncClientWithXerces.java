@@ -1,14 +1,11 @@
 package com.flat502.rox.client;
 
-import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
 
-import com.flat502.rox.marshal.Test_ClassDescriptor;
 import com.flat502.rox.processing.RpcFaultException;
 import com.flat502.rox.processing.ThreadUtils;
 
@@ -24,12 +21,14 @@ public class Test_SyncClientWithXerces extends TestCase {
 				"com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
 	}
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		ThreadUtils.assertZeroThreads();
 		this.server = new TestServer("/RPC2", PREFIX, PORT);
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		this.server.stop();
 		Thread.sleep(50);
 		ThreadUtils.assertZeroThreads();

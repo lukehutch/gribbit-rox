@@ -4,11 +4,17 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
-import java.util.Iterator;
 
-import net.n3.nanoxml.*;
+import net.n3.nanoxml.IXMLElement;
+import net.n3.nanoxml.IXMLParser;
+import net.n3.nanoxml.IXMLReader;
+import net.n3.nanoxml.StdXMLReader;
+import net.n3.nanoxml.XMLParserFactory;
 
-import com.flat502.rox.marshal.*;
+import com.flat502.rox.marshal.ExtendedMethodResponseUnmarshaller;
+import com.flat502.rox.marshal.FieldNameCodec;
+import com.flat502.rox.marshal.MethodResponseUnmarshallerAid;
+import com.flat502.rox.marshal.RpcResponse;
 import com.flat502.rox.utils.Utils;
 
 /**
@@ -27,15 +33,18 @@ public class DomMethodResponseUnmarshaller implements
 		this.unmarshaller = XmlRpcUtils.newDomUnmarshaller(fieldNameCodec);
 	}
 	
-	public FieldNameCodec getDefaultFieldNameCodec() {
+	@Override
+    public FieldNameCodec getDefaultFieldNameCodec() {
 		return this.unmarshaller.getDefaultFieldNameCodec();
 	}
 
-	public RpcResponse unmarshal(InputStream in) throws Exception {
+	@Override
+    public RpcResponse unmarshal(InputStream in) throws Exception {
 		return unmarshal(in, null);
 	}
 
-	public RpcResponse unmarshal(InputStream in, MethodResponseUnmarshallerAid aid)
+	@Override
+    public RpcResponse unmarshal(InputStream in, MethodResponseUnmarshallerAid aid)
 			throws Exception {
 		IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
 		IXMLReader reader = new StdXMLReader(Utils.newXmlReader(in, Charset
@@ -45,11 +54,13 @@ public class DomMethodResponseUnmarshaller implements
 		return this.unmarshaller.parseMethodResponse(root, aid);
 	}
 
-	public RpcResponse unmarshal(Reader in) throws Exception {
+	@Override
+    public RpcResponse unmarshal(Reader in) throws Exception {
 		return unmarshal(in, null);
 	}
 
-	public RpcResponse unmarshal(Reader in, MethodResponseUnmarshallerAid aid) throws Exception {
+	@Override
+    public RpcResponse unmarshal(Reader in, MethodResponseUnmarshallerAid aid) throws Exception {
 		IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
 		IXMLReader reader = new StdXMLReader(in);
 		parser.setReader(reader);
@@ -57,11 +68,13 @@ public class DomMethodResponseUnmarshaller implements
 		return this.unmarshaller.parseMethodResponse(root, aid);
 	}
 
-	public RpcResponse unmarshal(String xml) throws Exception {
+	@Override
+    public RpcResponse unmarshal(String xml) throws Exception {
 		return unmarshal(xml, null);
 	}
 
-	public RpcResponse unmarshal(String xml, MethodResponseUnmarshallerAid aid) throws Exception {
+	@Override
+    public RpcResponse unmarshal(String xml, MethodResponseUnmarshallerAid aid) throws Exception {
 		IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
 		IXMLReader reader = new StdXMLReader(new StringReader(xml));
 		parser.setReader(reader);

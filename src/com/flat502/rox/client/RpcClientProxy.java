@@ -43,7 +43,8 @@ class RpcClientProxy implements InvocationHandler {
 				targetInterfaces, this);
 	}
 
-	public Object invoke(Object proxy, Method method, Object[] args)
+	@Override
+    public Object invoke(Object proxy, Method method, Object[] args)
 			throws Throwable {
 		String methodName = "";
 		if (methodPrefix != null) {

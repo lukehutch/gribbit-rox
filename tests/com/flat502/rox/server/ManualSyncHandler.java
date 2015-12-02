@@ -12,7 +12,8 @@ import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodResponse;
 public class ManualSyncHandler implements SyncRequestHandler {
 	public RpcCall call;
 
-	public RpcResponse handleRequest(RpcCall call) throws Exception {
+	@Override
+    public RpcResponse handleRequest(RpcCall call) throws Exception {
 		this.call = call;
 		if (call.getName().equals("server.toUpper")) {
 			return new XmlRpcMethodResponse(((String)call.getParameters()[0]).toUpperCase());

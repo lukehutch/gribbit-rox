@@ -1,7 +1,6 @@
 package com.flat502.rox.demo;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * A common interface shared between {@link com.flat502.rox.demo.RMIClientDemo},

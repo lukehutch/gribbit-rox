@@ -49,7 +49,8 @@ public class SimpleSSLSessionPolicy implements SSLSessionPolicy {
 		this.issuers.add(pattern);
 	}
 	
-	public boolean shouldRetain(SocketChannel channel, SSLSession session) {
+	@Override
+    public boolean shouldRetain(SocketChannel channel, SSLSession session) {
 		try {
 			X509Certificate peer = (X509Certificate) session.getPeerCertificates()[0];
 			String subject = peer.getSubjectDN().getName();

@@ -19,27 +19,33 @@ public class CgiRpcMethodCall implements RpcCall {
 		
 	}
 
-	public String getName() {
+	@Override
+    public String getName() {
 		return this.methodName;
 	}
 
-	public Object[] getParameters() {
+	@Override
+    public Object[] getParameters() {
 		return this.parameters;
 	}
 
-	public String getHttpMethod() {
+	@Override
+    public String getHttpMethod() {
 		return HttpConstants.Methods.GET;
 	}
 
-	public String getHttpURI(URL url) {
+	@Override
+    public String getHttpURI(URL url) {
 		return url.getPath();
 	}
 
-	public String getContentType() {
+	@Override
+    public String getContentType() {
 		return "text/plain";
 	}
 
-	public void marshal(OutputStream out, Charset charSet) throws IOException, MarshallingException {
+	@Override
+    public void marshal(OutputStream out, Charset charSet) throws IOException, MarshallingException {
 		// Empty body
 	}
 }

@@ -25,11 +25,13 @@ public class Test_ServerMiscellaneous extends TestCase {
 
 	private XmlRpcServer server;
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		this.server = new XmlRpcServer(PORT);
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		this.server.stop();
 		Thread.sleep(50);
 	}
@@ -98,10 +100,10 @@ public class Test_ServerMiscellaneous extends TestCase {
 			List<String> rspLines = readMessage(is);
 			assertEquals(7, rspLines.size());
 			assertEquals("HTTP/1.0 200 OK", rspLines.get(0));
-			assertTrue(Pattern.compile("^Date: ").matcher((String) rspLines.get(1)).find());
-			assertTrue(Pattern.compile("^Server: ").matcher((String) rspLines.get(2)).find());
-			assertTrue(Pattern.compile("^Content-Type: text/xml").matcher((String) rspLines.get(3)).find());
-			assertTrue(Pattern.compile("^Content-Length: 146").matcher((String) rspLines.get(4)).find());
+			assertTrue(Pattern.compile("^Date: ").matcher(rspLines.get(1)).find());
+			assertTrue(Pattern.compile("^Server: ").matcher(rspLines.get(2)).find());
+			assertTrue(Pattern.compile("^Content-Type: text/xml").matcher(rspLines.get(3)).find());
+			assertTrue(Pattern.compile("^Content-Length: 146").matcher(rspLines.get(4)).find());
 			assertEquals("", rspLines.get(5));
 
 			// Make sure we get disconnected immediately.
@@ -141,11 +143,11 @@ public class Test_ServerMiscellaneous extends TestCase {
 			List<String> rspLines = readMessage(is);
 			assertEquals(8, rspLines.size());
 			assertEquals("HTTP/1.1 200 OK", rspLines.get(0));
-			assertTrue(Pattern.compile("^Date: ").matcher((String) rspLines.get(1)).find());
-			assertTrue(Pattern.compile("^Host: ").matcher((String) rspLines.get(2)).find());
-			assertTrue(Pattern.compile("^Server: ").matcher((String) rspLines.get(3)).find());
-			assertTrue(Pattern.compile("^Content-Type: text/xml").matcher((String) rspLines.get(4)).find());
-			assertTrue(Pattern.compile("^Content-Length: ").matcher((String) rspLines.get(5)).find());
+			assertTrue(Pattern.compile("^Date: ").matcher(rspLines.get(1)).find());
+			assertTrue(Pattern.compile("^Host: ").matcher(rspLines.get(2)).find());
+			assertTrue(Pattern.compile("^Server: ").matcher(rspLines.get(3)).find());
+			assertTrue(Pattern.compile("^Content-Type: text/xml").matcher(rspLines.get(4)).find());
+			assertTrue(Pattern.compile("^Content-Length: ").matcher(rspLines.get(5)).find());
 			assertEquals("", rspLines.get(6));
 
 			// Make sure we get disconnected immediately.
@@ -195,11 +197,11 @@ public class Test_ServerMiscellaneous extends TestCase {
 				List<String> rspLines = readMessage(is);
 				assertEquals(8, rspLines.size());
 				assertEquals("HTTP/1.1 200 OK", rspLines.get(0));
-				assertTrue(Pattern.compile("^Date: ").matcher((String) rspLines.get(1)).find());
-				assertTrue(Pattern.compile("^Host: ").matcher((String) rspLines.get(2)).find());
-				assertTrue(Pattern.compile("^Server: ").matcher((String) rspLines.get(3)).find());
-				assertTrue(Pattern.compile("^Content-Type: text/xml").matcher((String) rspLines.get(4)).find());
-				assertTrue(Pattern.compile("^Content-Length: ").matcher((String) rspLines.get(5)).find());
+				assertTrue(Pattern.compile("^Date: ").matcher(rspLines.get(1)).find());
+				assertTrue(Pattern.compile("^Host: ").matcher(rspLines.get(2)).find());
+				assertTrue(Pattern.compile("^Server: ").matcher(rspLines.get(3)).find());
+				assertTrue(Pattern.compile("^Content-Type: text/xml").matcher(rspLines.get(4)).find());
+				assertTrue(Pattern.compile("^Content-Length: ").matcher(rspLines.get(5)).find());
 				assertEquals("", rspLines.get(6));
 				
 				switch(iters) {

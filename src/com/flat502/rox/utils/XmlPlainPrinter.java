@@ -2,7 +2,6 @@ package com.flat502.rox.utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.nio.charset.Charset;
 
 /**
@@ -23,7 +22,8 @@ public class XmlPlainPrinter implements XmlPrinter {
 		this.out = out;
 	}
 
-	public void writeHeader(String version, Charset charSet) throws IOException {
+	@Override
+    public void writeHeader(String version, Charset charSet) throws IOException {
 		this.charSetName = charSet.name();
 		this.out.write("<?xml version=\"".getBytes(this.charSetName));
 		this.out.write(version.getBytes(this.charSetName));
@@ -34,7 +34,8 @@ public class XmlPlainPrinter implements XmlPrinter {
 		this.out.write('>');
 	}
 
-	public void openTag(String name) throws IOException {
+	@Override
+    public void openTag(String name) throws IOException {
 		if (this.lastOpened != null) {
 			this.out.write('<');
 			this.out.write(this.lastOpened.getBytes(this.charSetName));
@@ -43,7 +44,8 @@ public class XmlPlainPrinter implements XmlPrinter {
 		this.lastOpened = name;
 	}
 
-	public void writeValue(String value) throws IOException {
+	@Override
+    public void writeValue(String value) throws IOException {
 		this.out.write('<');
 		this.out.write(this.lastOpened.getBytes(this.charSetName));
 		this.out.write('>');
@@ -51,7 +53,8 @@ public class XmlPlainPrinter implements XmlPrinter {
 		this.lastValue = value;
 	}
 
-	public void closeTag(String name) throws IOException {
+	@Override
+    public void closeTag(String name) throws IOException {
 		if (name.equals(this.lastOpened) && this.lastValue == null) {
 			this.out.write('<');
 			this.out.write(name.getBytes(this.charSetName));
@@ -67,6 +70,7 @@ public class XmlPlainPrinter implements XmlPrinter {
 		this.lastValue = null;
 	}
 
-	public void finishDocument() throws IOException {
+	@Override
+    public void finishDocument() throws IOException {
 	}
 }

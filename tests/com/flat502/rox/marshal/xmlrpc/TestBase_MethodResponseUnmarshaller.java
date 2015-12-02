@@ -4,7 +4,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 
-import com.flat502.rox.marshal.*;
+import com.flat502.rox.marshal.EnumConstants;
+import com.flat502.rox.marshal.GenericsStructJ5;
+import com.flat502.rox.marshal.MarshallingException;
+import com.flat502.rox.marshal.RpcFault;
+import com.flat502.rox.marshal.RpcResponse;
+import com.flat502.rox.marshal.SimpleStruct;
 
 public abstract class TestBase_MethodResponseUnmarshaller extends TestBase_Unmarshaller {
 	public TestBase_MethodResponseUnmarshaller(String name) {

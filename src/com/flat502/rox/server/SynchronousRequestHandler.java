@@ -2,7 +2,6 @@ package com.flat502.rox.server;
 
 import com.flat502.rox.marshal.RpcCall;
 import com.flat502.rox.marshal.RpcResponse;
-import com.flat502.rox.processing.SSLSession;
 
 /**
  * Interface for synchronous RPC method call handlers.

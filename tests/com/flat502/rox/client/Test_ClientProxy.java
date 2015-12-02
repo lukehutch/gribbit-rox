@@ -5,8 +5,6 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import com.flat502.rox.processing.RpcFaultException;
-
 public class Test_ClientProxy extends TestCase {
 	private static final String PREFIX = "test";
 	private static final int PORT = 8080;
@@ -14,11 +12,13 @@ public class Test_ClientProxy extends TestCase {
 
 	private TestServer server;
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		this.server = new TestServer("/", PREFIX, PORT);
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		this.server.stop();
 	}
 

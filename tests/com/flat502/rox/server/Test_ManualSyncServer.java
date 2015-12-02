@@ -14,11 +14,13 @@ public class Test_ManualSyncServer extends TestCase {
 	
 	private XmlRpcServer server;
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		this.server = new XmlRpcServer(PORT);
 	}
 	
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		this.server.stop();
 		Thread.sleep(50);
 	}

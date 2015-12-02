@@ -24,15 +24,18 @@ public class Log4JAdapter implements Log {
 		this.name = name;
 	}
 
-	public boolean logTrace() {
+	@Override
+    public boolean logTrace() {
 		return LogManager.getLogger(name).isTraceEnabled();
 	}
 
-	public boolean logDebug() {
+	@Override
+    public boolean logDebug() {
 		return LogManager.getLogger(name).isDebugEnabled();
 	}
 
-	public boolean logInfo() {
+	@Override
+    public boolean logInfo() {
 		return LogManager.getLogger(name).isInfoEnabled();
 	}
 
@@ -40,7 +43,8 @@ public class Log4JAdapter implements Log {
 	 * @return
 	 * 	Always returns <code>true</code>
 	 */
-	public boolean logWarn() {
+	@Override
+    public boolean logWarn() {
 		return true;
 	}
 
@@ -48,47 +52,58 @@ public class Log4JAdapter implements Log {
 	 * @return
 	 * 	Always returns <code>true</code>
 	 */
-	public boolean logError() {
+	@Override
+    public boolean logError() {
 		return true;
 	}
 
-	public void trace(String msg) {
+	@Override
+    public void trace(String msg) {
 		LogManager.getLogger(name).trace(msg);
 	}
 
-	public void trace(String msg, Throwable e) {
+	@Override
+    public void trace(String msg, Throwable e) {
 		LogManager.getLogger(name).trace(msg, e);
 	}
 
-	public void debug(String msg) {
+	@Override
+    public void debug(String msg) {
 		LogManager.getLogger(name).debug(msg);
 	}
 
-	public void debug(String msg, Throwable e) {
+	@Override
+    public void debug(String msg, Throwable e) {
 		LogManager.getLogger(name).debug(msg, e);
 	}
 
-	public void info(String msg) {
+	@Override
+    public void info(String msg) {
 		LogManager.getLogger(name).info(msg);
 	}
 
-	public void info(String msg, Throwable e) {
+	@Override
+    public void info(String msg, Throwable e) {
 		LogManager.getLogger(name).info(msg, e);
 	}
 
-	public void warn(String msg) {
+	@Override
+    public void warn(String msg) {
 		LogManager.getLogger(name).warn(msg);
 	}
 
-	public void warn(String msg, Throwable e) {
+	@Override
+    public void warn(String msg, Throwable e) {
 		LogManager.getLogger(name).warn(msg, e);
 	}
 
-	public void error(String msg) {
+	@Override
+    public void error(String msg) {
 		LogManager.getLogger(name).error(msg);
 	}
 
-	public void error(String msg, Throwable e) {
+	@Override
+    public void error(String msg, Throwable e) {
 		LogManager.getLogger(name).error(msg, e);
 	}
 }

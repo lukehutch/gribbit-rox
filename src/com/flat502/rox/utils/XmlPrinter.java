@@ -3,8 +3,6 @@ package com.flat502.rox.utils;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import com.flat502.rox.marshal.MarshallingException;
-
 /**
  * A simple interface encapsulating methods for "printing" an
  * XML document.

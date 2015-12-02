@@ -1,11 +1,6 @@
 package com.flat502.rox.marshal;
 
-import java.io.ByteArrayOutputStream;
-import java.nio.charset.Charset;
-
 import junit.framework.TestCase;
-
-import com.flat502.rox.utils.XmlPlainPrinter;
  
 public class Test_ClassDescriptor extends TestCase {
 	public void testWrongDescriptor() throws Exception {

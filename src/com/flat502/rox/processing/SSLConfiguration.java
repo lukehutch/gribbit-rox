@@ -2,13 +2,24 @@ package com.flat502.rox.processing;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.*;
-import java.security.cert.CertificateException;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Properties;
 import java.util.regex.Pattern;
 
-import javax.net.ssl.*;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 
 import com.flat502.rox.log.Log;
 import com.flat502.rox.log.LogFactory;
@@ -270,7 +281,8 @@ public class SSLConfiguration {
 		return sslContext;
 	}
 	
-	public String toString() {
+	@Override
+    public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("  client auth=" + this.clientAuth);
 		sb.append("\n  handshake timeout=" + this.handshakeTimeout + "ms");

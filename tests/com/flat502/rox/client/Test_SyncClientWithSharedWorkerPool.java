@@ -2,11 +2,6 @@ package com.flat502.rox.client;
 
 import java.net.URL;
 
-import com.flat502.rox.log.Level;
-import com.flat502.rox.log.LogFactory;
-import com.flat502.rox.log.SimpleLogFactory;
-import com.flat502.rox.log.StreamLog;
-
 import junit.framework.TestCase;
 
 public class Test_SyncClientWithSharedWorkerPool extends TestCase {
@@ -16,11 +11,13 @@ public class Test_SyncClientWithSharedWorkerPool extends TestCase {
 
 	private TestServer server;
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		this.server = new TestServer("/", PREFIX, PORT);
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		this.server.stop();
 	}
 

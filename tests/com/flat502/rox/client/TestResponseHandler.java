@@ -11,13 +11,15 @@ class TestResponseHandler implements AsynchronousResponseHandler {
 	private Object response;
 	private Throwable exception;
 
-	public synchronized void handleResponse(RpcCall call, RpcResponse rsp, RpcResponseContext context) {
+	@Override
+    public synchronized void handleResponse(RpcCall call, RpcResponse rsp, RpcResponseContext context) {
 		this.response = rsp.getReturnValue();
 		this.shouldWait = false;
 		this.notify();
 	}
 
-	public synchronized void handleException(RpcCall call, Throwable e, RpcResponseContext context) {
+	@Override
+    public synchronized void handleException(RpcCall call, Throwable e, RpcResponseContext context) {
 		this.exception = e;
 		this.shouldWait = false;
 		this.notify();

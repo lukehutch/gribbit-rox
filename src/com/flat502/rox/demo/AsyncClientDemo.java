@@ -16,7 +16,8 @@ import com.flat502.rox.marshal.RpcResponse;
 public class AsyncClientDemo implements AsynchronousResponseHandler {
 	private static boolean responseReceived = false;
 	
-	public void handleResponse(RpcCall call, RpcResponse response, RpcResponseContext context) {
+	@Override
+    public void handleResponse(RpcCall call, RpcResponse response, RpcResponseContext context) {
 		TimeInfo timeinfo = (TimeInfo) response.getReturnValue();
 		System.out.println("getDate() returned with");
 		System.out.println("   today is " + timeinfo.today);
@@ -25,7 +26,8 @@ public class AsyncClientDemo implements AsynchronousResponseHandler {
 		responseReceived = true;
 	}
 
-	public void handleException(RpcCall call, Throwable e, RpcResponseContext context) {
+	@Override
+    public void handleException(RpcCall call, Throwable e, RpcResponseContext context) {
 		e.printStackTrace();
 		
 		responseReceived = true;

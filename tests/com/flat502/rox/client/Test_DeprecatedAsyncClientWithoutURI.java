@@ -32,12 +32,14 @@ public class Test_DeprecatedAsyncClientWithoutURI extends TestCase {
 
 	private TestServer server;
 
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		ThreadUtils.assertZeroThreads();
 		this.server = new TestServer(null, PREFIX, PORT);
 	}
 
-	protected void tearDown() throws Exception {
+	@Override
+    protected void tearDown() throws Exception {
 		this.server.stop();
 		ThreadUtils.assertZeroThreads();
 	}
@@ -157,7 +159,8 @@ public class Test_DeprecatedAsyncClientWithoutURI extends TestCase {
 	public void testCloseClientAndCheckOutReturnedConnectionOnSameURL() throws Throwable {
 		final SharedSocketChannelPoolProxy[] proxyRef = new SharedSocketChannelPoolProxy[1];
 		ClientResourcePool pool = new ClientResourcePool() {
-			protected SharedSocketChannelPool newSharedSocketChannelPool(Object mutex, int limit, long timeout) {
+			@Override
+            protected SharedSocketChannelPool newSharedSocketChannelPool(Object mutex, int limit, long timeout) {
 				synchronized(proxyRef) {
 					if (proxyRef[0] == null) {
 						proxyRef[0] = new SharedSocketChannelPoolProxy(super.newSharedSocketChannelPool(mutex, limit, timeout));
@@ -218,28 +221,34 @@ public class Test_DeprecatedAsyncClientWithoutURI extends TestCase {
 			this.pool = pool;
 		}
 		
-		public SocketChannel getChannel(HttpRpcClient client) throws IOException {
+		@Override
+        public SocketChannel getChannel(HttpRpcClient client) throws IOException {
 			this.lastChannel = this.pool.getChannel(client);
 			return lastChannel;
 		}
 		
-		public void returnChannel(HttpRpcClient client, SocketChannel channel) {
+		@Override
+        public void returnChannel(HttpRpcClient client, SocketChannel channel) {
 			this.pool.returnChannel(client, channel);
 		}
 		
-		public void removeChannel(HttpRpcClient client, SocketChannel channel) {
+		@Override
+        public void removeChannel(HttpRpcClient client, SocketChannel channel) {
 			this.pool.removeChannel(client, channel);
 		}
 		
-		void removeClosedChannel(SocketChannel channel) {
+		@Override
+        void removeClosedChannel(SocketChannel channel) {
 			this.pool.removeClosedChannel(channel);
 		}
 		
-		public void close() {
+		@Override
+        public void close() {
 			this.pool.close();
 		}
 		
-		public void detach(HttpRpcClient client) {
+		@Override
+        public void detach(HttpRpcClient client) {
 			this.pool.detach(client);
 		}
 		

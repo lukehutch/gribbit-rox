@@ -16,15 +16,18 @@ public class Test_SaxMethodCallUnmarshallerWithXerces extends TestBase_MethodCal
 		super(name);
 	}
 	
-	protected RpcCall unmarshal(String xml, Class[] types) throws Exception {
+	@Override
+    protected RpcCall unmarshal(String xml, Class[] types) throws Exception {
 		return new SaxMethodCallUnmarshaller().unmarshal(xml, types);
 	}
 	
-	protected RpcCall unmarshal(InputStream xml, Class[] types) throws Exception {
+	@Override
+    protected RpcCall unmarshal(InputStream xml, Class[] types) throws Exception {
 		return new SaxMethodCallUnmarshaller().unmarshal(xml, types);
 	}
 
-	protected RpcCall unmarshalWithAid(String xml, MethodCallUnmarshallerAid aid) throws Exception {
+	@Override
+    protected RpcCall unmarshalWithAid(String xml, MethodCallUnmarshallerAid aid) throws Exception {
 		return new SaxMethodCallUnmarshaller().unmarshal(xml, aid);
 	}
 	
