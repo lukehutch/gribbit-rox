@@ -24,7 +24,7 @@ import com.flat502.rox.utils.Utils;
 public abstract class HttpMessage {
 	private static final DateFormatThreadLocal HTTP_DATE_FORMATS = new DateFormatThreadLocal(new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z"));
 
-	private Map headers = new LinkedHashMap();
+	private Map<String, String> headers = new LinkedHashMap<String, String>();
 
 	private byte[] content;
 
@@ -81,7 +81,7 @@ public abstract class HttpMessage {
 		if (name == null) {
 			throw new NullPointerException();
 		}
-		return (String) this.headers.put(this.normalizeHeaderName(name), value);
+		return this.headers.put(this.normalizeHeaderName(name), value);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public abstract class HttpMessage {
 			throw new NullPointerException();
 		}
 		name = this.normalizeHeaderName(name);
-		String prevValue = (String) headers.get(name);
+		String prevValue = headers.get(name);
 		if (prevValue != null) {
 			value = prevValue + ", " + value;
 		}
@@ -128,7 +128,7 @@ public abstract class HttpMessage {
 	}
 	
 	protected String getHeaderValue(String name) {
-		return (String) this.headers.get(this.normalizeHeaderName(name));
+		return this.headers.get(this.normalizeHeaderName(name));
 	}
 
 	/**

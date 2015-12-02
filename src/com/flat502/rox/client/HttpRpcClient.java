@@ -72,17 +72,17 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 	// Maps Sockets to Notifiable implementations
 	// so complete responses can be passed back to
 	// the caller (synchronously or asynchronously).
-	private Map notificationMap = new HashMap();
+	private Map<Socket, Notifiable> notificationMap = new HashMap<Socket, Notifiable>();
 
 	// Maps Sockets to incomplete HttpResponseBuffer instances.
-	private Map responseBuffers = new HashMap();
+	private Map<Socket, HttpResponseBuffer> responseBuffers = new HashMap<Socket, HttpResponseBuffer>();
 
 	// Maps Sockets to ByteBuffer instances that are
 	// ready to be written out on the socket.
 	// Placing a ByteBuffer in here effectively 'queues' it for
 	// delivery to the associated SocketChannel when it next
 	// becomes available for writing.
-	private Map requestBuffers = new HashMap();
+	private Map<Socket, ByteBuffer> requestBuffers = new HashMap<Socket, ByteBuffer>();
 
 	private URL url;
 	
@@ -92,7 +92,7 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 
 	private long requestTimeout;
 	private Timer requestTimer;
-	private Map activeRequestTimers = new HashMap();
+	private Map<Socket, TimerTask> activeRequestTimers = new HashMap<Socket, TimerTask>();
 	
 	private Encoding contentEncoding;
 	private boolean acceptEncodedResponses = true;
@@ -610,9 +610,9 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 			// We have two options: tell everyone or tell no-one.
 			// The former isn't particularly useful. Let them eat cake!
 			synchronized (this.notifierMutex) {
-				Iterator notifiers = this.notificationMap.values().iterator();
+				Iterator<Notifiable> notifiers = this.notificationMap.values().iterator();
 				while (notifiers.hasNext()) {
-					Notifiable notifier = (Notifiable) notifiers.next();
+					Notifiable notifier = notifiers.next();
 					notifier.notify(e.getCause(), this.newRpcResponseContext(null, null));
 				}
 			}
@@ -799,7 +799,7 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 	}
 
 	private void stopRequestTimer(Socket socket) {
-		TimerTask task = (TimerTask) this.activeRequestTimers.remove(socket);
+		TimerTask task = this.activeRequestTimers.remove(socket);
 		if (task != null) {
 			task.cancel();
 		}
@@ -808,7 +808,7 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 	Notifiable removeNotifier(Socket socket) {
 		this.stopRequestTimer(socket);
 		synchronized (this.notifierMutex) {
-			return (Notifiable) this.notificationMap.remove(socket);
+			return this.notificationMap.remove(socket);
 		}
 	}
 
@@ -965,7 +965,7 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 	@Override
     protected HttpMessageBuffer getReadBuffer(Socket socket) {
 		synchronized (this.responseBuffers) {
-			HttpResponseBuffer response = (HttpResponseBuffer) this.responseBuffers.get(socket);
+			HttpResponseBuffer response = this.responseBuffers.get(socket);
 			if (response == null) {
 				Encoding acceptableEncoding = null;
 				if (this.acceptEncodedResponses) {
@@ -993,7 +993,7 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 	@Override
     protected void putWriteBuffer(Socket socket, ByteBuffer data) {
 		synchronized (this.requestBuffers) {
-			ByteBuffer existing = (ByteBuffer) this.requestBuffers.get(socket);
+			ByteBuffer existing = this.requestBuffers.get(socket);
 			if (existing != null) {
 				existing.put(data);
 			} else {
@@ -1012,7 +1012,7 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 	@Override
     protected ByteBuffer getWriteBuffer(Socket socket) {
 		synchronized (this.requestBuffers) {
-			return (ByteBuffer) this.requestBuffers.get(socket);
+			return this.requestBuffers.get(socket);
 		}
 	}
 

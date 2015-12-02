@@ -1,5 +1,6 @@
 package com.flat502.rox.marshal.cgi;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ public class CgiMethodCallUnmarshaller {
 	}
 
 	private Object[] unpackParams(MethodCallURI uri, MethodCallUnmarshallerAid aid) throws Exception {
-		Map parameters = uri.getParameters();
+		Map<String, Serializable> parameters = uri.getParameters();
 		if (parameters.isEmpty()) {
 			return new Object[0];
 		}
@@ -100,7 +101,7 @@ public class CgiMethodCallUnmarshaller {
 		}
 	}
 
-	private boolean allValuesNull(Iterator iter) {
+	private boolean allValuesNull(Iterator<Serializable> iter) {
 		while (iter.hasNext()) {
 			if (iter.next() != null) {
 				return false;

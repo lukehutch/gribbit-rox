@@ -4,14 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class LogFactoryImpl {
-	private Map logCache = new HashMap();
+	private Map<String, Log> logCache = new HashMap<String, Log>();
 
 	public Log getLog(Class clazz) {
 		// The caller has synchronized
 		// We "reimplement" this logic rather than just deferring to
 		// getLog(String) so that subclasses can differentiate between
 		// the two forms of "context" in newLog(*)
-		Log log = (Log)this.logCache.get(clazz.getName());
+		Log log = this.logCache.get(clazz.getName());
 		if (log == null) {
 			log = this.newLog(clazz);
 			this.logCache.put(clazz.getName(), log);
@@ -21,7 +21,7 @@ public abstract class LogFactoryImpl {
 	
 	public Log getLog(String name) {
 		// The caller has synchronized
-		Log log = (Log)this.logCache.get(name);
+		Log log = this.logCache.get(name);
 		if (log == null) {
 			log = this.newLog(name);
 			this.logCache.put(name, log);

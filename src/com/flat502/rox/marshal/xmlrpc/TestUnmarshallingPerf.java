@@ -15,7 +15,7 @@ import com.flat502.rox.marshal.RpcResponse;
 public class TestUnmarshallingPerf {
 	@SuppressWarnings("unchecked")
 	public static String initXML() throws Exception {
-		List list = new ArrayList();
+		List<Map> list = new ArrayList<Map>();
 		for(int ami = 0; ami < 100; ami++) {
 			Properties props = new Properties();
 			for(int i = 0; i < 30; i++) {

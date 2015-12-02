@@ -34,18 +34,18 @@ import java.util.TreeSet;
  * exists for a public field) methods are given precedence.
  */
 public class ClassDescriptor {
-	private static Map cache = new HashMap();
+	private static Map<Class, ClassDescriptor> cache = new HashMap<Class, ClassDescriptor>();
 
 	// TODO: How do we cope with method overloading?
-	private Map fields = new HashMap();
-	private Map getters = new HashMap();
-	private Map setters = new HashMap();
+	private Map<String, Field> fields = new HashMap<String, Field>();
+	private Map<String, Method> getters = new HashMap<String, Method>();
+	private Map<String, Method> setters = new HashMap<String, Method>();
 
 	// These have slightly slower access times than a HashSet
 	// but for the numbers of members we are dealing with this
 	// is a non-issue. Order makes testing simpler.
-	private Set getterNames = new TreeSet();
-	private Set setterNames = new TreeSet();
+	private Set<String> getterNames = new TreeSet<String>();
+	private Set<String> setterNames = new TreeSet<String>();
 
 	private Class clazz;
 
@@ -82,13 +82,13 @@ public class ClassDescriptor {
 		this.validateAccessorArgs(target, name);
 
 		//  Methods take precendence when there's an overlap.
-		Method setter = (Method) this.setters.get(name);
+		Method setter = this.setters.get(name);
 		if (setter != null) {
 			setter.invoke(target, new Object[] { value });
 			return;
 		}
 
-		Field field = (Field) this.fields.get(name);
+		Field field = this.fields.get(name);
 		if (field != null) {
 			field.set(target, value);
 			return;
@@ -121,12 +121,12 @@ public class ClassDescriptor {
 		this.validateAccessorArgs(target, name);
 
 		// Methods take precendence when there's an overlap.
-		Method getter = (Method) this.getters.get(name);
+		Method getter = this.getters.get(name);
 		if (getter != null) {
 			return getter.invoke(target, (Object[])null);
 		}
 
-		Field field = (Field) this.fields.get(name);
+		Field field = this.fields.get(name);
 		if (field != null) {
 			return field.get(target);
 		}
@@ -145,7 +145,7 @@ public class ClassDescriptor {
 	 * 	an {@link java.util.Iterator} over the getters available on the
 	 * 	represented {@link Class}.
 	 */
-	public Iterator getters() {
+	public Iterator<String> getters() {
 		return this.getterNames.iterator();
 	}
 
@@ -160,7 +160,7 @@ public class ClassDescriptor {
 	 * 	an {@link java.util.Iterator} over the setters available on the
 	 * 	represented {@link Class}.
 	 */
-	public Iterator setters() {
+	public Iterator<String> setters() {
 		return this.setterNames.iterator();
 	}
 
@@ -170,12 +170,12 @@ public class ClassDescriptor {
 		}
 
 		//  Methods take precendence when there's an overlap.
-		Method getter = (Method) this.getters.get(name);
+		Method getter = this.getters.get(name);
 		if (getter != null) {
 			return getter.getReturnType();
 		}
 
-		Field field = (Field) this.fields.get(name);
+		Field field = this.fields.get(name);
 		if (field != null) {
 			return field.getType();
 		}
@@ -189,12 +189,12 @@ public class ClassDescriptor {
 		}
 
 		//  Methods take precendence when there's an overlap.
-		Method setter = (Method) this.setters.get(name);
+		Method setter = this.setters.get(name);
 		if (setter != null) {
 			return setter.getParameterTypes()[0];
 		}
 
-		Field field = (Field) this.fields.get(name);
+		Field field = this.fields.get(name);
 		if (field != null) {
 			return field.getType();
 		}
@@ -275,7 +275,7 @@ public class ClassDescriptor {
 			throw new IllegalArgumentException("null clazz");
 		}
 		synchronized (cache) {
-			ClassDescriptor descriptor = (ClassDescriptor) cache.get(clazz);
+			ClassDescriptor descriptor = cache.get(clazz);
 			if (descriptor == null) {
 				descriptor = new ClassDescriptor(clazz);
 				cache.put(clazz, descriptor);

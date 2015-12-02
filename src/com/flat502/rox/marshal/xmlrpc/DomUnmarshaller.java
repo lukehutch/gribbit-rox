@@ -165,9 +165,9 @@ public class DomUnmarshaller extends XmlRpcMethodUnmarshaller {
 	protected Object parseStruct(XmlNode struct, Object structObject, UnmarshallerAid aid) throws MarshallingException {
 		expectTag(struct, "struct");
 
-		Map structMap = null;
+		Map<String, Object> structMap = null;
 		if (structObject instanceof Map) {
-			structMap = (Map) structObject;
+			structMap = (Map<String, Object>) structObject;
 		}
 
 		Iterator members = struct.enumerateChildren();
@@ -239,18 +239,18 @@ public class DomUnmarshaller extends XmlRpcMethodUnmarshaller {
 //			structClassComponent = HashMap.class;
 //		}
 
-		List arrayData;
+		List<Object> arrayData;
 		if (!structClass.isInterface() && List.class.isAssignableFrom(structClass)) {
 			// It's a concrete List implementation
 			try {
-				arrayData = (List) structClass.newInstance();
+				arrayData = (List<Object>) structClass.newInstance();
 			} catch(Exception e) {
 				throw new MarshallingException("Failed to instantiate concrete List type: "+structClass.getName(), e);
 			}
 		} else {
 			// It's of type List or it's an array (we'll coerce it
 			// afterwards.
-			arrayData = new ArrayList();
+			arrayData = new ArrayList<Object>();
 		} 
 		Iterator values = data.enumerateChildren();
 		while (values.hasNext()) {

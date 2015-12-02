@@ -4,6 +4,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+import com.flat502.rox.marshal.IProxyObject;
+
 /**
  * Encapsulates the logic that makes client-side
  * dynamic proxying possible.
@@ -15,7 +17,7 @@ class RpcClientProxy implements InvocationHandler {
 
 	private Object proxiedTarget;
 
-	public RpcClientProxy(Class targetClass, HttpRpcClient client)
+	public RpcClientProxy(Class<IProxyObject> targetClass, HttpRpcClient client)
 			throws Exception {
 		this(null, targetClass, client);
 	}

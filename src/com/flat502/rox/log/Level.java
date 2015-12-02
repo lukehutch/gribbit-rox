@@ -30,7 +30,7 @@ public class Level {
 	 */
 	public static final Level TRACE = new Level(4);
 	
-	private static Map namesMap = new HashMap();
+	private static Map<String, Level> namesMap = new HashMap<String, Level>();
 
 	private int value;
 	private String name;
@@ -97,7 +97,7 @@ public class Level {
 	 * 	the default value provided if the level is not supported.
 	 */
 	public static Level parseLevel(String name, Level defaultLevel) {
-		Level level = (Level) namesMap.get(name.toLowerCase());
+		Level level = namesMap.get(name.toLowerCase());
 		if (level == null) {
 			return defaultLevel;
 		}

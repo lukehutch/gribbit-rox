@@ -62,7 +62,7 @@ public class Test_MethodCallURI extends TestCase {
 		assertNull(uri.getParameters().get("foo"));
 		assertTrue(uri.getParameters().containsKey("bar"));
 		assertNull(uri.getParameters().get("bar"));
-		Iterator iter = uri.getParameters().keySet().iterator();
+		Iterator<String> iter = uri.getParameters().keySet().iterator();
 		assertEquals("foo", iter.next());
 		assertEquals("bar", iter.next());
 	}
@@ -76,7 +76,7 @@ public class Test_MethodCallURI extends TestCase {
 		assertNull(uri.getParameters().get("foo"));
 		assertTrue(uri.getParameters().containsKey("bar"));
 		assertNull(uri.getParameters().get("bar"));
-		Iterator iter = uri.getParameters().keySet().iterator();
+		Iterator<String> iter = uri.getParameters().keySet().iterator();
 		assertEquals("foo", iter.next());
 		assertEquals("bar", iter.next());
 	}
@@ -90,7 +90,7 @@ public class Test_MethodCallURI extends TestCase {
 		assertEquals("this", uri.getParameters().get("foo"));
 		assertTrue(uri.getParameters().containsKey("bar"));
 		assertEquals("that", uri.getParameters().get("bar"));
-		Iterator iter = uri.getParameters().keySet().iterator();
+		Iterator<String> iter = uri.getParameters().keySet().iterator();
 		assertEquals("foo", iter.next());
 		assertEquals("bar", iter.next());
 	}
@@ -104,7 +104,7 @@ public class Test_MethodCallURI extends TestCase {
 		assertEquals("this", uri.getParameters().get("foo"));
 		assertTrue(uri.getParameters().containsKey("bar"));
 		assertNull(uri.getParameters().get("bar"));
-		Iterator iter = uri.getParameters().keySet().iterator();
+		Iterator<String> iter = uri.getParameters().keySet().iterator();
 		assertEquals("bar", iter.next());
 		assertEquals("foo", iter.next());
 	}
@@ -118,7 +118,7 @@ public class Test_MethodCallURI extends TestCase {
 		assertEquals("this that", uri.getParameters().get("foo"));
 		assertTrue(uri.getParameters().containsKey("bar"));
 		assertEquals("thatAway", uri.getParameters().get("bar"));
-		Iterator iter = uri.getParameters().keySet().iterator();
+		Iterator<String> iter = uri.getParameters().keySet().iterator();
 		assertEquals("foo", iter.next());
 		assertEquals("bar", iter.next());
 	}
@@ -136,7 +136,7 @@ public class Test_MethodCallURI extends TestCase {
 		assertEquals("that", list.get(1));
 		assertTrue(uri.getParameters().containsKey("bar"));
 		assertNull(uri.getParameters().get("bar"));
-		Iterator iter = uri.getParameters().keySet().iterator();
+		Iterator<String> iter = uri.getParameters().keySet().iterator();
 		assertEquals("foo", iter.next());
 		assertEquals("bar", iter.next());
 	}
@@ -155,7 +155,7 @@ public class Test_MethodCallURI extends TestCase {
 		assertEquals("that", list.get(2));
 		assertTrue(uri.getParameters().containsKey("bar"));
 		assertNull(uri.getParameters().get("bar"));
-		Iterator iter = uri.getParameters().keySet().iterator();
+		Iterator<String> iter = uri.getParameters().keySet().iterator();
 		assertEquals("foo", iter.next());
 		assertEquals("bar", iter.next());
 	}

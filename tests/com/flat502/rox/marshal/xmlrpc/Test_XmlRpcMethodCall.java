@@ -75,7 +75,7 @@ public class Test_XmlRpcMethodCall extends TestBase_XmlRpcMethod {
 	}
 
 	public void testTypedStructParamUsingGetters() throws Exception {
-		List list = Arrays.asList(new String[] { "hey", "there" });
+		List<String> list = Arrays.asList(new String[] { "hey", "there" });
 		TestObject object = new TestObject(new Integer(42), 24, new Double(3.14), 6.28, new Float(3.24), 6.48f,
 				Boolean.TRUE, true, newDate(2006, 1, 12, 14, 8, 55), "string value",
 				new char[] { 'h', 'e', 'l', 'l', 'o' }, "Hello".getBytes("UTF-8"), list);

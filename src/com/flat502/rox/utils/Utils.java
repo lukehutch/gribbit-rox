@@ -302,7 +302,7 @@ public class Utils {
 		return sb.toString();
 	}
 	
-	public static String join(String delim, Iterator iter) {
+	public static String join(String delim, Iterator<String> iter) {
 		StringBuffer sb = new StringBuffer();
 		if (iter.hasNext()) {
 			sb.append(iter.next());
@@ -320,13 +320,13 @@ public class Utils {
 		} else if (targetType == int[].class) {
 			return toIntArray((List) value);
 		} else if (targetType == long[].class) {
-			return toLongArray((List) value);
+			return toLongArray((List<Object>) value);
 		} else if (targetType == boolean[].class) {
-			return toBooleanArray((List) value);
+			return toBooleanArray((List<Object>) value);
 		} else if (targetType == float[].class) {
-			return toFloatArray((List) value);
+			return toFloatArray((List<Object>) value);
 		} else if (targetType == double[].class) {
-			return toDoubleArray((List) value);
+			return toDoubleArray((List<Object>) value);
 		}
 		// value is a List with members of the appropriate type
 		Object[] arrayTemplate = (Object[]) Array.newInstance(targetType.getComponentType(), 0);
@@ -344,9 +344,9 @@ public class Utils {
 		return array;
 	}
 
-	public static long[] toLongArray(List list) {
+	public static long[] toLongArray(List<Object> list) {
 		long[] array = new long[list.size()];
-		Iterator ints = list.iterator();
+		Iterator<Object> ints = list.iterator();
 		int idx = 0;
 		while (ints.hasNext()) {
 			Integer value = (Integer) ints.next();
@@ -355,9 +355,9 @@ public class Utils {
 		return array;
 	}
 
-	public static boolean[] toBooleanArray(List list) {
+	public static boolean[] toBooleanArray(List<Object> list) {
 		boolean[] array = new boolean[list.size()];
-		Iterator ints = list.iterator();
+		Iterator<Object> ints = list.iterator();
 		int idx = 0;
 		while (ints.hasNext()) {
 			Boolean value = (Boolean) ints.next();
@@ -366,9 +366,9 @@ public class Utils {
 		return array;
 	}
 
-	public static float[] toFloatArray(List list) {
+	public static float[] toFloatArray(List<Object> list) {
 		float[] array = new float[list.size()];
-		Iterator ints = list.iterator();
+		Iterator<Object> ints = list.iterator();
 		int idx = 0;
 		while (ints.hasNext()) {
 			Double value = (Double) ints.next();
@@ -377,9 +377,9 @@ public class Utils {
 		return array;
 	}
 
-	public static double[] toDoubleArray(List list) {
+	public static double[] toDoubleArray(List<Object> list) {
 		double[] array = new double[list.size()];
-		Iterator ints = list.iterator();
+		Iterator<Object> ints = list.iterator();
 		int idx = 0;
 		while (ints.hasNext()) {
 			Double value = (Double) ints.next();

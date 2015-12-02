@@ -96,7 +96,7 @@ public class XmlRpcMarshaller implements XmlRpcConstants {
 	// expensive string manipulation. This hurts the NOP
 	// codec case a little but improves the general case
 	// fairly dramatically.
-	private static Map fieldNameEncodingCache = new HashMap();
+	private static Map<String, String> fieldNameEncodingCache = new HashMap<String, String>();
 
 	private FieldNameEncoder fieldNameEncoder;
 
@@ -393,10 +393,10 @@ public class XmlRpcMarshaller implements XmlRpcConstants {
 
 		out.openTag(Types.STRUCT);
 
-		Iterator getters = cDesc.getters();
+		Iterator<String> getters = cDesc.getters();
 		int memberCount = 0;
 		while (getters.hasNext()) {
-			String getterName = (String) getters.next();
+			String getterName = getters.next();
 			try {
 				Object paramValue = cDesc.getValue(param, getterName);
 				if (paramValue != null) {
@@ -486,7 +486,7 @@ public class XmlRpcMarshaller implements XmlRpcConstants {
 	 *         assigned to.
 	 */
 	protected String encodeFieldName(String name) {
-		String encodedName = (String) fieldNameEncodingCache.get(name);
+		String encodedName = fieldNameEncodingCache.get(name);
 		if (encodedName != null) {
 			return encodedName;
 		}

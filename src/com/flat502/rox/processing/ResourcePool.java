@@ -18,7 +18,7 @@ public abstract class ResourcePool {
 	private ChannelSelector channelSelector;
 	private Timer timer;
 	private BlockingQueue queue;
-	private List workers = new LinkedList();
+	private List<HttpMessageHandler> workers = new LinkedList<HttpMessageHandler>();
 	private boolean hasFirstWorker;
 	private Map namedMutexes = new HashMap();
 	
@@ -139,7 +139,7 @@ public abstract class ResourcePool {
 				throw new IllegalStateException("No workers to remove");
 			}
 			HttpMessageHandler worker;
-			worker = (HttpMessageHandler) this.workers.remove(this.workers.size() - 1);
+			worker = this.workers.remove(this.workers.size() - 1);
 			worker.stop();
 			return workers.size();
 		}

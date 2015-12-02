@@ -7,14 +7,14 @@ import com.flat502.rox.encoding.Encoding;
 import com.flat502.rox.encoding.EncodingMap;
 
 class ServerEncodingMap implements EncodingMap {
-	private Map map = new HashMap();
+	private Map<String, Encoding> map = new HashMap<String, Encoding>();
 	
 	public Encoding addEncoding(Encoding encoding) {
-		return (Encoding) this.map.put(encoding.getName(), encoding);
+		return this.map.put(encoding.getName(), encoding);
 	}
 	
 	@Override
     public Encoding getEncoding(String name) {
-		return (Encoding) this.map.get(name);
+		return this.map.get(name);
 	}
 }

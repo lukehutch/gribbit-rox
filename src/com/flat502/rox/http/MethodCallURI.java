@@ -1,5 +1,6 @@
 package com.flat502.rox.http;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,8 +28,8 @@ import java.util.regex.Pattern;
 public class MethodCallURI {
 	private String mountPoint;
 	private String methodName;
-	private List parameterNames;
-	private Map parameters;
+	private List<String> parameterNames;
+	private Map<String, Serializable> parameters;
 
 	public MethodCallURI(String uri) throws URISyntaxException {
 		this(new URI(uri));
@@ -98,7 +99,7 @@ public class MethodCallURI {
 	 * 	query component of the URI. If the query portion is <code>null</code>
 	 * 	an empty {@link Map} is returned.
 	 */
-	public Map getParameters() {
+	public Map<String, Serializable> getParameters() {
 		return this.parameters;
 	}
 
@@ -117,7 +118,7 @@ public class MethodCallURI {
 	 * 	or empty a zero-length array is returned.
 	 */
 	public String[] getParameterNames() {
-		return (String[]) this.parameterNames.toArray(new String[0]);
+		return this.parameterNames.toArray(new String[0]);
 	}
 
 	private void decompose(URI uri) {
@@ -133,8 +134,8 @@ public class MethodCallURI {
 		}
 		String[] parts = Pattern.compile("/").split(uri.getPath(), -1);
 		this.methodName = parts.length > 0 ? parts[parts.length - 1] : "";
-		this.parameterNames = new ArrayList();
-		this.parameters = new LinkedHashMap();
+		this.parameterNames = new ArrayList<String>();
+		this.parameters = new LinkedHashMap<String, Serializable>();
 		if (uri.getQuery() != null) {
 			parts = uri.getQuery().split("&");
 			try {
@@ -146,9 +147,9 @@ public class MethodCallURI {
 					Object prevVal = this.parameters.get(key);
 					if (prevVal != null) {
 						if (prevVal instanceof List) {
-							((List) prevVal).add(val);
+							((List<String>) prevVal).add(val);
 						} else {
-							ArrayList list = new ArrayList();
+							ArrayList<Object> list = new ArrayList<Object>();
 							list.add(prevVal);
 							list.add(val);
 							this.parameters.put(key, list);

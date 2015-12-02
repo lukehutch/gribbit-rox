@@ -107,7 +107,7 @@ public class DomMethodCallUnmarshaller extends DomUnmarshaller implements
 			throws MarshallingException {
 		expectTag(node, "params");
 		Iterator params = node.enumerateChildren();
-		List paramObjects = new ArrayList();
+		List<Object> paramObjects = new ArrayList<Object>();
 		int paramIdx = 0;
 		while (params.hasNext()) {
 			Class structClass = aid == null ? null : aid.getType(methodName, paramIdx);

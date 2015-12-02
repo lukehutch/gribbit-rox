@@ -71,7 +71,7 @@ public class TestSecureServer implements SynchronousRequestHandler {
 	}
 	
 	private Object complexResponse() {
-		List list = new ArrayList();
+		List<Map> list = new ArrayList<Map>();
 		for(int ami = 0; ami < 2; ami++) {
 			Properties props = new Properties();
 			props.setProperty("property-name-1-"+ami, "property-value-1-"+ami);

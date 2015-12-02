@@ -122,12 +122,12 @@ public abstract class HttpRpcProcessor {
 	private Selector socketSelector;
 
 	// Maps Socket to OP_WRITE or OP_READ.
-	private Map pendingInterestOps = new LinkedHashMap();
+	private Map<Socket, Integer> pendingInterestOps = new LinkedHashMap<Socket, Integer>();
 
-	private Set pendingRegistrations = new HashSet();
-	private Set pendingCancellations = new HashSet();
+	private Set<SocketChannel> pendingRegistrations = new HashSet<SocketChannel>();
+	private Set<AbstractSelectableChannel> pendingCancellations = new HashSet<AbstractSelectableChannel>();
 
-	private Map sslEngineMap = new HashMap();
+	private Map<Socket, SSLSessionMetadata> sslEngineMap = new HashMap<Socket, SSLSessionMetadata>();
 	private SSLContext sslContext;
 
 	// true if we're using SSL
@@ -319,7 +319,7 @@ public abstract class HttpRpcProcessor {
 	}
 
 	protected javax.net.ssl.SSLSession getSSLSession(Socket socket) {
-		SSLSessionMetadata sessionMetadata = (SSLSessionMetadata) this.sslEngineMap.get(socket);
+		SSLSessionMetadata sessionMetadata = this.sslEngineMap.get(socket);
 		if (sessionMetadata == null) {
 			return null;
 		}
@@ -398,9 +398,9 @@ public abstract class HttpRpcProcessor {
 		// Process any queued channel registrations
 		synchronized (this.pendingRegistrations) {
 			if (this.pendingRegistrations.size() > 0) {
-				Iterator channels = this.pendingRegistrations.iterator();
+				Iterator<SocketChannel> channels = this.pendingRegistrations.iterator();
 				while (channels.hasNext()) {
-					SocketChannel channel = (SocketChannel) channels.next();
+					SocketChannel channel = channels.next();
 					boolean wq = isWriteQueued(channel.socket());
 					if (log.logTrace()) {
 						log.trace(
@@ -455,9 +455,9 @@ public abstract class HttpRpcProcessor {
 		// Process any queued channel cancellations
 		synchronized (this.pendingCancellations) {
 			if (this.pendingCancellations.size() > 0) {
-				Iterator channels = this.pendingCancellations.iterator();
+				Iterator<AbstractSelectableChannel> channels = this.pendingCancellations.iterator();
 				while (channels.hasNext()) {
-					SelectableChannel channel = (SelectableChannel) channels.next();
+					SelectableChannel channel = channels.next();
 					boolean client = channel instanceof SocketChannel;
 					boolean connected = (client && ((SocketChannel)channel).isConnected());
 					if (!client || connected) {
@@ -845,7 +845,7 @@ public abstract class HttpRpcProcessor {
 			log.trace("Encrypting " + buffer.remaining() + " byte(s) for " + Utils.toString(socket));
 		}
 		
-		SSLSessionMetadata sessionMetadata = (SSLSessionMetadata) this.sslEngineMap.get(socket);
+		SSLSessionMetadata sessionMetadata = this.sslEngineMap.get(socket);
 		
 		sessionMetadata.netBuffer.clear();
 		SSLEngineResult result = sessionMetadata.engine.wrap(buffer, sessionMetadata.netBuffer);
@@ -864,7 +864,7 @@ public abstract class HttpRpcProcessor {
 			log.trace("Decrypting " + buffer.remaining() + " byte(s) for " + Utils.toString(socket));
 		}
 		
-		SSLSessionMetadata sessionMetadata = (SSLSessionMetadata) this.sslEngineMap.get(socket);
+		SSLSessionMetadata sessionMetadata = this.sslEngineMap.get(socket);
 		
 		sessionMetadata.appBuffer.clear();
 		SSLEngineResult result = sessionMetadata.engine.unwrap(buffer, sessionMetadata.appBuffer);
@@ -1165,7 +1165,7 @@ public abstract class HttpRpcProcessor {
 	}
 	
 	private boolean isHandshaking(Socket socket) {
-		SSLSessionMetadata sessionMetadata = (SSLSessionMetadata) this.sslEngineMap.get(socket);
+		SSLSessionMetadata sessionMetadata = this.sslEngineMap.get(socket);
 		return (sessionMetadata == null) || (sessionMetadata.engine.getHandshakeStatus() != HandshakeStatus.NOT_HANDSHAKING);
 	}
 
@@ -1174,7 +1174,7 @@ public abstract class HttpRpcProcessor {
 		Socket socket = socketChannel.socket();
 
 		// Make sure an engine is initialized for this socket
-		SSLSessionMetadata sessionMetadata = (SSLSessionMetadata) this.sslEngineMap.get(socket);
+		SSLSessionMetadata sessionMetadata = this.sslEngineMap.get(socket);
 		if (sessionMetadata == null) {
 			if (log.logTrace()) {
 				log.trace(this.getClass().getSimpleName() + ": Initializing SSL engine for " + this.getClass().getSimpleName() + " on "
@@ -1358,7 +1358,7 @@ public abstract class HttpRpcProcessor {
 	}
 
 	private void handleSSLHandshakeFailed(Socket socket) {
-		SSLSessionMetadata metadata = (SSLSessionMetadata) this.sslEngineMap.get(socket);
+		SSLSessionMetadata metadata = this.sslEngineMap.get(socket);
 		if (metadata == null) {
 			log.warn("SSL handshake meta-data not found for " + Utils.toString(socket));
 			return;

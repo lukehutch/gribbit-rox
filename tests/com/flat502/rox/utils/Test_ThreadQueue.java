@@ -1,5 +1,6 @@
 package com.flat502.rox.utils;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,7 +18,7 @@ public class Test_ThreadQueue extends TestCase {
 	public void testSingleCaptureReleaseNoTimeout() throws InterruptedException {
 		for (int iters = 0; iters < ITERS; iters++) {
 			ThreadQueue q = new ThreadQueue();
-			List releaseOrder = Collections.synchronizedList(new LinkedList());
+			List<Serializable> releaseOrder = Collections.synchronizedList(new LinkedList<Serializable>());
 			new TestThread("A", q, releaseOrder, false).start();
 			while (q.isEmpty())
 				;
@@ -32,7 +33,7 @@ public class Test_ThreadQueue extends TestCase {
 	public void testSingleCaptureReleaseTimeoutDoesNotExpire() throws InterruptedException {
 		for (int iters = 0; iters < ITERS; iters++) {
 			ThreadQueue q = new ThreadQueue();
-			List releaseOrder = Collections.synchronizedList(new LinkedList());
+			List<Serializable> releaseOrder = Collections.synchronizedList(new LinkedList<Serializable>());
 			new TestThread("A", q, releaseOrder, true).start();
 			while (q.isEmpty())
 				;
@@ -48,7 +49,7 @@ public class Test_ThreadQueue extends TestCase {
 	public void testSingleCaptureReleaseTimeoutExpires() throws InterruptedException {
 		for (int iters = 0; iters < ITERS; iters++) {
 			ThreadQueue q = new ThreadQueue();
-			List releaseOrder = Collections.synchronizedList(new LinkedList());
+			List<Serializable> releaseOrder = Collections.synchronizedList(new LinkedList<Serializable>());
 			new TestThread("A", q, releaseOrder, true).start();
 			while (q.isEmpty())
 				;
@@ -66,7 +67,7 @@ public class Test_ThreadQueue extends TestCase {
 
 		for (int iters = 0; iters < ITERS; iters++) {
 			ThreadQueue q = new ThreadQueue();
-			List releaseOrder = new LinkedList();
+			List<Serializable> releaseOrder = new LinkedList<Serializable>();
 			for (int i = 0; i < CAPTURE_COUNT; i++) {
 				new TestThread(String.valueOf(i), q, releaseOrder, false).start();
 				while (q.size() < i + 1)
@@ -85,7 +86,7 @@ public class Test_ThreadQueue extends TestCase {
 	public void testMultipleCaptureReleaseTimeoutExpires() throws InterruptedException {
 		for (int iters = 0; iters < ITERS; iters++) {
 			ThreadQueue q = new ThreadQueue();
-			List releaseOrder = Collections.synchronizedList(new LinkedList());
+			List<Serializable> releaseOrder = Collections.synchronizedList(new LinkedList<Serializable>());
 			new TestThread("A", q, releaseOrder, false).start();
 			while (q.size() < 1)
 				;
@@ -112,7 +113,7 @@ public class Test_ThreadQueue extends TestCase {
 	public void testConcurrentReleases() throws InterruptedException {
 		for (int iters = 0; iters < ITERS; iters++) {
 			ThreadQueue q = new ThreadQueue();
-			List releaseOrder = Collections.synchronizedList(new LinkedList());
+			List<Serializable> releaseOrder = Collections.synchronizedList(new LinkedList<Serializable>());
 			new TestThread("A", q, releaseOrder, false).start();
 			while (q.size() < 1)
 				;
@@ -126,11 +127,11 @@ public class Test_ThreadQueue extends TestCase {
 		}
 	}
 
-	private void waitForRelease(List releaseOrder) {
+	private void waitForRelease(List<Serializable> releaseOrder) {
 		this.waitForRelease(releaseOrder, 1);
 	}
 	
-	private void waitForRelease(List releaseOrder, int size) {
+	private void waitForRelease(List<Serializable> releaseOrder, int size) {
 		int slept = 0;
 		while (releaseOrder.size() < size) {
 			try {
@@ -146,10 +147,10 @@ public class Test_ThreadQueue extends TestCase {
 
 	private class TestThread extends Thread {
 		private ThreadQueue q;
-		private List recorder;
+		private List<Serializable> recorder;
 		private boolean timeout;
 
-		public TestThread(String name, ThreadQueue q, List recorder, boolean timeout) {
+		public TestThread(String name, ThreadQueue q, List<Serializable> recorder, boolean timeout) {
 			super(name);
 			this.q = q;
 			this.recorder = recorder;

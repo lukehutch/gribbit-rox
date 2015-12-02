@@ -34,13 +34,13 @@ public class TestBase_XmlRpcMethod extends XMLTestCase {
 	}
 
 	protected void assertStructValueEquals(int idx, String name, String type,
-			List list, String xml) throws TransformerConfigurationException,
+			List<String> list, String xml) throws TransformerConfigurationException,
 			SAXException, IOException, ParserConfigurationException,
 			TransformerException, XpathException {
 		assertXpathEvaluatesTo(name,
 				"//params/param/value/struct/member[" + idx + "]/name",
 				xml);
-		Iterator items = list.iterator();
+		Iterator<String> items = list.iterator();
 		int listIdx = 1;
 		while (items.hasNext()) {
 			Object item = items.next();

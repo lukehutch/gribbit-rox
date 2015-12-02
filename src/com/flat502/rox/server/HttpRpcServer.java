@@ -76,21 +76,21 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	// 	SyncRequestHandler
 	// 	AsyncRequestHandler
 	// A null URI key is a wildcard.
-	private Map uriHandlers = new HashMap();
+	private Map<String, Map> uriHandlers = new HashMap<String, Map>();
 	
 	// Maps HTTP methods (strings) onto HttpRequestUnmarshaller instances.
-	private Map reqUnmarshallers = new HashMap();
+	private Map<String, HttpRequestUnmarshaller> reqUnmarshallers = new HashMap<String, HttpRequestUnmarshaller>();
 
 	// Maps RequestHandler instances to MethodCallUnmarshallerAid
 	// instances.
-	private Map handlerUnmarshallerAids = new HashMap();
+	private Map<RequestHandler, MethodCallUnmarshallerAid> handlerUnmarshallerAids = new HashMap<RequestHandler, MethodCallUnmarshallerAid>();
 
 	// Maps strings to their compiled Pattern
 	// instance. This is stored separately from
 	// the above since Pattern doesn't override
 	// equals() or hashCode() and we want to be
 	// able to detect duplicate patterns.
-	private Map globalPatternMap = new HashMap();
+	private Map<String, Pattern> globalPatternMap = new HashMap<String, Pattern>();
 
 	// The address (and name) and port we bind on.
 	// We store the host along with the host so we
@@ -107,7 +107,7 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	private String headerHostValue;
 
 	// Maps Sockets to incomplete HttpRequestBuffer instances.
-	private Map requestBuffers = new HashMap();
+	private Map<Socket, HttpRequestBuffer> requestBuffers = new HashMap<Socket, HttpRequestBuffer>();
 
 	// Maps Sockets to ByteBuffer instances that are
 	// ready to be written out on the socket.
@@ -126,7 +126,7 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	
 	// Maps Sockets to Timer instances that are reset whenever there's
 	// activity on the socket. Used to enforce idle client timeouts.
-	private Map socketActivity = new HashMap();
+	private Map<Socket, TimerTask> socketActivity = new HashMap<Socket, TimerTask>();
 
 	// Maps Sockets to an object responsible for coordinating responses
 	// so we handle pipelined requests correctly.
@@ -220,7 +220,7 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	 */
 	public HttpRequestUnmarshaller registerRequestUnmarshaller(String httpMethod, HttpRequestUnmarshaller unmarshaller) {
 		synchronized(this.reqUnmarshallers) {
-			return (HttpRequestUnmarshaller) this.reqUnmarshallers.put(httpMethod, unmarshaller);
+			return this.reqUnmarshallers.put(httpMethod, unmarshaller);
 		}
 	}
 
@@ -465,18 +465,18 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 				uriPath = Utils.normalizeURIPath(uriPath);
 			}
 
-			Map patternMap = (Map) this.uriHandlers.get(uriPath);
+			Map<String, RequestHandler> patternMap = this.uriHandlers.get(uriPath);
 			if (patternMap == null) {
-				patternMap = new LinkedHashMap();
+				patternMap = new LinkedHashMap<String, RequestHandler>();
 				this.uriHandlers.put(uriPath, patternMap);
 			}
 
-			Pattern pattern = (Pattern) this.globalPatternMap.get(method);
+			Pattern pattern = this.globalPatternMap.get(method);
 			if (pattern == null) {
 				pattern = Pattern.compile(method);
 				this.globalPatternMap.put(method, pattern);
 			}
-			RequestHandler prevHandler = (RequestHandler) patternMap.put(method, handler);
+			RequestHandler prevHandler = patternMap.put(method, handler);
 			synchronized (this.handlerUnmarshallerAids) {
 				if (prevHandler != null) {
 					this.handlerUnmarshallerAids.remove(prevHandler);
@@ -504,12 +504,12 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 		
 		HttpRequestUnmarshaller unmarshaller = null;
 		synchronized(this.reqUnmarshallers) {
-			unmarshaller = (HttpRequestUnmarshaller) this.reqUnmarshallers.get(request.getMethod());
+			unmarshaller = this.reqUnmarshallers.get(request.getMethod());
 
 			if (unmarshaller == null) {
 				// No registered handler for this method.
 				// TODO: Add testcase
-				Iterator iter = this.reqUnmarshallers.keySet().iterator();
+				Iterator<String> iter = this.reqUnmarshallers.keySet().iterator();
 				String allowed = Utils.join(", ", iter);
 				throw new MethodNotAllowedResponseException("(no handler for " + request.getMethod() + ")", allowed);
 			}
@@ -601,7 +601,7 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 		}
 
 		RequestHandler handler = null;
-		Map patternMap = (Map) this.uriHandlers.get(uri);
+		Map patternMap = this.uriHandlers.get(uri);
 		if (patternMap == null) {
 			if (log.logDebug()) {
 				log.debug("Nothing registered for uri [" + uri + "]");
@@ -611,7 +611,7 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 		Iterator patterns = patternMap.entrySet().iterator();
 		while (patterns.hasNext()) {
 			Map.Entry entry = (Map.Entry) patterns.next();
-			Pattern pattern = (Pattern) this.globalPatternMap.get(entry.getKey());
+			Pattern pattern = this.globalPatternMap.get(entry.getKey());
 			if (pattern.matcher(methodName).find()) {
 				if (log.logDebug()) {
 					log.debug("Handler matched on pattern [" + pattern + "]");
@@ -714,7 +714,7 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	
 	@Override
     protected void deregisterSocket(Socket socket) {
-		TimerTask task = (TimerTask) this.socketActivity.remove(socket);
+		TimerTask task = this.socketActivity.remove(socket);
 		if (task != null) {
 			task.cancel();
 		}
@@ -786,7 +786,7 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 		long timeout = this.idleClientTimeout;
 
 		// Cancel the existing task for this socket ...
-		TimerTask curTask = (TimerTask) this.socketActivity.get(socket);
+		TimerTask curTask = this.socketActivity.get(socket);
 		if (curTask != null) {
 			curTask.cancel();
 		}
@@ -936,7 +936,7 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	@Override
     protected HttpMessageBuffer getReadBuffer(Socket socket) {
 		synchronized (this.requestBuffers) {
-			HttpRequestBuffer request = (HttpRequestBuffer) this.requestBuffers.get(socket);
+			HttpRequestBuffer request = this.requestBuffers.get(socket);
 			if (request == null) {
 				request = new HttpRequestBuffer(this, socket, this.contentEncodingMap);
 				this.requestBuffers.put(socket, request);
@@ -1042,7 +1042,7 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 			}
 
 			synchronized (handlerUnmarshallerAids) {
-				return (MethodCallUnmarshallerAid) handlerUnmarshallerAids.get(handler);
+				return handlerUnmarshallerAids.get(handler);
 			}
 		}
 	}

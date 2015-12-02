@@ -23,8 +23,8 @@ public class SaxParserPool {
 	private boolean resetAvailable;
 
 	private SAXParserFactory factory = null;
-	private Stack parsers = new Stack();
-	private Stack unmarshallers = new Stack();
+	private Stack<SAXParser> parsers = new Stack<SAXParser>();
+	private Stack<SaxUnmarshaller> unmarshallers = new Stack<SaxUnmarshaller>();
 
 	private FieldNameCodec codec;
 	
@@ -59,7 +59,7 @@ public class SaxParserPool {
 			}
 			return factory.newSAXParser();
 		} else {
-			return (SAXParser) parsers.pop();
+			return parsers.pop();
 		}
 	}
 
@@ -91,7 +91,7 @@ public class SaxParserPool {
 		if (unmarshallers.isEmpty()) {
 			return XmlRpcUtils.newSaxUnmarshaller(this.codec);
 		} else {
-			return (SaxUnmarshaller) unmarshallers.pop();
+			return unmarshallers.pop();
 		}
 	}
 

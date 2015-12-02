@@ -19,7 +19,7 @@ public class TestObject {
 	private String stringObject;
 	private char[] charArray;
 	private byte[] byteArray;
-	private List listValue;
+	private List<String> listValue;
 
 	public TestObject() {
 	}
@@ -27,7 +27,7 @@ public class TestObject {
 	public TestObject(Integer intObject, int intVal, Double doubleObject,
 			double doubleVal, Float floatObject, float floatVal,
 			Boolean booleanObject, boolean booleanVal, Date date,
-			String stringObject, char[] charArray, byte[] byteArray, List list) {
+			String stringObject, char[] charArray, byte[] byteArray, List<String> list) {
 		this.intObject = intObject;
 		this.intVal = intVal;
 		this.doubleObject = doubleObject;
@@ -139,11 +139,11 @@ public class TestObject {
 		this.stringObject = stringObject;
 	}
 	
-	public List getListValue() {
+	public List<String> getListValue() {
 		return this.listValue;
 	}
 	
-	public void setListValue(List listValue) {
+	public void setListValue(List<String> listValue) {
 		this.listValue = listValue;
 	}
 	
