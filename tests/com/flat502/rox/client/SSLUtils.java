@@ -92,11 +92,11 @@ public class SSLUtils {
 
 	public static void main(String[] args) {
 		System.setProperty("javax.net.ssl.trustStore",
-				"D:/work/java/xmlrpc.sslengine/src/com/flat502/rox/test/amazon-combined.truststore");
+				"src/com/flat502/rox/test/amazon-combined.truststore");
 		System.setProperty("javax.net.ssl.trustStorePassword", "ipmanager");
 
 		System.setProperty("javax.net.ssl.keyStore",
-				"D:/work/java/xmlrpc.sslengine/src/com/flat502/rox/test/keystore.p12");
+				"src/com/flat502/rox/test/keystore.p12");
 		System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
 		System.setProperty("javax.net.ssl.keyStoreType", "pkcs12");
 
