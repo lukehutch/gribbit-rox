@@ -34,7 +34,7 @@ On the off chance you're reading this on its own or without any idea
 what the random bits strewn around next to it are this is the readme
 for RoX, an XML-RPC library for Java.
 
-Currently RoX is hosted by SourceForge and can be found online at
+Currently RoX is hosted by SourceForge and can be found online at:
 
   http://rox-xmlrpc.sourceforge.net/
 
