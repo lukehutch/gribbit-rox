@@ -6,6 +6,20 @@ RoX is a well-written, efficient and scalable XML-RPC server. Its code has not b
 
 I plan to use RoX as a foundation for an HTTP server project, so I have imported the code here, and I am gradually transforming it into modern Java.
 
+Done:
+* Inferred generic type parameters where possible (and filled in a bunch more manually)
+* Fixed all compiler warnings and errors in `src/`
+* Unit tests now almost all pass (exceptions listed below)
+
+To do:
+* Fix compiler warnings in `tests/`
+* There are two failing tests:
+  * Two test files were missing from the distribution: `src/com/flat502/rox/test/test.truststore` and `src/com/flat502/rox/test/keystore.p12` (needed by `tests/com/flat502/rox/client/Test_SSL.java`)
+  * `testStringParam_64K()` in `tests/com/flat502/rox/marshall/xmlrpc/TestBase_MethodCallUnmarshaller.java` fails where the expected string length is 70000 but the actual string length is 4464. May be a bug in Xerces?
+* Make API typesafe where possible (this will require some work, and my primary interest is not in XML-RPC, so I may not change that part of the API -- patches welcome)
+
+I may split the HTTP server parts out into a separate, lightweight codebase, without all the XML-RPC parts, depending on whether it seems like there is value in doing so.
+
 
 ------------------------------ 
 
