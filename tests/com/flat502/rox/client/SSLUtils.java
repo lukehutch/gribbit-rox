@@ -9,9 +9,8 @@ import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Properties;
 
-import sun.security.x509.CertAndKeyGen;
+import sun.security.tools.keytool.CertAndKeyGen;
 import sun.security.x509.X500Name;
-import sun.security.x509.X509Cert;
 
 import com.flat502.rox.utils.Utils;
 
@@ -73,11 +72,11 @@ public class SSLUtils {
 		X500Name x500name = new X500Name(name, "", "", "", "", "");
 		//		System.out.println(x500name);
 
-		X509Cert cert = cakg.getSelfCert(x500name, 2000000);
+		X509Certificate cert = cakg.getSelfCertificate(x500name, 2000000);
 		//		System.out.println("cert: " + cert);
 
 		javax.security.cert.X509Certificate certificate = javax.security.cert.X509Certificate.getInstance(cert
-				.getSignedCert());
+				.getEncoded()); // TODO: was .getSignedCert()); -- is this change correct?
 		certificate.checkValidity();
 		//		System.out.println("Issuer DN .......... " + certificate.getIssuerDN());
 		//		System.out.println("Not after .......... " + certificate.getNotAfter());

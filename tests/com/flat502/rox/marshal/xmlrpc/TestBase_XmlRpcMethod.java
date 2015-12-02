@@ -8,6 +8,7 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.custommonkey.xmlunit.XMLTestCase;
+import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.xml.sax.SAXException;
 
 import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodCall;
@@ -20,7 +21,7 @@ public class TestBase_XmlRpcMethod extends XMLTestCase {
 	protected void assertStructValueEquals(int idx, String name, String type,
 			String value, String xml) throws TransformerConfigurationException,
 			SAXException, IOException, ParserConfigurationException,
-			TransformerException {
+			TransformerException, XpathException {
 		assertXpathEvaluatesTo(name,
 				"//params/param/value/struct/member[" + idx + "]/name",
 				xml);
@@ -32,7 +33,7 @@ public class TestBase_XmlRpcMethod extends XMLTestCase {
 	protected void assertStructValueEquals(int idx, String name, String type,
 			List list, String xml) throws TransformerConfigurationException,
 			SAXException, IOException, ParserConfigurationException,
-			TransformerException {
+			TransformerException, XpathException {
 		assertXpathEvaluatesTo(name,
 				"//params/param/value/struct/member[" + idx + "]/name",
 				xml);
