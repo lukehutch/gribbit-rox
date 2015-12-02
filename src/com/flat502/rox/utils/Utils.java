@@ -314,28 +314,28 @@ public class Utils {
 		return sb.toString();
 	}
 	
-	public static Object toArray(Class targetType, Object value) {
+	public static Object toArray(Class<?> targetType, Object value) {
 		if (targetType == Object[].class) {
-			return ((List) value).toArray();
+			return ((List<?>) value).toArray();
 		} else if (targetType == int[].class) {
-			return toIntArray((List) value);
+			return toIntArray((List<?>) value);
 		} else if (targetType == long[].class) {
-			return toLongArray((List<Object>) value);
+			return toLongArray((List<?>) value);
 		} else if (targetType == boolean[].class) {
-			return toBooleanArray((List<Object>) value);
+			return toBooleanArray((List<?>) value);
 		} else if (targetType == float[].class) {
-			return toFloatArray((List<Object>) value);
+			return toFloatArray((List<?>) value);
 		} else if (targetType == double[].class) {
-			return toDoubleArray((List<Object>) value);
+			return toDoubleArray((List<?>) value);
 		}
 		// value is a List with members of the appropriate type
 		Object[] arrayTemplate = (Object[]) Array.newInstance(targetType.getComponentType(), 0);
-		return ((List) value).toArray(arrayTemplate);
+		return ((List<?>) value).toArray(arrayTemplate);
 	}
 
-	public static int[] toIntArray(List list) {
+	public static int[] toIntArray(List<?> list) {
 		int[] array = new int[list.size()];
-		Iterator ints = list.iterator();
+		Iterator<?> ints = list.iterator();
 		int idx = 0;
 		while (ints.hasNext()) {
 			Integer value = (Integer) ints.next();
@@ -344,9 +344,9 @@ public class Utils {
 		return array;
 	}
 
-	public static long[] toLongArray(List<Object> list) {
+	public static long[] toLongArray(List<?> list) {
 		long[] array = new long[list.size()];
-		Iterator<Object> ints = list.iterator();
+		Iterator<?> ints = list.iterator();
 		int idx = 0;
 		while (ints.hasNext()) {
 			Integer value = (Integer) ints.next();
@@ -355,9 +355,9 @@ public class Utils {
 		return array;
 	}
 
-	public static boolean[] toBooleanArray(List<Object> list) {
+	public static boolean[] toBooleanArray(List<?> list) {
 		boolean[] array = new boolean[list.size()];
-		Iterator<Object> ints = list.iterator();
+		Iterator<?> ints = list.iterator();
 		int idx = 0;
 		while (ints.hasNext()) {
 			Boolean value = (Boolean) ints.next();
@@ -366,9 +366,9 @@ public class Utils {
 		return array;
 	}
 
-	public static float[] toFloatArray(List<Object> list) {
+	public static float[] toFloatArray(List<?> list) {
 		float[] array = new float[list.size()];
-		Iterator<Object> ints = list.iterator();
+		Iterator<?> ints = list.iterator();
 		int idx = 0;
 		while (ints.hasNext()) {
 			Double value = (Double) ints.next();
@@ -377,9 +377,9 @@ public class Utils {
 		return array;
 	}
 
-	public static double[] toDoubleArray(List<Object> list) {
+	public static double[] toDoubleArray(List<?> list) {
 		double[] array = new double[list.size()];
-		Iterator<Object> ints = list.iterator();
+		Iterator<?> ints = list.iterator();
 		int idx = 0;
 		while (ints.hasNext()) {
 			Double value = (Double) ints.next();
@@ -388,8 +388,8 @@ public class Utils {
 		return array;
 	}
 
-	public static Object coerce(Object value, Class targetType) {
-		Class valueClass = value.getClass();
+	public static Object coerce(Object value, Class<?> targetType) {
+		Class<?> valueClass = value.getClass();
 		if (targetType.isAssignableFrom(value.getClass())) {
 			// Already compatible
 			return value;
@@ -448,7 +448,7 @@ public class Utils {
 		return null;
 	}
 
-	public static Object convert(Object value, Class targetType) {
+	public static Object convert(Object value, Class<?> targetType) {
 		if (value == null) {
 			return null;
 		}
@@ -487,28 +487,28 @@ public class Utils {
 		return value;
 	}
 	
-	public static Object convertToArray(Class targetType, Object value) {
+	public static Object convertToArray(Class<?> targetType, Object value) {
 		if (targetType == Object[].class) {
-			return ((List) value).toArray();
+			return ((List<?>) value).toArray();
 		} else if (targetType == int[].class) {
-			return convertToIntArray((List) value);
+			return convertToIntArray((List<?>) value);
 		} else if (targetType == long[].class) {
-			return convertToLongArray((List) value);
+			return convertToLongArray((List<?>) value);
 		} else if (targetType == boolean[].class) {
-			return convertToBooleanArray((List) value);
+			return convertToBooleanArray((List<?>) value);
 		} else if (targetType == float[].class) {
-			return convertToFloatArray((List) value);
+			return convertToFloatArray((List<?>) value);
 		} else if (targetType == double[].class) {
-			return convertToDoubleArray((List) value);
+			return convertToDoubleArray((List<?>) value);
 		}
 		// value is a List with members of the appropriate type
 		Object[] arrayTemplate = (Object[]) Array.newInstance(targetType.getComponentType(), 0);
-		return ((List) value).toArray(arrayTemplate);
+		return ((List<?>) value).toArray(arrayTemplate);
 	}
 
-	public static int[] convertToIntArray(List list) {
+	public static int[] convertToIntArray(List<?> list) {
 		int[] array = new int[list.size()];
-		Iterator ints = list.iterator();
+		Iterator<?> ints = list.iterator();
 		int idx = 0;
 		while (ints.hasNext()) {
 			array[idx++] = Integer.parseInt((String) ints.next());
@@ -516,9 +516,9 @@ public class Utils {
 		return array;
 	}
 
-	public static long[] convertToLongArray(List list) {
+	public static long[] convertToLongArray(List<?> list) {
 		long[] array = new long[list.size()];
-		Iterator ints = list.iterator();
+		Iterator<?> ints = list.iterator();
 		int idx = 0;
 		while (ints.hasNext()) {
 			array[idx++] = Long.parseLong((String) ints.next());
@@ -526,9 +526,9 @@ public class Utils {
 		return array;
 	}
 
-	public static boolean[] convertToBooleanArray(List list) {
+	public static boolean[] convertToBooleanArray(List<?> list) {
 		boolean[] array = new boolean[list.size()];
-		Iterator ints = list.iterator();
+		Iterator<?> ints = list.iterator();
 		int idx = 0;
 		while (ints.hasNext()) {
 			array[idx++] = Boolean.parseBoolean((String) ints.next());
@@ -536,9 +536,9 @@ public class Utils {
 		return array;
 	}
 
-	public static float[] convertToFloatArray(List list) {
+	public static float[] convertToFloatArray(List<?> list) {
 		float[] array = new float[list.size()];
-		Iterator ints = list.iterator();
+		Iterator<?> ints = list.iterator();
 		int idx = 0;
 		while (ints.hasNext()) {
 			array[idx++] = Float.parseFloat((String) ints.next());
@@ -546,9 +546,9 @@ public class Utils {
 		return array;
 	}
 
-	public static double[] convertToDoubleArray(List list) {
+	public static double[] convertToDoubleArray(List<?> list) {
 		double[] array = new double[list.size()];
-		Iterator ints = list.iterator();
+		Iterator<?> ints = list.iterator();
 		int idx = 0;
 		while (ints.hasNext()) {
 			array[idx++] = Double.parseDouble((String) ints.next());

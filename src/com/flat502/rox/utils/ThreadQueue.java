@@ -18,8 +18,8 @@ import java.util.Set;
  * resources across multiple threads.
  */
 public class ThreadQueue {
-	private List<Thread> captureQueue = new LinkedList<Thread>();
-	private Set<Thread> pendingRelease = new HashSet<Thread>();
+	private List<Thread> captureQueue = new LinkedList<>();
+	private Set<Thread> pendingRelease = new HashSet<>();
 	private Object mutex;
 	
 	public ThreadQueue() {

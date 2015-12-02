@@ -57,7 +57,7 @@ public class TestServer implements SynchronousRequestHandler {
 	
 	@SuppressWarnings("unchecked")
 	private Object complexResponse() {
-		List<Map> list = new ArrayList<Map>();
+		List<Map> list = new ArrayList<>();
 		for(int ami = 0; ami < 2; ami++) {
 			Properties props = new Properties();
 			props.setProperty("property-name-1-"+ami, "property-value-1-"+ami);

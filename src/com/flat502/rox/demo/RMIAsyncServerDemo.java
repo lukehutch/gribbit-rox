@@ -47,7 +47,7 @@ public class RMIAsyncServerDemo extends MethodCallUnmarshallerAid implements Asy
 	}
 
 	@Override
-    public Class getType(String methodName, int index) {
+    public Class<?> getType(String methodName, int index) {
 		return this.proxy.getType(methodName, index);
 	}
 

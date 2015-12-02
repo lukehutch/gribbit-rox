@@ -414,7 +414,7 @@ public class Test_SSL extends TestCase {
 		int numRead = is.read(rsp);
 		BufferedReader rspIs = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(rsp, 0, numRead)));
 		String line = null;
-		List<String> rspLines = new ArrayList<String>();
+		List<String> rspLines = new ArrayList<>();
 		while ((line = rspIs.readLine()) != null) {
 			rspLines.add(line);
 		}

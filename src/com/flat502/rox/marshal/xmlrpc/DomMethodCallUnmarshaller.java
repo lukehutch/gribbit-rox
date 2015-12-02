@@ -36,7 +36,7 @@ public class DomMethodCallUnmarshaller extends DomUnmarshaller implements
 	}
 
 	@Override
-    public RpcCall unmarshal(InputStream in, Class[] structClasses)
+    public RpcCall unmarshal(InputStream in, Class<?>[] structClasses)
 			throws Exception {
 		return unmarshal(in, new ArrayParameterTypeMapper(structClasses));
 	}
@@ -55,7 +55,7 @@ public class DomMethodCallUnmarshaller extends DomUnmarshaller implements
 	}
 
 	@Override
-    public RpcCall unmarshal(Reader in, Class[] structClasses)
+    public RpcCall unmarshal(Reader in, Class<?>[] structClasses)
 			throws Exception {
 		return unmarshal(in, new ArrayParameterTypeMapper(structClasses));
 	}
@@ -73,7 +73,7 @@ public class DomMethodCallUnmarshaller extends DomUnmarshaller implements
 	}
 
 	@Override
-    public RpcCall unmarshal(String xml, Class[] structClasses)
+    public RpcCall unmarshal(String xml, Class<?>[] structClasses)
 			throws Exception {
 		return unmarshal(xml, new ArrayParameterTypeMapper(structClasses));
 	}
@@ -88,11 +88,11 @@ public class DomMethodCallUnmarshaller extends DomUnmarshaller implements
 	private XmlRpcMethodCall parseMethodCall(XmlNode node, MethodCallUnmarshallerAid aid)
 			throws MarshallingException {
 		expectTag(node, "methodCall");
-		Iterator children = node.enumerateChildren();
-		String name = this.parseMethodName((XmlNode) children.next());
+        Iterator<XmlNode> children = node.enumerateChildren();
+		String name = this.parseMethodName(children.next());
 		Object[] params = null;
 		if (children.hasNext()) {
-			params = this.parseParams(name, (XmlNode) children.next(), aid);
+			params = this.parseParams(name, children.next(), aid);
 		}
 		
 		return new XmlRpcMethodCall(name, params, this.selectCodec(aid, name));
@@ -106,16 +106,16 @@ public class DomMethodCallUnmarshaller extends DomUnmarshaller implements
 	private Object[] parseParams(String methodName, XmlNode node, MethodCallUnmarshallerAid aid)
 			throws MarshallingException {
 		expectTag(node, "params");
-		Iterator params = node.enumerateChildren();
-		List<Object> paramObjects = new ArrayList<Object>();
+        Iterator<XmlNode> params = node.enumerateChildren();
+		List<Object> paramObjects = new ArrayList<>();
 		int paramIdx = 0;
 		while (params.hasNext()) {
-			Class structClass = aid == null ? null : aid.getType(methodName, paramIdx);
+			Class<?> structClass = aid == null ? null : aid.getType(methodName, paramIdx);
 			if (structClass == Object.class) {
 				structClass = null;
 			}
 
-			Object param = this.parseParam((XmlNode) params.next(), structClass, aid);
+			Object param = this.parseParam(params.next(), structClass, aid);
 			paramObjects.add(param);
 			paramIdx++;
 		}

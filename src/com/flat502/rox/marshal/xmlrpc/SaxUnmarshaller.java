@@ -20,6 +20,7 @@ import com.flat502.rox.utils.Utils;
 /**
  * Marshal an XML-RPC method call using easy (v1) SAX.
  */
+@SuppressWarnings("deprecation")
 public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 	private static enum State {
 		ROOT, METHOD_CALL {
@@ -149,33 +150,33 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 	};
 
 	private static Map<String, State> rootTransitions() {
-		Map<String, State> nextState = new HashMap<String, State>();
+		Map<String, State> nextState = new HashMap<>();
 		nextState.put(Tags.METHOD_CALL, State.METHOD_CALL);
 		nextState.put(Tags.METHOD_RESPONSE, State.METHOD_RSP);
 		return nextState;
 	}
 
 	private static Map<String, State> methodCallTransitions() {
-		Map<String, State> nextState = new HashMap<String, State>();
+		Map<String, State> nextState = new HashMap<>();
 		nextState.put(Tags.METHOD_NAME, State.METHOD_NAME);
 		nextState.put(Tags.PARAMS, State.PARAMS);
 		return nextState;
 	}
 
 	private static Map<String, State> paramsTransitions() {
-		Map<String, State> nextState = new HashMap<String, State>();
+		Map<String, State> nextState = new HashMap<>();
 		nextState.put(Tags.PARAM, State.PARAM);
 		return nextState;
 	}
 
 	private static Map<String, State> paramTransitions() {
-		Map<String, State> nextState = new HashMap<String, State>();
+		Map<String, State> nextState = new HashMap<>();
 		nextState.put(Tags.VALUE, State.VALUE);
 		return nextState;
 	}
 
 	private static Map<String, State> valueTransitions() {
-		Map<String, State> nextState = new HashMap<String, State>();
+		Map<String, State> nextState = new HashMap<>();
 		nextState.put(Tags.STRING, State.STRING);
 		nextState.put(Tags.BASE64, State.BASE64);
 		nextState.put(Tags.INT, State.INT);
@@ -189,44 +190,44 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 	}
 
 	private static Map<String, State> structTransitions() {
-		Map<String, State> nextState = new HashMap<String, State>();
+		Map<String, State> nextState = new HashMap<>();
 		nextState.put(Tags.MEMBER, State.MEMBER);
 		return nextState;
 	}
 
 	private static Map<String, State> memberTransitions() {
-		Map<String, State> nextState = new HashMap<String, State>();
+		Map<String, State> nextState = new HashMap<>();
 		nextState.put(Tags.NAME, State.NAME);
 		nextState.put(Tags.VALUE, State.VALUE);
 		return nextState;
 	}
 
 	private static Map<String, State> arrayTransitions() {
-		Map<String, State> nextState = new HashMap<String, State>();
+		Map<String, State> nextState = new HashMap<>();
 		nextState.put(Tags.DATA, State.DATA);
 		return nextState;
 	}
 
 	private static Map<String, State> dataTransitions() {
-		Map<String, State> nextState = new HashMap<String, State>();
+		Map<String, State> nextState = new HashMap<>();
 		nextState.put(Tags.VALUE, State.VALUE);
 		return nextState;
 	}
 
 	private static Map<String, State> methodRspTransitions() {
-		Map<String, State> nextState = new HashMap<String, State>();
+		Map<String, State> nextState = new HashMap<>();
 		nextState.put(Tags.PARAMS, State.PARAMS);
 		nextState.put(Tags.FAULT, State.FAULT);
 		return nextState;
 	}
 
 	private static Map<String, State> faultTransitions() {
-		Map<String, State> nextState = new HashMap<String, State>();
+		Map<String, State> nextState = new HashMap<>();
 		nextState.put(Tags.VALUE, State.VALUE);
 		return nextState;
 	}
 
-	private static final Map<State, Map<String, State>> TRANSITIONS = new HashMap<State, Map<String, State>>();
+	private static final Map<State, Map<String, State>> TRANSITIONS = new HashMap<>();
 
 	static {
 		TRANSITIONS.put(State.ROOT, rootTransitions());
@@ -268,7 +269,8 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 
 	// Stack of nested struct objects
 	private Stack structStack;
-	private StructInfo currentStruct;
+	@SuppressWarnings("unused")
+    private StructInfo currentStruct;
 
 	// The struct whose members we are busy parsing
 	private static class StructInfo {
@@ -282,9 +284,10 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 
 		// Track info for the member we're currently handling in this struct
 		public String memberName;
-		public Class memberClass;
+		public Class<?> memberClass;
 
-		public StructInfo(Map<String, Object> map) {
+		@SuppressWarnings("unused")
+        public StructInfo(Map<String, Object> map) {
 			this.value = this.asMap = map;
 		}
 
@@ -292,13 +295,14 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 			this.value = this.asList = list;
 		}
 
-		public StructInfo(Object obj) {
+		@SuppressWarnings("unchecked")
+        public StructInfo(Object obj) {
 			this.value = obj;
 			if (obj instanceof Map) {
-				this.asMap = (Map) obj;
+				this.asMap = (Map<String, Object>) obj;
 			}
 			if (obj instanceof List) {
-				this.asList = (List) obj;
+				this.asList = (List<Object>) obj;
 			}
 		}
 	}
@@ -306,7 +310,7 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 	// The value we have just parsed
 	private Object value;
 	
-	private HandlerBase saxHandler;
+    private HandlerBase saxHandler;
 
 	////////////////////////////////////////// pubic interface ///////////////////////////////////////////////
 
@@ -347,7 +351,7 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 		this.methodName = new StringBuilder();
 		this.stringValue = null;
 		this.implicitStringValue = null;
-		this.params = new ArrayList<Object>();
+		this.params = new ArrayList<>();
 		this.stateStack = new Stack();
 		this.value = null;
 		this.isFault = false;
@@ -388,11 +392,13 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 		return (StructInfo) structStack.peek();
 	}
 
-	private void info(Object msg) {
+	@SuppressWarnings("unused")
+    private void info(Object msg) {
 		System.out.println(msg);
 	}
 
-	private void debug(Object msg) {
+	@SuppressWarnings("unused")
+    private void debug(Object msg) {
 		System.out.println(msg);
 	}
 
@@ -406,7 +412,7 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 	//////////////////////////////////////// DocumentHandler ////////////////////////////////////////////
 
 	@Override
-    protected Class getStructMemberType(Object structObject, String name) throws MarshallingException {
+    protected Class<?> getStructMemberType(Object structObject, String name) throws MarshallingException {
 		if (!this.isFault) {
 			name = this.decodeFieldName(name);
 		}
@@ -459,7 +465,7 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 
 //		debug("start[" + element + "] transitions from " + curState + " to " + nextState);
 
-		Class structClass;
+		Class<?> structClass;
 		StructInfo struct;
 		try {
 			switch (nextState) {
@@ -500,7 +506,7 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 				}
 	
 				if (structClass == null) {
-					struct = new StructInfo(new HashMap<String, Object>());
+					struct = new StructInfo(new HashMap<>());
 				} else {
 					struct = new StructInfo(newStructObject(structClass));
 				}
@@ -535,9 +541,9 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 				}
 	
 				if (structClass == null) {
-					struct = new StructInfo(new ArrayList<Object>());
+					struct = new StructInfo(new ArrayList<>());
 				} else if (structClass.isArray()) {
-					struct = new StructInfo(new ArrayList<Object>());
+					struct = new StructInfo(new ArrayList<>());
 					if (structClass.isArray()) {
 						struct.memberClass = structClass.getComponentType();
 					}
@@ -554,6 +560,8 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 				pushStruct(struct);
 	//			info("Created list of type " + struct.value.getClass() + ": " + System.identityHashCode(struct.value));
 				break;
+            default:
+                break;
 			}
 		} catch(MarshallingException e) {
 			throw (SAXException) new SAXException(e).initCause(e);
@@ -562,8 +570,8 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 		pushState(nextState);
 	}
 	
-	private Class getType() {
-		Class type;
+	private Class<?> getType() {
+		Class<?> type;
 		if (this.isMethodCall) {
 			type = callAid == null ? null : callAid.getType(this.getMethodName(), this.params.size());
 		} else {
@@ -657,7 +665,7 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 			case ARRAY:
 				this.value = popStruct().value;
 				
-				Class paramClass = getType();
+				Class<?> paramClass = getType();
 				if (structStack.size() == 1 && paramClass != null) {
 					this.value = Utils.coerce(this.value, paramClass);
 				}
@@ -690,6 +698,8 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 	//			info("Adding parameter of type " + this.value.getClass().getName());
 				this.params.add(this.value);
 				break;
+            default:
+                break;
 			}
 		} catch(MarshallingException e) {
 			throw (SAXException) new SAXException(e).initCause(e);
@@ -736,6 +746,8 @@ public class SaxUnmarshaller extends XmlRpcMethodUnmarshaller {
 			}
 			this.stringValue.append(new String(ch, start, length));
 			break;
+        default:
+            break;
 		}
 	}
 	

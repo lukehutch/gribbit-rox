@@ -46,7 +46,7 @@ public class Lock {
     }
 
     /// Wait for any one of a number of conditions to be signalled
-    public void waitOnConditions( Collection conditions ) {
+    public void waitOnConditions( Collection<?> conditions ) {
 	throw new RuntimeException( "Manana" );
     }
 

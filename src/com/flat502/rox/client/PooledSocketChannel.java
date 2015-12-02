@@ -3,7 +3,7 @@ package com.flat502.rox.client;
 import java.nio.channels.SocketChannel;
 
 class PooledSocketChannel {
-	private long creationTime = System.currentTimeMillis();
+	// private long creationTime = System.currentTimeMillis();
 	private long accessTime = System.currentTimeMillis();
 
 	private HttpRpcClient owner;

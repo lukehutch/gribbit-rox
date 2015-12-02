@@ -6,7 +6,7 @@ package com.flat502.rox.marshal;
  * that maps a parameter index into a given array of {@link Class} instances. 
  */
 public class ArrayParameterTypeMapper extends MethodCallUnmarshallerAid {
-	private Class[] types;
+	private Class<?>[] types;
 
 	/**
 	 * Initializes a new instance using the given array.
@@ -14,7 +14,7 @@ public class ArrayParameterTypeMapper extends MethodCallUnmarshallerAid {
 	 * 	The array of {@link Class} instances to map parameters
 	 * 	onto. May be <code>null</code>.
 	 */
-	public ArrayParameterTypeMapper(Class[] types) {
+	public ArrayParameterTypeMapper(Class<?>[] types) {
 		this.types = types;
 	}
 
@@ -34,7 +34,7 @@ public class ArrayParameterTypeMapper extends MethodCallUnmarshallerAid {
 	 * 	array.
 	 */
 	@Override
-    public Class getType(String methodName, int index) {
+    public Class<?> getType(String methodName, int index) {
 		if (this.types == null || index >= this.types.length) {
 			return null;
 		}

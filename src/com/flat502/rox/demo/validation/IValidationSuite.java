@@ -10,14 +10,14 @@ public interface IValidationSuite {
 
 	public int easyStructTest(MoeLarryAndCurly struct);
 
-	public Map echoStructTest(Map struct);
+	public Map<?, ?> echoStructTest(Map<?, ?> struct);
 
 	public Object[] manyTypesTest(Integer n, Boolean b, String s, Double d,
 			Date dt, byte[] b64);
 
 	public String moderateSizeArrayCheck(String[] list);
 
-	public int nestedStructTest(Map calendar);
+	public int nestedStructTest(Map<?, ?> calendar);
 
 	public MultipliedStruct simpleStructReturnTest(int n);
 }

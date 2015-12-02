@@ -13,9 +13,8 @@ import com.flat502.rox.marshal.RpcResponse;
 
 
 public class TestUnmarshallingPerf {
-	@SuppressWarnings("unchecked")
 	public static String initXML() throws Exception {
-		List<Map> list = new ArrayList<Map>();
+		List<Map<String, Object>> list = new ArrayList<>();
 		for(int ami = 0; ami < 100; ami++) {
 			Properties props = new Properties();
 			for(int i = 0; i < 30; i++) {
@@ -31,7 +30,7 @@ public class TestUnmarshallingPerf {
 				props.setProperty("property-name-"+i, sb.toString());
 			}
 			
-			Map struct = new HashMap();
+			HashMap<String, Object> struct = new HashMap<>();
 			struct.put("ami-id", "ami-1234"+ami);
 			struct.put("second", "something");
 			struct.put("third", "something-else");
@@ -73,12 +72,11 @@ public class TestUnmarshallingPerf {
 	public static final int ITERS = 20;
 	public static final int LOOPS = 5;
 	
-	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws Exception {
 		final String xml = initXML();
 		System.out.println(xml.length());
 
-		Map<String, Exec> map = new LinkedHashMap<String, Exec>();
+		Map<String, Exec> map = new LinkedHashMap<>();
 //		map.put("SAX(XP)     ",
 //				new Exec(
 //						new Runnable() {public void run() { System.getProperties().setProperty("javax.xml.parsers.SAXParserFactory", "com.flat502.rox.test.XPSaxParserFactory"); SaxParserPool.reset(); }},

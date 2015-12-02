@@ -251,8 +251,8 @@ public class SSLConfiguration {
 		
 		SSLContext sslContext = SSLContext.getInstance("TLS");
 		
-		List<KeyManager> keyManagers = new ArrayList<KeyManager>();
-		List<TrustManager> trustManagers = new ArrayList<TrustManager>();
+		List<KeyManager> keyManagers = new ArrayList<>();
+		List<TrustManager> trustManagers = new ArrayList<>();
 
 		if (this.keyStore != null) {
 			KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
@@ -306,7 +306,7 @@ public class SSLConfiguration {
 			if (log.logTrace()) {
 				log.trace("Selecting cipher suites using pattern [" + this.cipherSuitePattern + "]");
 			}
-			List<String> ciphers = new ArrayList<String>(supportedCipherSuites.length);
+			List<String> ciphers = new ArrayList<>(supportedCipherSuites.length);
 			for (int i = 0; i < supportedCipherSuites.length; i++) {
 				if (this.cipherSuitePattern.matcher(supportedCipherSuites[i]).find()) {
 					if (log.logTrace()) {
@@ -324,7 +324,7 @@ public class SSLConfiguration {
 			if (log.logTrace()) {
 				log.trace("Selecting protocols using pattern [" + this.protocolPattern + "]");
 			}
-			List<String> protocols = new ArrayList<String>(supportedProtocols.length);
+			List<String> protocols = new ArrayList<>(supportedProtocols.length);
 			for (int i = 0; i < supportedProtocols.length; i++) {
 				if (this.protocolPattern.matcher(supportedProtocols[i]).find()) {
 					if (log.logTrace()) {

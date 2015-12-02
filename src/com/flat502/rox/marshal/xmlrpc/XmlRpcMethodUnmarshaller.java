@@ -77,10 +77,13 @@ public abstract class XmlRpcMethodUnmarshaller implements MethodUnmarshaller, Xm
 		}
 		return value.equals("1") ? Boolean.TRUE : Boolean.FALSE;
 	}
-
-	protected Object parseString(String value, Class structClass) throws MarshallingException {
+	
+	@SuppressWarnings("unchecked")
+    protected Object parseString(String value, Class<?> structClass) throws MarshallingException {
 		if (structClass != null && Enum.class.isAssignableFrom(structClass)) {
-			return this.parseEnum(value, structClass);
+            @SuppressWarnings("rawtypes")
+            Class<Enum> asEnum = (Class<Enum>) structClass;
+            return this.parseEnum(value, asEnum);
 		}
 
 		if (structClass != null && structClass != Object.class && structClass != String.class) {
@@ -117,18 +120,17 @@ public abstract class XmlRpcMethodUnmarshaller implements MethodUnmarshaller, Xm
 		return Base64Codec.decode(value.toCharArray());
 	}
 
-	@SuppressWarnings("unchecked")
-	protected Object parseEnum(String value, Class structClass) throws MarshallingException {
+	protected <T extends Enum<T>> Object parseEnum(String value, Class<T> structClass) throws MarshallingException {
 		return Enum.valueOf(structClass, value);
 	}
 
-	protected Object newStructObject(Class structClass) throws MarshallingException {
+	protected Object newStructObject(Class<?> structClass) throws MarshallingException {
 		if (structClass == Map.class) {
-			return new HashMap();
+			return new HashMap<Object, Object>();
 		}
 
 		if (structClass == List.class || structClass.isArray()) {
-			return new ArrayList();
+			return new ArrayList<Object>();
 		}
 
 		try {
@@ -152,8 +154,8 @@ public abstract class XmlRpcMethodUnmarshaller implements MethodUnmarshaller, Xm
 		return this.getFieldNameCodec().decodeFieldName(name);
 	}
 
-	protected Class getStructMemberType(Object structObject, String name) throws MarshallingException {
-		Class structClass = structObject.getClass();
+	protected Class<?> getStructMemberType(Object structObject, String name) throws MarshallingException {
+		Class<?> structClass = structObject.getClass();
 		ClassDescriptor cDesc;
 		try {
 			cDesc = ClassDescriptor.getInstance(structClass);
@@ -204,7 +206,7 @@ public abstract class XmlRpcMethodUnmarshaller implements MethodUnmarshaller, Xm
 	 * @throws MarshallingException
 	 */
 	protected void setObjectMember(Object structObject, String name, Object value, UnmarshallerAid aid) throws MarshallingException {
-		Class structClass = structObject.getClass();
+		Class<?> structClass = structObject.getClass();
 		ClassDescriptor cDesc;
 		try {
 			cDesc = ClassDescriptor.getInstance(structClass);
@@ -219,7 +221,7 @@ public abstract class XmlRpcMethodUnmarshaller implements MethodUnmarshaller, Xm
 			// into our own type.
 			setterName = this.decodeFieldName(name);
 		}
-		Class targetType = null;
+		Class<?> targetType = null;
 		try {
 			targetType = cDesc.getSetterType(setterName);
 		} catch(IllegalArgumentException e) {

@@ -23,8 +23,8 @@ public class SaxParserPool {
 	private boolean resetAvailable;
 
 	private SAXParserFactory factory = null;
-	private Stack<SAXParser> parsers = new Stack<SAXParser>();
-	private Stack<SaxUnmarshaller> unmarshallers = new Stack<SaxUnmarshaller>();
+	private Stack<SAXParser> parsers = new Stack<>();
+	private Stack<SaxUnmarshaller> unmarshallers = new Stack<>();
 
 	private FieldNameCodec codec;
 	

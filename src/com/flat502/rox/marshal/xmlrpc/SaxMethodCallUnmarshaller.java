@@ -82,7 +82,7 @@ public class SaxMethodCallUnmarshaller implements ExtendedMethodCallUnmarshaller
 	}
 
 	@Override
-    public RpcCall unmarshal(InputStream in, Class[] structClasses) throws Exception {
+    public RpcCall unmarshal(InputStream in, Class<?>[] structClasses) throws Exception {
 		return unmarshal(in, new ArrayParameterTypeMapper(structClasses));
 	}
 
@@ -92,7 +92,7 @@ public class SaxMethodCallUnmarshaller implements ExtendedMethodCallUnmarshaller
 	}
 
 	@Override
-    public RpcCall unmarshal(Reader in, Class[] structClasses) throws Exception {
+    public RpcCall unmarshal(Reader in, Class<?>[] structClasses) throws Exception {
 		return unmarshal(in, new ArrayParameterTypeMapper(structClasses));
 	}
 
@@ -102,7 +102,7 @@ public class SaxMethodCallUnmarshaller implements ExtendedMethodCallUnmarshaller
 	}
 
 	@Override
-    public RpcCall unmarshal(String xml, Class[] structClasses) throws Exception {
+    public RpcCall unmarshal(String xml, Class<?>[] structClasses) throws Exception {
 		return unmarshal(xml, new ArrayParameterTypeMapper(structClasses));
 	}
 

@@ -36,7 +36,7 @@ class ResponseCoordinator {
 	// We can't send any responses with a higher ID than this value.
 	private int nextToSend;
 	
-	private List<HttpResponse> queuedResponses = new LinkedList<HttpResponse>();
+	private List<HttpResponse> queuedResponses = new LinkedList<>();
 	
 	ResponseCoordinator(HttpRpcServer server, Socket socket) {
 		this.server = server;

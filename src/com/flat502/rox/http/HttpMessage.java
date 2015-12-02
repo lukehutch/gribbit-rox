@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.flat502.rox.encoding.Encoding;
 import com.flat502.rox.utils.DateFormatThreadLocal;
@@ -24,7 +25,7 @@ import com.flat502.rox.utils.Utils;
 public abstract class HttpMessage {
 	private static final DateFormatThreadLocal HTTP_DATE_FORMATS = new DateFormatThreadLocal(new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z"));
 
-	private Map<String, String> headers = new LinkedHashMap<String, String>();
+	private Map<String, String> headers = new LinkedHashMap<>();
 
 	private byte[] content;
 
@@ -253,11 +254,11 @@ public abstract class HttpMessage {
 			this.setHeader(HttpConstants.Headers.CONTENT_LENGTH, "0");
 		}
 
-		Iterator headersIter = this.headers.entrySet().iterator();
+		Iterator<Entry<String, String>> headersIter = this.headers.entrySet().iterator();
 		while (headersIter.hasNext()) {
-			Map.Entry entry = (Map.Entry) headersIter.next();
-			String name = (String) entry.getKey();
-			String value = (String) entry.getValue();
+			Entry<String, String> entry = headersIter.next();
+			String name = entry.getKey();
+			String value = entry.getValue();
 			os.write(name.getBytes());
 			os.write(':');
 			os.write(' ');
@@ -345,9 +346,9 @@ public abstract class HttpMessage {
 		PrintWriter pw = new PrintWriter(sw);
 		pw.println(this.getStartLine());
 		if (this.headers != null) {
-			Iterator headers = this.headers.entrySet().iterator();
-			while (headers.hasNext()) {
-				Map.Entry entry = (Map.Entry) headers.next();
+			Iterator<Entry<String, String>> headersIter = this.headers.entrySet().iterator();
+			while (headersIter.hasNext()) {
+				Entry<String, String> entry = headersIter.next();
 				pw.print(entry.getKey());
 				pw.print(": ");
 				pw.println(entry.getValue());

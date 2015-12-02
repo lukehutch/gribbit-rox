@@ -20,13 +20,13 @@ public class XmlRpcMarshallerJ5 extends XmlRpcMarshaller {
 	
 	@Override
 	protected void marshalObject(XmlPrinter out, int depth, Object param) throws MarshallingException, IOException {
-		Class paramClass = param.getClass();
+		// Class<?> paramClass = param.getClass();
 		if (param instanceof Enum) {
 			// Enumerated types are marshalled as string values
 			String tag = this.getStringTagName();
 			if (tag != null) {
 				out.openTag(tag);
-				this.marshalValue(out, ((Enum)param).name());
+				this.marshalValue(out, ((Enum<?>)param).name());
 				out.closeTag(tag);
 			} else {
 				this.marshalValue(out, (String) param);

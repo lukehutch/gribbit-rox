@@ -12,7 +12,7 @@ import com.flat502.rox.marshal.IProxyObject;
  */
 class RpcClientProxy implements InvocationHandler {
 	private String methodPrefix;
-	private Class targetClass;
+	// private Class<?> targetClass;
 	private HttpRpcClient client;
 
 	private Object proxiedTarget;
@@ -22,10 +22,10 @@ class RpcClientProxy implements InvocationHandler {
 		this(null, targetClass, client);
 	}
 
-	public RpcClientProxy(String methodPrefix, Class targetClass,
+	public RpcClientProxy(String methodPrefix, Class<?> targetClass,
 			HttpRpcClient client) throws Exception {
 		this.methodPrefix = methodPrefix;
-		this.targetClass = targetClass;
+		// this.targetClass = targetClass;
 		this.client = client;
 		this.proxiedTarget = this.proxyTarget(targetClass);
 	}
@@ -34,8 +34,8 @@ class RpcClientProxy implements InvocationHandler {
 		return this.proxiedTarget;
 	}
 
-	private Object proxyTarget(Class targetClass) throws Exception {
-		Class[] targetInterfaces;
+	private Object proxyTarget(Class<?> targetClass) throws Exception {
+		Class<?>[] targetInterfaces;
 		if (targetClass.isInterface()) {
 			targetInterfaces = new Class[] { targetClass };
 		} else {

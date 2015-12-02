@@ -69,7 +69,7 @@ public class DomUnmarshaller extends XmlRpcMethodUnmarshaller {
 		}
 	}
 
-	protected Object parseParam(XmlNode node, Class structClass, UnmarshallerAid aid) throws MarshallingException {
+	protected Object parseParam(XmlNode node, Class<?> structClass, UnmarshallerAid aid) throws MarshallingException {
 		expectTag(node, "param");
 		if (node.getChildrenCount() != 1) {
 			throw new MarshallingException("Expected exactly 1 value under '" + node.getFullName() + "', found "
@@ -103,7 +103,7 @@ public class DomUnmarshaller extends XmlRpcMethodUnmarshaller {
 	 *             unmarshalling the current value or a member value (in the
 	 *             case of complex structures).
 	 */
-	protected Object parseValue(XmlNode value, Class structClass, UnmarshallerAid aid) throws MarshallingException {
+	protected Object parseValue(XmlNode value, Class<?> structClass, UnmarshallerAid aid) throws MarshallingException {
 		expectTag(value, "value");
 		if (value.getChildrenCount() == 0) {
 			// Implicit string type
@@ -167,12 +167,14 @@ public class DomUnmarshaller extends XmlRpcMethodUnmarshaller {
 
 		Map<String, Object> structMap = null;
 		if (structObject instanceof Map) {
-			structMap = (Map<String, Object>) structObject;
+			@SuppressWarnings("unchecked")
+            Map<String, Object> asMap = (Map<String, Object>) structObject;
+            structMap = asMap;
 		}
 
-		Iterator members = struct.enumerateChildren();
+        Iterator<XmlNode> members = struct.enumerateChildren();
 		while (members.hasNext()) {
-			XmlNode member = (XmlNode) members.next();
+			XmlNode member = members.next();
 			if (member.getChildrenCount() != 2) {
 				throw new MarshallingException("Expected exactly 2 children under '" + member.getFullName() + "', found "
 						+ member.getChildrenCount());
@@ -183,7 +185,7 @@ public class DomUnmarshaller extends XmlRpcMethodUnmarshaller {
 				Object value = this.parseValue(member.getChildAtIndex(1), aid);
 				structMap.put(name, value);
 			} else {
-				Class fieldClass = null;//HashMap.class;
+				Class<?> fieldClass = null;//HashMap.class;
 				XmlNode valueElement = member.getChildAtIndex(1);
 				switch (this.nextValueType(valueElement)) {
 				case COMPLEX_TYPE_STRUCT:
@@ -194,7 +196,7 @@ public class DomUnmarshaller extends XmlRpcMethodUnmarshaller {
 				case COMPLEX_TYPE_ARRAY:
 					// The value we're about to parse is an array,
 					// so we need to figure out what component type it is.
-					Class testFieldClass = this.getStructMemberType(structObject, this.decodeFieldName(name));
+					Class<?> testFieldClass = this.getStructMemberType(structObject, this.decodeFieldName(name));
 					if (!List.class.isAssignableFrom(testFieldClass)) {
 						// For List or Object[] we have to use a Map. It's not
 						// one of those so make sure it's an array.
@@ -225,10 +227,10 @@ public class DomUnmarshaller extends XmlRpcMethodUnmarshaller {
 		return name.getContent();
 	}
 
-	protected Object parseArrayData(XmlNode data, Class structClass, UnmarshallerAid aid) throws MarshallingException {
+	protected Object parseArrayData(XmlNode data, Class<?> structClass, UnmarshallerAid aid) throws MarshallingException {
 		expectTag(data, "data");
 		
-		Class structClassComponent = null;
+		Class<?> structClassComponent = null;
 		if (structClass == null) {
 			structClass = ArrayList.class;
 		} else {
@@ -243,18 +245,20 @@ public class DomUnmarshaller extends XmlRpcMethodUnmarshaller {
 		if (!structClass.isInterface() && List.class.isAssignableFrom(structClass)) {
 			// It's a concrete List implementation
 			try {
-				arrayData = (List<Object>) structClass.newInstance();
+				@SuppressWarnings("unchecked")
+                List<Object> newInstance = (List<Object>) structClass.newInstance();
+                arrayData = newInstance;
 			} catch(Exception e) {
 				throw new MarshallingException("Failed to instantiate concrete List type: "+structClass.getName(), e);
 			}
 		} else {
 			// It's of type List or it's an array (we'll coerce it
 			// afterwards.
-			arrayData = new ArrayList<Object>();
+			arrayData = new ArrayList<>();
 		} 
-		Iterator values = data.enumerateChildren();
+        Iterator<XmlNode> values = data.enumerateChildren();
 		while (values.hasNext()) {
-			Object value = this.parseValue((XmlNode) values.next(), structClassComponent, aid);
+			Object value = this.parseValue(values.next(), structClassComponent, aid);
 			arrayData.add(value);
 		}
 
@@ -317,7 +321,7 @@ public class DomUnmarshaller extends XmlRpcMethodUnmarshaller {
 		}
 
 		XmlNode param = params.getChildAtIndex(0);
-		Class retClass = aid == null ? null : aid.getReturnType();
+		Class<?> retClass = aid == null ? null : aid.getReturnType();
 		if (retClass == Object.class) {
 			retClass = null;
 		}
@@ -337,9 +341,9 @@ public class DomUnmarshaller extends XmlRpcMethodUnmarshaller {
 		if (child.getFullName().equals("fault")) {
 			return this.parseFault(child, aid);
 		} else {
-			Iterator children = node.enumerateChildren();
+            Iterator<XmlNode> children = node.enumerateChildren();
 			return this
-					.parseResponseParams((XmlNode) children.next(), aid);
+					.parseResponseParams(children.next(), aid);
 		}
 	}
 

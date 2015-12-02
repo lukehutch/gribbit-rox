@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.Socket;
-import java.util.regex.Pattern;
 
 import com.flat502.rox.client.HttpRpcClient;
 import com.flat502.rox.encoding.Encoding;
@@ -15,9 +14,8 @@ import com.flat502.rox.encoding.Encoding;
  * and containing an HTTP response.
  */
 public class HttpResponseBuffer extends HttpMessageBuffer {
-	private static final Pattern STATUS_LINE = Pattern
-			.compile("(\\S+) (\\S+) (.+)");
-	private static final Pattern STATUS_CODE = Pattern.compile("[1-5]\\d\\d");
+	// private static final Pattern STATUS_LINE = Pattern.compile("(\\S+) (\\S+) (.+)");
+	// private static final Pattern STATUS_CODE = Pattern.compile("[1-5]\\d\\d");
 
 	private double httpVersion;
 	private String httpVersionString;

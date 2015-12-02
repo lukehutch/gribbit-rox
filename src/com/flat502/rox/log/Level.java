@@ -30,7 +30,7 @@ public class Level {
 	 */
 	public static final Level TRACE = new Level(4);
 	
-	private static Map<String, Level> namesMap = new HashMap<String, Level>();
+	private static Map<String, Level> namesMap = new HashMap<>();
 
 	private int value;
 	private String name;

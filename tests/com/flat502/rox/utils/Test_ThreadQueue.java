@@ -67,7 +67,7 @@ public class Test_ThreadQueue extends TestCase {
 
 		for (int iters = 0; iters < ITERS; iters++) {
 			ThreadQueue q = new ThreadQueue();
-			List<Serializable> releaseOrder = new LinkedList<Serializable>();
+			List<Serializable> releaseOrder = new LinkedList<>();
 			for (int i = 0; i < CAPTURE_COUNT; i++) {
 				new TestThread(String.valueOf(i), q, releaseOrder, false).start();
 				while (q.size() < i + 1)

@@ -19,8 +19,8 @@ import com.flat502.rox.processing.SSLSession;
 public class SimpleSSLSessionPolicy implements SSLSessionPolicy {
 	private static Log log = LogFactory.getLog(SimpleSSLSessionPolicy.class);
 	
-	private List<Pattern> subjects = new ArrayList<Pattern>();
-	private List<Pattern> issuers = new ArrayList<Pattern>();
+	private List<Pattern> subjects = new ArrayList<>();
+	private List<Pattern> issuers = new ArrayList<>();
 	
 	public SimpleSSLSessionPolicy() {
 	}

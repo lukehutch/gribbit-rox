@@ -11,5 +11,5 @@ public interface XmlNode {
 	public String getContent();
 	public int getChildrenCount();
 	public XmlNode getChildAtIndex(int index);
-	public Iterator enumerateChildren();
+	public Iterator<XmlNode> enumerateChildren();
 }

@@ -2,7 +2,6 @@ package com.flat502.rox.marshal;
 
 import com.flat502.rox.client.ResponseHandler;
 
-
 /**
  * An assistive interface intended to support unmarshalling.
  * <P>
@@ -11,6 +10,7 @@ import com.flat502.rox.client.ResponseHandler;
  * @see com.flat502.rox.client.HttpRpcClient#execute(String, Object[], MethodResponseUnmarshallerAid)
  * @see com.flat502.rox.client.HttpRpcClient#execute(String, Object[], MethodResponseUnmarshallerAid, ResponseHandler)
  */
+@SuppressWarnings("deprecation")
 public abstract class MethodResponseUnmarshallerAid extends UnmarshallerAid {
 	/**
 	 * An implementation should return a {@link Class} instance representing
@@ -28,5 +28,5 @@ public abstract class MethodResponseUnmarshallerAid extends UnmarshallerAid {
 	 * 	The {@link Class} for the type the return value should
 	 * 	be unmarshalled as, assuming it is a struct or an array.
 	 */
-	public abstract Class getReturnType();
+	public abstract Class<?> getReturnType();
 }

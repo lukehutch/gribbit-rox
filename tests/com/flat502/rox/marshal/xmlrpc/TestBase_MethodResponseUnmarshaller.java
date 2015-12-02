@@ -149,7 +149,7 @@ public abstract class TestBase_MethodResponseUnmarshaller extends TestBase_Unmar
 				"</methodResponse>" };
 		String xml = toString(xmlLines);
 
-		RpcResponse rsp = this.unmarshal(xml, new ArrayList<String>().getClass());
+		RpcResponse rsp = this.unmarshal(xml, new ArrayList<>().getClass());
 		assertTrue(rsp.getReturnValue() instanceof ArrayList);
 		ArrayList<String> retVal = (ArrayList<String>) rsp.getReturnValue();
 		assertEquals(2, retVal.size());

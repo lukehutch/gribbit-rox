@@ -2,10 +2,8 @@ package com.flat502.rox.processing;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 
 import com.flat502.rox.utils.BlockingQueue;
@@ -18,9 +16,9 @@ public abstract class ResourcePool {
 	private ChannelSelector channelSelector;
 	private Timer timer;
 	private BlockingQueue queue;
-	private List<HttpMessageHandler> workers = new LinkedList<HttpMessageHandler>();
+	private List<HttpMessageHandler> workers = new LinkedList<>();
 	private boolean hasFirstWorker;
-	private Map namedMutexes = new HashMap();
+	// private Map namedMutexes = new HashMap();
 	
 	private ProfilerCollection profilers = new ProfilerCollection();
 	

@@ -9,7 +9,7 @@ import java.util.List;
  *
  */
 class Stack {
-	private List<Object> items = new ArrayList<Object>();
+	private List<Object> items = new ArrayList<>();
 
 	public Object peek() throws EmptyStackException {
 		try {

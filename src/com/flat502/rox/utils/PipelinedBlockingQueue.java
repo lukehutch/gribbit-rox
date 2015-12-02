@@ -20,11 +20,11 @@ import java.util.Set;
  */
 public class PipelinedBlockingQueue {
 	private Object mutex = new Object();
-	private List<ElementWithOrigin> queue = new LinkedList<ElementWithOrigin>();
-	private Set<Object> ownedOrigins = new HashSet<Object>();
+	private List<ElementWithOrigin> queue = new LinkedList<>();
+	private Set<Object> ownedOrigins = new HashSet<>();
 
 	// Maps threads to the origin of the last element they processed
-	private Map<Thread, Object> owners = new HashMap<Thread, Object>();
+	private Map<Thread, Object> owners = new HashMap<>();
 
 	private class ElementWithOrigin {
 		public Object element;

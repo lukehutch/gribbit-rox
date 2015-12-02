@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class LogFactoryImpl {
-	private Map<String, Log> logCache = new HashMap<String, Log>();
+	private Map<String, Log> logCache = new HashMap<>();
 
-	public Log getLog(Class clazz) {
+	public Log getLog(Class<?> clazz) {
 		// The caller has synchronized
 		// We "reimplement" this logic rather than just deferring to
 		// getLog(String) so that subclasses can differentiate between
@@ -29,7 +29,7 @@ public abstract class LogFactoryImpl {
 		return log;
 	}
 	
-	public Log newLog(Class clazz) {
+	public Log newLog(Class<?> clazz) {
 		return this.newLog(clazz.getName());
 	}
 	

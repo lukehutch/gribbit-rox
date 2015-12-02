@@ -24,8 +24,8 @@ class ChannelSelector implements Runnable {
 
 	private boolean shouldShutdown;
 	private Object mutex = new Object();
-	private Set<HttpRpcProcessor> processors = new HashSet<HttpRpcProcessor>();
-	private Map<SelectableChannel, HttpRpcProcessor> channelOwners = new HashMap<SelectableChannel, HttpRpcProcessor>();
+	private Set<HttpRpcProcessor> processors = new HashSet<>();
+	private Map<SelectableChannel, HttpRpcProcessor> channelOwners = new HashMap<>();
 
 	// A local buffer used when we read() to check for remote closure
 	private ByteBuffer closureTestBuf = ByteBuffer.allocate(16);
@@ -61,14 +61,14 @@ class ChannelSelector implements Runnable {
 			this.processors.remove(processor);
 			
 			// Cleaning up all channels associated with this processor.
-			Iterator i = this.channelOwners.entrySet().iterator();
+			Iterator<Entry<SelectableChannel, HttpRpcProcessor>> i = this.channelOwners.entrySet().iterator();
 			while (i.hasNext()) {
-				Entry entry = (Map.Entry) i.next();
+				Entry<SelectableChannel, HttpRpcProcessor> entry = i.next();
 				if (processor == entry.getValue()) {
 					i.remove();
 					
 					// Physically close the associated channel
-					((SelectableChannel)entry.getKey()).close();
+					entry.getKey().close();
 				}
 			}
 
@@ -120,7 +120,7 @@ class ChannelSelector implements Runnable {
 					log.trace("select() returns");
 				}
 
-				Set readyKeys = this.socketSelector.selectedKeys();
+				Set<SelectionKey> readyKeys = this.socketSelector.selectedKeys();
 				if (readyKeys.isEmpty()) {
 					// We were woken up or interrupted.
 					if (log.logTrace()) {
@@ -134,11 +134,11 @@ class ChannelSelector implements Runnable {
 				}
 
 				// Someone is ready for I/O, get the ready keys
-				Iterator i = readyKeys.iterator();
+				Iterator<SelectionKey> i = readyKeys.iterator();
 
 				// Process the next event
 				while (i.hasNext()) {
-					SelectionKey key = (SelectionKey) i.next();
+					SelectionKey key = i.next();
 					i.remove();
 
 					if (log.logTrace()) {

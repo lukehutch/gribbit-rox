@@ -42,7 +42,7 @@ public class Test_XmlRpcMethodResponseJ5 extends TestBase_XmlRpcMethod {
 	}
 
 	public void testGenericMap() throws Exception {
-		Map<String, Integer> struct = new HashMap<String, Integer>();
+		Map<String, Integer> struct = new HashMap<>();
 		struct.put("foo", new Integer(13));
 		struct.put("bar", new Integer(42));
 		XmlRpcMethodResponse rsp = new XmlRpcMethodResponse(struct);

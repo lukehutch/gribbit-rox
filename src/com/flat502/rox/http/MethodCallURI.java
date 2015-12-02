@@ -134,8 +134,8 @@ public class MethodCallURI {
 		}
 		String[] parts = Pattern.compile("/").split(uri.getPath(), -1);
 		this.methodName = parts.length > 0 ? parts[parts.length - 1] : "";
-		this.parameterNames = new ArrayList<String>();
-		this.parameters = new LinkedHashMap<String, Serializable>();
+		this.parameterNames = new ArrayList<>();
+		this.parameters = new LinkedHashMap<>();
 		if (uri.getQuery() != null) {
 			parts = uri.getQuery().split("&");
 			try {
@@ -147,9 +147,11 @@ public class MethodCallURI {
 					Object prevVal = this.parameters.get(key);
 					if (prevVal != null) {
 						if (prevVal instanceof List) {
-							((List<String>) prevVal).add(val);
+							@SuppressWarnings("unchecked")
+                            List<String> list = (List<String>) prevVal;
+                            list.add(val);
 						} else {
-							ArrayList<Object> list = new ArrayList<Object>();
+							ArrayList<Object> list = new ArrayList<>();
 							list.add(prevVal);
 							list.add(val);
 							this.parameters.put(key, list);

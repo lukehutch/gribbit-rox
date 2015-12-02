@@ -1,7 +1,5 @@
 package com.flat502.rox.client;
 
-import java.nio.ByteBuffer;
-
 import com.flat502.rox.http.HttpMessageBuffer;
 import com.flat502.rox.http.HttpResponseBuffer;
 import com.flat502.rox.http.ProcessingException;
@@ -9,7 +7,7 @@ import com.flat502.rox.processing.HttpMessageHandler;
 import com.flat502.rox.utils.BlockingQueue;
 
 class HttpResponseHandler extends HttpMessageHandler {
-	private ByteBuffer readBuf = ByteBuffer.allocate(1024);
+	// private ByteBuffer readBuf = ByteBuffer.allocate(1024);
 
 	public HttpResponseHandler(BlockingQueue queue) {
 		super(queue);

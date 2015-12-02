@@ -34,22 +34,22 @@ import java.util.TreeSet;
  * exists for a public field) methods are given precedence.
  */
 public class ClassDescriptor {
-	private static Map<Class, ClassDescriptor> cache = new HashMap<Class, ClassDescriptor>();
+	private static Map<Class<?>, ClassDescriptor> cache = new HashMap<>();
 
 	// TODO: How do we cope with method overloading?
-	private Map<String, Field> fields = new HashMap<String, Field>();
-	private Map<String, Method> getters = new HashMap<String, Method>();
-	private Map<String, Method> setters = new HashMap<String, Method>();
+	private Map<String, Field> fields = new HashMap<>();
+	private Map<String, Method> getters = new HashMap<>();
+	private Map<String, Method> setters = new HashMap<>();
 
 	// These have slightly slower access times than a HashSet
 	// but for the numbers of members we are dealing with this
 	// is a non-issue. Order makes testing simpler.
-	private Set<String> getterNames = new TreeSet<String>();
-	private Set<String> setterNames = new TreeSet<String>();
+	private Set<String> getterNames = new TreeSet<>();
+	private Set<String> setterNames = new TreeSet<>();
 
-	private Class clazz;
+	private Class<?> clazz;
 
-	private ClassDescriptor(Class clazz) throws IntrospectionException {
+	private ClassDescriptor(Class<?> clazz) throws IntrospectionException {
 		this.clazz = clazz;
 		this.inspect(clazz);
 	}
@@ -164,7 +164,7 @@ public class ClassDescriptor {
 		return this.setterNames.iterator();
 	}
 
-	public Class getGetterType(String name) {
+	public Class<?> getGetterType(String name) {
 		if (name == null) {
 			throw new IllegalArgumentException("name is null");
 		}
@@ -183,7 +183,7 @@ public class ClassDescriptor {
 		throw new IllegalArgumentException("No getter for " + name);
 	}
 
-	public Class getSetterType(String name) {
+	public Class<?> getSetterType(String name) {
 		if (name == null) {
 			throw new IllegalArgumentException("name is null");
 		}
@@ -215,7 +215,7 @@ public class ClassDescriptor {
 		}
 	}
 
-	private void inspect(Class clazz) throws IntrospectionException {
+	private void inspect(Class<?> clazz) throws IntrospectionException {
 		// Look for public fields.
 		Field[] pubFields = clazz.getFields();
 
@@ -270,7 +270,7 @@ public class ClassDescriptor {
 	 * @throws IllegalArgumentException
 	 * 	if the parameter is <code>null</code>.
 	 */
-	public static ClassDescriptor getInstance(Class clazz) throws IntrospectionException {
+	public static ClassDescriptor getInstance(Class<?> clazz) throws IntrospectionException {
 		if (clazz == null) {
 			throw new IllegalArgumentException("null clazz");
 		}

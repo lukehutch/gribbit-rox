@@ -8,7 +8,7 @@ public class ProfilerCollection implements Profiler {
 
 	public void addProfiler(Profiler p) {
 		if (this.profilers == null) {
-			this.profilers = new HashSet<Profiler>();
+			this.profilers = new HashSet<>();
 		}
 		this.profilers.add(p);
 	}

@@ -17,7 +17,8 @@ public class Version {
 	private static final int major = 1/*MAJOR*/;
 	private static final int minor = 2/*MINOR*/;
 	private static final int rev;
-	private static final String author = "James Greenfield"/*AUTHOR*/;
+	@SuppressWarnings("unused")
+    private static final String author = "James Greenfield"/*AUTHOR*/;
 	
 	static {
 		Matcher m = REV.matcher("$Rev: 16644 $");

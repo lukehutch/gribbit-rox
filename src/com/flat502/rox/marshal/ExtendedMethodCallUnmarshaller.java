@@ -46,7 +46,7 @@ public interface ExtendedMethodCallUnmarshaller extends MethodCallUnmarshaller {
 	 * @throws Exception
 	 * 	Implementations are free to throw exceptions.
 	 */
-	RpcCall unmarshal(InputStream in, Class[] structClasses) throws Exception;
+	RpcCall unmarshal(InputStream in, Class<?>[] structClasses) throws Exception;
 
 	/**
 	 * Unmarshal an {@link RpcCall} instance from a {@link Reader}.
@@ -79,7 +79,7 @@ public interface ExtendedMethodCallUnmarshaller extends MethodCallUnmarshaller {
 	 * @throws Exception
 	 * 	Implementations are free to throw exceptions.
 	 */
-	RpcCall unmarshal(Reader in, Class[] structClasses) throws Exception;
+	RpcCall unmarshal(Reader in, Class<?>[] structClasses) throws Exception;
 
 	/**
 	 * Unmarshal an {@link RpcCall} instance from an XML string.
@@ -112,5 +112,5 @@ public interface ExtendedMethodCallUnmarshaller extends MethodCallUnmarshaller {
 	 * @throws Exception
 	 * 	Implementations are free to throw exceptions.
 	 */
-	RpcCall unmarshal(String xml, Class[] structClasses) throws Exception;
+	RpcCall unmarshal(String xml, Class<?>[] structClasses) throws Exception;
 }

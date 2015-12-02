@@ -12,6 +12,7 @@ import com.flat502.rox.server.SyncRequestHandler;
  * @see com.flat502.rox.server.HttpRpcServer#registerHandler(String, String, AsyncRequestHandler, MethodCallUnmarshallerAid)
  * @see com.flat502.rox.server.HttpRpcServer#registerHandler(String, String, SyncRequestHandler, MethodCallUnmarshallerAid)
  */
+@SuppressWarnings("deprecation")
 public abstract class MethodCallUnmarshallerAid extends UnmarshallerAid {
 	/**
 	 * An implementation should return a {@link Class} instance representing
@@ -33,5 +34,5 @@ public abstract class MethodCallUnmarshallerAid extends UnmarshallerAid {
 	 * 	The {@link Class} for the type the parameter value should
 	 * 	be unmarshalled as, assuming it is a struct or an array.
 	 */
-	public abstract Class getType(String methodName, int index);
+	public abstract Class<?> getType(String methodName, int index);
 }

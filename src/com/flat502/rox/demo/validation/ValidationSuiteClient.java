@@ -43,7 +43,7 @@ public class ValidationSuiteClient {
 			IValidationSuite server = (IValidationSuite) client.proxyObject(
 					"validator1.", IValidationSuite.class);
 
-			HashMap map = new HashMap();
+			HashMap<String, String> map = new HashMap<>();
 			map.put("foo", "bar");
 			
 			System.out.println(server.countTheEntities("<><><>").ctLeftAngleBrackets);

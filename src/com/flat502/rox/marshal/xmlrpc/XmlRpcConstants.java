@@ -44,7 +44,7 @@ public interface XmlRpcConstants {
 		public static final String METHOD_RESPONSE = "methodResponse";
 		public static final String FAULT = "fault";
 
-		private static final Set<String> VALID_TAGS = new HashSet<String>();
+		private static final Set<String> VALID_TAGS = new HashSet<>();
 
 		static {
 			VALID_TAGS.add(METHOD_CALL);

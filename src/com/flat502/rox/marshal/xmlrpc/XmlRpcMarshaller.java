@@ -96,7 +96,7 @@ public class XmlRpcMarshaller implements XmlRpcConstants {
 	// expensive string manipulation. This hurts the NOP
 	// codec case a little but improves the general case
 	// fairly dramatically.
-	private static Map<String, String> fieldNameEncodingCache = new HashMap<String, String>();
+	private static Map<String, String> fieldNameEncodingCache = new HashMap<>();
 
 	private FieldNameEncoder fieldNameEncoder;
 
@@ -218,14 +218,14 @@ public class XmlRpcMarshaller implements XmlRpcConstants {
 		out.openTag("value");
 
 		String tag = null;
-		String value = null;
-		Class paramClass = param.getClass();
+		// String value = null;
+		Class<?> paramClass = param.getClass();
 		if (param instanceof Map) {
 			// We support this in addition to field introspection
 			// for convenience.
-			this.marshalMap(out, depth + 1, (Map) param);
+			this.marshalMap(out, depth + 1, (Map<?,?>) param);
 		} else if (param instanceof List) {
-			this.marshalList(out, depth + 1, (List) param);
+			this.marshalList(out, depth + 1, (List<?>) param);
 		} else if (paramClass == Boolean.TYPE || paramClass == Boolean.class) {
 			tag = this.getBooleanTagName();
 			out.openTag(tag);
@@ -426,11 +426,11 @@ public class XmlRpcMarshaller implements XmlRpcConstants {
 		}
 	}
 
-	protected void marshalMap(XmlPrinter out, int depth, Map param) throws MarshallingException, IOException {
+	protected void marshalMap(XmlPrinter out, int depth, Map<?, ?> param) throws MarshallingException, IOException {
 		out.openTag(Types.STRUCT);
-		Iterator entries = param.entrySet().iterator();
+		Iterator<?> entries = param.entrySet().iterator();
 		while (entries.hasNext()) {
-			Map.Entry entry = (Map.Entry) entries.next();
+			Map.Entry<?,?> entry = (Map.Entry<?,?>) entries.next();
 			if (entry.getKey() == null) {
 				throw new IllegalArgumentException("Null key encountered");
 			}
@@ -448,10 +448,10 @@ public class XmlRpcMarshaller implements XmlRpcConstants {
 		out.closeTag(Types.STRUCT);
 	}
 
-	protected void marshalList(XmlPrinter out, int depth, List list) throws MarshallingException, IOException {
+	protected void marshalList(XmlPrinter out, int depth, List<?> list) throws MarshallingException, IOException {
 		out.openTag(Types.ARRAY);
 		out.openTag("data");
-		Iterator iter = list.iterator();
+		Iterator<?> iter = list.iterator();
 		while (iter.hasNext()) {
 			Object element = iter.next();
 			this.marshalValue(out, depth + 2, element);

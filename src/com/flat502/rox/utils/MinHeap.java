@@ -253,11 +253,13 @@ public class MinHeap {
 			this.value = value;
 		}
 	
-		public long getKey() {
+		@SuppressWarnings("unused")
+        public long getKey() {
 			return key;
 		}
 	
-		public Object getValue() {
+		@SuppressWarnings("unused")
+        public Object getValue() {
 			return value;
 		}
 	}

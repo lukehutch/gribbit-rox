@@ -27,7 +27,8 @@ public class DeferredMethodCall {
 		this.proxy = proxy;
 	}
 
-	public void invoke() throws IOException, MarshallingException {
+	@SuppressWarnings("deprecation")
+    public void invoke() throws IOException, MarshallingException {
 		try {
 			this.rspChannel.respond(this.proxy.invoke(this.call));
 		} catch (HttpResponseException e) {

@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
+import java.util.Map.Entry;
 
 import com.flat502.rox.processing.HttpRpcProcessor;
 import com.flat502.rox.utils.Utils;
@@ -24,7 +24,7 @@ import com.flat502.rox.utils.Utils;
  * messages, and containing an HTTP message.
  */
 public abstract class HttpMessageBuffer {
-	private static final Pattern HTTP_VERSION = Pattern.compile("HTTP/(\\d+\\.\\d+)");
+	// private static final Pattern HTTP_VERSION = Pattern.compile("HTTP/(\\d+\\.\\d+)");
 
 	private HttpRpcProcessor processor;
 	private Socket socket;
@@ -237,9 +237,9 @@ public abstract class HttpMessageBuffer {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		if (this.headers != null) {
-			Iterator headers = this.headers.entrySet().iterator();
-			while (headers.hasNext()) {
-				Map.Entry entry = (Map.Entry) headers.next();
+			Iterator<Entry<String, String>> headersIter = this.headers.entrySet().iterator();
+			while (headersIter.hasNext()) {
+				Entry<String, String> entry = headersIter.next();
 				pw.print(entry.getKey());
 				pw.print(": ");
 				pw.println(entry.getValue());
@@ -270,7 +270,7 @@ public abstract class HttpMessageBuffer {
 	 */
 	private int seekToContentStart() {
 		for (int i = 0; i < this.data.length; i++) {
-			byte ch = this.data[i];
+			// byte ch = this.data[i];
 			if (this.data[i] == '\r') {
 				if (i > this.data.length - 4) {
 					return -1;
@@ -284,7 +284,7 @@ public abstract class HttpMessageBuffer {
 	}
 
 	private Map<String, String> unpackHeaders(int contentStarts) throws Exception {
-		Map<String, String> headers = new LinkedHashMap<String, String>();
+		Map<String, String> headers = new LinkedHashMap<>();
 		boolean firstLine = true;
 		int idx = 0;
 		int lineBegins = idx;

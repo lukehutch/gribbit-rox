@@ -5,14 +5,11 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.regex.Pattern;
 
 import com.flat502.rox.encoding.Encoding;
 import com.flat502.rox.encoding.EncodingMap;
@@ -25,7 +22,7 @@ import com.flat502.rox.server.HttpRpcServer;
 public class HttpRequestBuffer extends HttpMessageBuffer {
 	private static final HttpQValueComparator QVALUE_CMP = new HttpQValueComparator();
 
-	private static final Pattern REQUEST_LINE = Pattern.compile("(\\S+) (\\S+) (\\S+)");
+	// private static final Pattern REQUEST_LINE = Pattern.compile("(\\S+) (\\S+) (\\S+)");
 
 	private String method;
 	private String uri;
@@ -116,7 +113,7 @@ public class HttpRequestBuffer extends HttpMessageBuffer {
 	 * 	<code>null</code> if no <code>Accept-Encoding</code> header
 	 * 	was present, or a map of accepted encodings.
 	 */
-	public Map getAcceptedEncodings() {
+	public Map<String, Float> getAcceptedEncodings() {
 		return this.acceptedEncodings;
 	}
 
@@ -263,7 +260,7 @@ public class HttpRequestBuffer extends HttpMessageBuffer {
 
 	private void unpackAcceptedEncodings(String acceptEncoding) throws InvalidHeaderException {
 		acceptEncoding = acceptEncoding.trim();
-		this.acceptedEncodings = new LinkedHashMap<String, Float>();
+		this.acceptedEncodings = new LinkedHashMap<>();
 		if (!acceptEncoding.equals("")) {
 			String[] encodings = acceptEncoding.split("\\s*,\\s*");
 			for (int i = 0; i < encodings.length; i++) {
@@ -300,12 +297,12 @@ public class HttpRequestBuffer extends HttpMessageBuffer {
 
 			// Finally, sort the keys of the map we've built based on the
 			// associated qvalues.
-			List<String> keys = new ArrayList<String>(this.acceptedEncodings.keySet());
+			// List<String> keys = new ArrayList<>(this.acceptedEncodings.keySet());
 			Comparator<String> cmp2 = new Comparator<String>() {
 				@Override
                 public int compare(String name1, String name2) {
-					Object q1 = acceptedEncodings.get(name1);
-					Object q2 = acceptedEncodings.get(name2);
+					Float q1 = acceptedEncodings.get(name1);
+					Float q2 = acceptedEncodings.get(name2);
 					// We want them sorted highest to lowest and they can't be equal 
 					// or we break the Map interface so tiebreak by sorted name1 ahead
 					// of name2 which means we fall back to order of occurrence
@@ -314,13 +311,13 @@ public class HttpRequestBuffer extends HttpMessageBuffer {
 					return (v == 0) ? (1) : v;
 				}
 			};
-			TreeMap<String, Float> tm = new TreeMap<String, Float>(cmp2);
+			TreeMap<String, Float> tm = new TreeMap<>(cmp2);
 			tm.putAll(this.acceptedEncodings);
 
 			// Don't give back tm directly because it contains a
 			// reference to acceptEncodings which it will want to use
 			// every time it iterates. That gets out of hand quickly.
-			this.acceptedEncodings = new LinkedHashMap<String, Float>();
+			this.acceptedEncodings = new LinkedHashMap<>();
 			this.acceptedEncodings.putAll(tm);
 		}
 

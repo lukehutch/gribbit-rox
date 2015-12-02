@@ -32,12 +32,12 @@ class SharedSocketChannelPool {
 	// activeConnSets maps Destinations -> Set<PooledSocketChannel>
 	//		These sets allow us to recover active channels when a client
 	//		detaches.
-	private Map<Object, ArrayList> pooledConnStacks = new HashMap<Object, ArrayList>();
-	private Map<Object, Set> activeConnSets = new HashMap<Object, Set>();
+	private Map<Object, ArrayList<PooledSocketChannel>> pooledConnStacks = new HashMap<>();
+	private Map<Object, Set<PooledSocketChannel>> activeConnSets = new HashMap<>();
 	
 	// Maps Destinations -> Set<HttpRpcClient> so we can track all
 	// known clients for a given key (see createClientKey()).
-	private Map<Object, Set> knownClients = new HashMap<Object, Set>();
+	private Map<Object, Set<HttpRpcClient>> knownClients = new HashMap<>();
 	
 	// A binary heap holding PooledSocketChannel instances that aren't
 	// checked out. This is ordered by the last access time of said 
@@ -56,7 +56,7 @@ class SharedSocketChannelPool {
 	// Maps physical channels to their pooled wrapper
 	// so we can find the pooled wrapper when a channel
 	// is returned.
-	private Map<SocketChannel, PooledSocketChannel> channelMap = new HashMap<SocketChannel, PooledSocketChannel>();
+	private Map<SocketChannel, PooledSocketChannel> channelMap = new HashMap<>();
 
 	// We use this to capture threads when the pool reaches it's
 	// limit. This ensures that threads are serviced in FIFO order
@@ -96,7 +96,7 @@ class SharedSocketChannelPool {
 				Object key = this.createClientKey(client);
 				Set<HttpRpcClient> clientSet = this.knownClients.get(key);
 				if (clientSet == null) {
-					clientSet = new HashSet<HttpRpcClient>();
+					clientSet = new HashSet<>();
 					this.knownClients.put(key, clientSet);
 				}
 				clientSet.add(client);
@@ -234,7 +234,7 @@ class SharedSocketChannelPool {
 						throw new IllegalArgumentException("Channel not removed by owner");
 					}
 					
-					Set activeSet = this.activeConnSets.get(key);
+					Set<PooledSocketChannel> activeSet = this.activeConnSets.get(key);
 					// This might be null if a timeout occurs, calls into this method
 					// and the client has already detached.
 					if (activeSet != null) {
@@ -269,9 +269,9 @@ class SharedSocketChannelPool {
 				// Remove the pooled connection if it hasn't been done already (because
 				// we closed this connection as part of detaching() and this is the channel selector
 				// calling through after being woken up subsequently).
-				List connStack = this.pooledConnStacks.get(pooledChannel.getPoolingKey());
+				List<PooledSocketChannel> connStack = this.pooledConnStacks.get(pooledChannel.getPoolingKey());
 				if (connStack != null) {
-					Set clientSet = this.knownClients.get(pooledChannel.getPoolingKey());
+					Set<HttpRpcClient> clientSet = this.knownClients.get(pooledChannel.getPoolingKey());
 					if (clientSet == null) {
 						if (connStack.remove(pooledChannel)) {
 							this.availableConnections--;
@@ -287,20 +287,20 @@ class SharedSocketChannelPool {
 	// TODO: This won't close in-use connections. Should it?
 	public void close() {
 		synchronized (this.mutex) {
-			Iterator stacks = this.pooledConnStacks.entrySet().iterator();
+			Iterator<Entry<Object, ArrayList<PooledSocketChannel>>> stacks = this.pooledConnStacks.entrySet().iterator();
 			while(stacks.hasNext()) {
-				Entry entry = (Map.Entry) stacks.next();
+				Entry<Object, ArrayList<PooledSocketChannel>> entry = stacks.next();
 				String key = (String) entry.getKey();
-				List stack = (List) entry.getValue();
+				List<PooledSocketChannel> stack = entry.getValue();
 				
-				ListIterator pooledChannels = stack.listIterator(stack.size());
+				ListIterator<PooledSocketChannel> pooledChannels = stack.listIterator(stack.size());
 				while(pooledChannels.hasPrevious()) {
-					PooledSocketChannel pooledChannel = (PooledSocketChannel) pooledChannels.previous();
+					PooledSocketChannel pooledChannel = pooledChannels.previous();
 					this.closePooledChannel(pooledChannel);
 					pooledChannels.remove();
 				}
 				
-				Set clientSet = this.knownClients.get(key);
+				Set<HttpRpcClient> clientSet = this.knownClients.get(key);
 				if (clientSet != null && clientSet.isEmpty()) {
 					// Only remove this stack if we know of no other clients using this key (URL)
 					stacks.remove();
@@ -318,14 +318,14 @@ class SharedSocketChannelPool {
 	public void detach(HttpRpcClient client) {
 		synchronized(this.mutex) {
 			try {
-				String hc = ""+System.identityHashCode(client);
+				// String hc = ""+System.identityHashCode(client);
 				Object key = createClientKey(client);
 				dbgLog("DETACH starts", client, null);
 	
 				// By definition, pooled connections are not "owned" by this client.
 				// However, if no other clients we know of share their key then
 				// we need to clean up those pooled connections.
-				Set clientSet = this.knownClients.get(key);
+				Set<HttpRpcClient> clientSet = this.knownClients.get(key);
 				// We may never have seen connections on this URL
 				if (clientSet != null) {
 					clientSet.remove(client);
@@ -333,11 +333,11 @@ class SharedSocketChannelPool {
 						this.knownClients.remove(key);
 		
 						// Clean up all pooled connections for this key
-						List connStack = this.pooledConnStacks.remove(key);
+						ArrayList<PooledSocketChannel> connStack = this.pooledConnStacks.remove(key);
 						if (connStack != null) {
-							Iterator pooledChannels = connStack.iterator();
+							Iterator<PooledSocketChannel> pooledChannels = connStack.iterator();
 							while(pooledChannels.hasNext()) {
-								PooledSocketChannel pooledChannel = (PooledSocketChannel) pooledChannels.next();
+								PooledSocketChannel pooledChannel = pooledChannels.next();
 								this.channelHeap.removeValue(pooledChannel);
 								// This cleans up channelMap too
 								this.closePooledChannel(pooledChannel);
@@ -349,11 +349,11 @@ class SharedSocketChannelPool {
 				dbgLog("DETACH pooled done", client, null);
 				
 				// Reclaim any active connections owned by this client
-				Set activeSet = this.activeConnSets.get(key);
+				Set<PooledSocketChannel> activeSet = this.activeConnSets.get(key);
 				if (activeSet != null) {
-					Iterator pooledChannels = activeSet.iterator();
+				    Iterator<PooledSocketChannel> pooledChannels = activeSet.iterator();
 					while(pooledChannels.hasNext()) {
-						PooledSocketChannel pooledChannel = (PooledSocketChannel) pooledChannels.next();
+						PooledSocketChannel pooledChannel = pooledChannels.next();
 						if (pooledChannel.getOwner() == client) {
 							this.channelHeap.removeValue(pooledChannel);
 							// This cleans up channelMap too
@@ -411,14 +411,14 @@ class SharedSocketChannelPool {
 		
 		Set<PooledSocketChannel> activeSet = this.activeConnSets.get(key);
 		if (activeSet == null) {
-			activeSet = new HashSet<PooledSocketChannel>();
+			activeSet = new HashSet<>();
 			this.activeConnSets.put(key, activeSet);
 		}
 		activeSet.add(pooledChannel);
 		this.activeConnections++;
 		
 		if (!this.pooledConnStacks.containsKey(key)) {
-			this.pooledConnStacks.put(key, new ArrayList());
+			this.pooledConnStacks.put(key, new ArrayList<PooledSocketChannel>());
 		}
 		
 		return channel;
@@ -461,7 +461,7 @@ class SharedSocketChannelPool {
 			this.channelHeap.removeSmallest();
 			
 			// Fetch the related connection stack and remove this channel
-			List connStack = this.pooledConnStacks.get(pooledChannel.getPoolingKey());
+			ArrayList<PooledSocketChannel> connStack = this.pooledConnStacks.get(pooledChannel.getPoolingKey());
 			connStack.remove(pooledChannel);
 			
 			if (log.logTrace()) {
@@ -478,7 +478,7 @@ class SharedSocketChannelPool {
 		PooledSocketChannel pooledChannel = (PooledSocketChannel) this.channelHeap.removeSmallest();
 		
 		// Fetch the related connection stack and remove this channel
-		List connStack = this.pooledConnStacks.get(pooledChannel.getPoolingKey());
+		ArrayList<PooledSocketChannel> connStack = this.pooledConnStacks.get(pooledChannel.getPoolingKey());
 		connStack.remove(pooledChannel);
 
 		// And finally, actually close the connection. This also
@@ -497,14 +497,14 @@ class SharedSocketChannelPool {
 			log.trace("Checking out pooled socket channel for [" + key + "]");
 		}
 
-		List pooledStack = this.pooledConnStacks.get(key);
+		ArrayList<PooledSocketChannel> pooledStack = this.pooledConnStacks.get(key);
 		if (pooledStack == null || pooledStack.isEmpty()) {
 			// No pooled channel available
 			return null;
 		}
 
 		int lastIdx = pooledStack.size() - 1;
-		PooledSocketChannel pooledChannel = (PooledSocketChannel) pooledStack.remove(lastIdx);
+		PooledSocketChannel pooledChannel = pooledStack.remove(lastIdx);
 		this.availableConnections--;
 		
 		// Update our record of ownership and register this channel
@@ -546,7 +546,7 @@ class SharedSocketChannelPool {
 		pooledStack.add(pooledChannel);
 		this.availableConnections++;
 
-		Set activeSet = this.activeConnSets.get(key);
+		Set<PooledSocketChannel> activeSet = this.activeConnSets.get(key);
 		activeSet.remove(pooledChannel);
 		this.activeConnections--;
 

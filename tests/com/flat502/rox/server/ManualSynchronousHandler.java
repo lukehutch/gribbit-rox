@@ -12,7 +12,7 @@ import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodResponse;
 
 public class ManualSynchronousHandler implements SynchronousRequestHandler {
 	public RpcCall call;
-	public List<RpcCall> calls = new ArrayList<RpcCall>();
+	public List<RpcCall> calls = new ArrayList<>();
 	public RpcCallContext context;
 
 	@Override

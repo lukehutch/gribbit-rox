@@ -28,22 +28,24 @@ public class SSLServerDemo implements SynchronousRequestHandler {
 		if (call.getName().equals("example.getDate")) {
 			return new XmlRpcMethodResponse(new TimeInfo());
 		} else if (call.getName().equals("example.sum")) {
-			Integer sum = new Integer(sum((List)call.getParameters()[0]));
+            @SuppressWarnings("unchecked")
+            List<Integer> list = (List<Integer>)call.getParameters()[0];
+            Integer sum = new Integer(sum(list));
 			return new XmlRpcMethodResponse(sum);
 		} else if (call.getName().equals("example.getInfo")) {
 			throw new NoSuchMethodException();
 		}
 		throw new NoSuchMethodException();
 	}
-	
-	private int sum(List list) {
-		int total = 0;
-		Iterator i = list.iterator();
-		while (i.hasNext()) {
-			total += ((Integer) i.next()).intValue();
-		}
-		return total;
-	}
+    
+    private int sum(List<Integer> list) {
+        int total = 0;
+        Iterator<Integer> i = list.iterator();
+        while (i.hasNext()) {
+            total += i.next().intValue();
+        }
+        return total;
+    }
 
 	/**
 	 * Start an instance of this demo server.

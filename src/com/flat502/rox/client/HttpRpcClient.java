@@ -72,17 +72,17 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 	// Maps Sockets to Notifiable implementations
 	// so complete responses can be passed back to
 	// the caller (synchronously or asynchronously).
-	private Map<Socket, Notifiable> notificationMap = new HashMap<Socket, Notifiable>();
+	private Map<Socket, Notifiable> notificationMap = new HashMap<>();
 
 	// Maps Sockets to incomplete HttpResponseBuffer instances.
-	private Map<Socket, HttpResponseBuffer> responseBuffers = new HashMap<Socket, HttpResponseBuffer>();
+	private Map<Socket, HttpResponseBuffer> responseBuffers = new HashMap<>();
 
 	// Maps Sockets to ByteBuffer instances that are
 	// ready to be written out on the socket.
 	// Placing a ByteBuffer in here effectively 'queues' it for
 	// delivery to the associated SocketChannel when it next
 	// becomes available for writing.
-	private Map<Socket, ByteBuffer> requestBuffers = new HashMap<Socket, ByteBuffer>();
+	private Map<Socket, ByteBuffer> requestBuffers = new HashMap<>();
 
 	private URL url;
 	
@@ -92,7 +92,7 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 
 	private long requestTimeout;
 	private Timer requestTimer;
-	private Map<Socket, TimerTask> activeRequestTimers = new HashMap<Socket, TimerTask>();
+	private Map<Socket, TimerTask> activeRequestTimers = new HashMap<>();
 	
 	private Encoding contentEncoding;
 	private boolean acceptEncodedResponses = true;
@@ -192,7 +192,7 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 	 * 	if any other error occurs while attempting to execute
 	 * 	the method call.
 	 */
-	public Object execute(String name, Object[] params, Class retClass) throws Exception {
+	public Object execute(String name, Object[] params, Class<?> retClass) throws Exception {
 		return this.execute(name, params, new ReturnTypeMapper(retClass));
 	}
 	
@@ -316,7 +316,7 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 	 * @deprecated Use {@link #execute(String, Object[], Class, AsynchronousResponseHandler)} instead.
 	 */
 	@Deprecated
-    public void execute(String name, Object[] params, Class retClass, ResponseHandler handler) throws Exception {
+    public void execute(String name, Object[] params, Class<?> retClass, ResponseHandler handler) throws Exception {
 		this.execute(name, params, new ReturnTypeMapper(retClass), new AsynchronousResponseHandlerAdaptor(handler));
 	}
 	
@@ -346,7 +346,7 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 	 * 	if any other error occurs while attempting to execute
 	 * 	the method call.
 	 */
-	public void execute(String name, Object[] params, Class retClass, AsynchronousResponseHandler handler) throws Exception {
+	public void execute(String name, Object[] params, Class<?> retClass, AsynchronousResponseHandler handler) throws Exception {
 		this.execute(name, params, new ReturnTypeMapper(retClass), handler);
 	}
 	
@@ -428,7 +428,7 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 	 * 	If an error occurs generating the dynamic proxy.
 	 * @see java.lang.reflect.Proxy
 	 */
-	public Object proxyObject(Class targetClass) throws Exception {
+	public Object proxyObject(Class<?> targetClass) throws Exception {
 		return this.proxyObject(null, targetClass);
 	}
 
@@ -467,7 +467,7 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 	 * 	If an error occurs generating the dynamic proxy.
 	 * @see java.lang.reflect.Proxy
 	 */
-	public Object proxyObject(String methodPrefix, Class targetClass) throws Exception {
+	public Object proxyObject(String methodPrefix, Class<?> targetClass) throws Exception {
 		return new RpcClientProxy(methodPrefix, targetClass, this).getProxiedTarget();
 	}
 
@@ -710,7 +710,7 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 		HttpRequest httpReq = this.newHttpRequest(call);
 
 		Socket socket;
-		SynchronousNotifier notifier;
+		// SynchronousNotifier notifier;
 		synchronized (this.notifierMutex) {
 			socket = this.getConnection();
 
@@ -775,7 +775,8 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 		// Ensure there's a message buffer for this socket in case
 		// the connection attempt fails (we need to recover the socket
 		// in that case so we can hand it back to the connection pool).
-		HttpMessageBuffer httpMsg = this.getReadBuffer(socketChannel.socket());
+		@SuppressWarnings("unused")
+        HttpMessageBuffer httpMsg = this.getReadBuffer(socket);
 		return socket;
 	}
 

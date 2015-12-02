@@ -19,7 +19,7 @@ class XmlRpcUtils {
 	
 	private static DateFormatThreadLocal[] dateFormats = new DateFormatThreadLocal[2];
 
-	public static DateFormatThreadLocal getDateFormatProvider(Class user, DateFormat initialFormat) {
+	public static DateFormatThreadLocal getDateFormatProvider(Class<?> user, DateFormat initialFormat) {
 		// This may well be called by multiple threads. Without
 		// synchronization the worst is that we'll create more than
 		// one DateFormatThreadLocal instance (and even SimpleDateFormat).
@@ -54,8 +54,8 @@ class XmlRpcUtils {
 		if (Utils.getJavaRuntimeVersion() > 1.4) {
 			// Dodge the 1.4 compiler
 			try {
-				Class clazz = Class.forName(XmlRpcMarshaller.class.getName() + "J5");
-				Constructor cons = clazz.getDeclaredConstructor(new Class[]{FieldNameEncoder.class});
+				Class<?> clazz = Class.forName(XmlRpcMarshaller.class.getName() + "J5");
+				Constructor<?> cons = clazz.getDeclaredConstructor(new Class[]{FieldNameEncoder.class});
 				return (XmlRpcMarshaller) cons.newInstance(new Object[]{fieldNameEncoder});
 			} catch (Exception e) {
 				log.warn("Failed to instantiate Java 1.5 marshaller: falling back to 1.4 marshaller", e);

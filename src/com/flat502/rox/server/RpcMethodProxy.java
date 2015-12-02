@@ -47,8 +47,8 @@ public abstract class RpcMethodProxy extends MethodCallUnmarshallerAid {
 	private Pattern namePattern;
 	private Object target;
 
-	private Map<String, Class<?>[]> methodTypeMap = new HashMap<String, Class<?>[]>();
-	private Map<String, Method> methodMap = new HashMap<String, Method>();
+	private Map<String, Class<?>[]> methodTypeMap = new HashMap<>();
+	private Map<String, Method> methodMap = new HashMap<>();
 
 	public RpcMethodProxy(String namePattern, Object target) {
 		this.namePattern = Pattern.compile(namePattern);
@@ -102,7 +102,7 @@ public abstract class RpcMethodProxy extends MethodCallUnmarshallerAid {
 			// Start with the parameters from the RPC call.
 			Object[] params = call.getParameters();
 			
-			Class[] targetParams = this.methodTypeMap.get(matchedName);
+			Class<?>[] targetParams = this.methodTypeMap.get(matchedName);
 			if (params.length == targetParams.length-1) {
 				if (RpcCallContext.class.isAssignableFrom(targetParams[targetParams.length-1])) {
 					params = Utils.resize(params, params.length + 1);
@@ -122,7 +122,7 @@ public abstract class RpcMethodProxy extends MethodCallUnmarshallerAid {
 	}
 
 	@Override
-    public Class getType(String methodName, int index) {
+    public Class<?> getType(String methodName, int index) {
 		Matcher m = this.namePattern.matcher(methodName);
 		if (!m.find()) {
 			throw new IllegalStateException("No match on [" + methodName + "] using pattern ["
@@ -134,7 +134,7 @@ public abstract class RpcMethodProxy extends MethodCallUnmarshallerAid {
 		}
 
 		String lookupName = this.decodeRpcMethodName(m.group(1));
-		Class[] types = this.methodTypeMap.get(lookupName);
+		Class<?>[] types = this.methodTypeMap.get(lookupName);
 		if (types == null || types.length <= index) {
 			return null;
 		}

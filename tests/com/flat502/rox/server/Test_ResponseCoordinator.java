@@ -102,7 +102,7 @@ public class Test_ResponseCoordinator extends TestCase {
 	}
 	
 	private class MockResponseCoordinator extends ResponseCoordinator {
-		public List<HttpResponse> lastRsps = new ArrayList<HttpResponse>();
+		public List<HttpResponse> lastRsps = new ArrayList<>();
 		
 		public MockResponseCoordinator(StubHttpRpcServer server, Socket socket) {
 			super(server, socket);

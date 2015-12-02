@@ -14,7 +14,7 @@ import java.util.List;
 // issues.
 public class BlockingQueue {
 	private Object mutex = new Object();
-	private List<Object> queue = new LinkedList<Object>();
+	private List<Object> queue = new LinkedList<>();
 
 	/**
 	 * Adds the specified element to this queue

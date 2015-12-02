@@ -2,12 +2,9 @@ package com.flat502.rox.http;
 
 import java.util.Comparator;
 
-public class HttpQValueComparator implements Comparator {
+public class HttpQValueComparator implements Comparator<Float> {
 	@Override
-    public int compare(Object a, Object b) {
-		Float qvalue1 = (Float) a;
-		Float qvalue2 = (Float) b;
-		
+    public int compare(Float qvalue1, Float qvalue2) {
 		if (qvalue1 == null && qvalue2 == null) {
 			return 0;
 		}

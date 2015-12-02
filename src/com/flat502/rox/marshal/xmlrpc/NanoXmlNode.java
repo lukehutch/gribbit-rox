@@ -37,14 +37,16 @@ class NanoXmlNode implements XmlNode {
 	}
 
 	@Override
-    public Iterator enumerateChildren() {
-		return new NanoIterator(this.element.enumerateChildren());
+    public Iterator<XmlNode> enumerateChildren() {
+		@SuppressWarnings("unchecked")
+        Enumeration<IXMLElement> children = this.element.enumerateChildren();
+        return new NanoIterator(children);
 	}
 
-	private class NanoIterator implements Iterator {
-		private Enumeration enumeration;
+	private class NanoIterator implements Iterator<XmlNode> {
+		private Enumeration<IXMLElement> enumeration;
 
-		public NanoIterator(Enumeration enumeration) {
+		public NanoIterator(Enumeration<IXMLElement> enumeration) {
 			this.enumeration = enumeration;
 		}
 
@@ -54,8 +56,8 @@ class NanoXmlNode implements XmlNode {
 		}
 
 		@Override
-        public Object next() {
-			return new NanoXmlNode((IXMLElement) this.enumeration.nextElement());
+        public NanoXmlNode next() {
+			return new NanoXmlNode(this.enumeration.nextElement());
 		}
 
 		@Override

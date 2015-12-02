@@ -1,7 +1,5 @@
 package com.flat502.rox.server;
 
-import java.nio.ByteBuffer;
-
 import com.flat502.rox.encoding.Encoding;
 import com.flat502.rox.http.HttpConstants;
 import com.flat502.rox.http.HttpMessageBuffer;
@@ -18,7 +16,7 @@ import com.flat502.rox.utils.BlockingQueue;
 class HttpRequestHandler extends HttpMessageHandler {
 	private static Log log = LogFactory.getLog(HttpRequestHandler.class);
 
-	private ByteBuffer readBuf = ByteBuffer.allocate(1024);
+	// private ByteBuffer readBuf = ByteBuffer.allocate(1024);
 
 	HttpRequestHandler(BlockingQueue queue) {
 		super(queue);

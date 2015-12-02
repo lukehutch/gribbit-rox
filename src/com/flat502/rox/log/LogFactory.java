@@ -15,7 +15,7 @@ public class LogFactory {
 		return oldImpl;
 	}
 	
-	public static synchronized Log getLog(Class clazz) {
+	public static synchronized Log getLog(Class<?> clazz) {
 		if (impl == null) {
 			return NULL_LOG;
 		}

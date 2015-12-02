@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
@@ -76,21 +77,21 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	// 	SyncRequestHandler
 	// 	AsyncRequestHandler
 	// A null URI key is a wildcard.
-	private Map<String, Map> uriHandlers = new HashMap<String, Map>();
+	private Map<String, Map<String, RequestHandler>> uriHandlers = new HashMap<>();
 	
 	// Maps HTTP methods (strings) onto HttpRequestUnmarshaller instances.
-	private Map<String, HttpRequestUnmarshaller> reqUnmarshallers = new HashMap<String, HttpRequestUnmarshaller>();
+	private Map<String, HttpRequestUnmarshaller> reqUnmarshallers = new HashMap<>();
 
 	// Maps RequestHandler instances to MethodCallUnmarshallerAid
 	// instances.
-	private Map<RequestHandler, MethodCallUnmarshallerAid> handlerUnmarshallerAids = new HashMap<RequestHandler, MethodCallUnmarshallerAid>();
+	private Map<RequestHandler, MethodCallUnmarshallerAid> handlerUnmarshallerAids = new HashMap<>();
 
 	// Maps strings to their compiled Pattern
 	// instance. This is stored separately from
 	// the above since Pattern doesn't override
 	// equals() or hashCode() and we want to be
 	// able to detect duplicate patterns.
-	private Map<String, Pattern> globalPatternMap = new HashMap<String, Pattern>();
+	private Map<String, Pattern> globalPatternMap = new HashMap<>();
 
 	// The address (and name) and port we bind on.
 	// We store the host along with the host so we
@@ -107,14 +108,14 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	private String headerHostValue;
 
 	// Maps Sockets to incomplete HttpRequestBuffer instances.
-	private Map<Socket, HttpRequestBuffer> requestBuffers = new HashMap<Socket, HttpRequestBuffer>();
+	private Map<Socket, HttpRequestBuffer> requestBuffers = new HashMap<>();
 
 	// Maps Sockets to ByteBuffer instances that are
 	// ready to be written out on the socket.
 	// Placing a ByteBuffer in here effectively 'queues' it for
 	// delivery to the associated SocketChannel when it next
 	// becomes available for writing.
-	private Map<Socket, List<ByteBuffer>> responseBuffers = new HashMap<Socket, List<ByteBuffer>>();
+	private Map<Socket, List<ByteBuffer>> responseBuffers = new HashMap<>();
 
 	private AcceptPolicy acceptPolicy;
 
@@ -126,11 +127,11 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	
 	// Maps Sockets to Timer instances that are reset whenever there's
 	// activity on the socket. Used to enforce idle client timeouts.
-	private Map<Socket, TimerTask> socketActivity = new HashMap<Socket, TimerTask>();
+	private Map<Socket, TimerTask> socketActivity = new HashMap<>();
 
 	// Maps Sockets to an object responsible for coordinating responses
 	// so we handle pipelined requests correctly.
-	private Map<Socket, ResponseCoordinator> socketResponseCoordinators = new HashMap<Socket, ResponseCoordinator>();
+	private Map<Socket, ResponseCoordinator> socketResponseCoordinators = new HashMap<>();
 	
 	/**
 	 * Initialize a new HTTP RPC server.
@@ -467,7 +468,7 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 
 			Map<String, RequestHandler> patternMap = this.uriHandlers.get(uriPath);
 			if (patternMap == null) {
-				patternMap = new LinkedHashMap<String, RequestHandler>();
+				patternMap = new LinkedHashMap<>();
 				this.uriHandlers.put(uriPath, patternMap);
 			}
 
@@ -601,22 +602,22 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 		}
 
 		RequestHandler handler = null;
-		Map patternMap = this.uriHandlers.get(uri);
+		Map<String, RequestHandler> patternMap = this.uriHandlers.get(uri);
 		if (patternMap == null) {
 			if (log.logDebug()) {
 				log.debug("Nothing registered for uri [" + uri + "]");
 			}
 			return null;
 		}
-		Iterator patterns = patternMap.entrySet().iterator();
+		Iterator<Entry<String, RequestHandler>> patterns = patternMap.entrySet().iterator();
 		while (patterns.hasNext()) {
-			Map.Entry entry = (Map.Entry) patterns.next();
+			Entry<String, RequestHandler> entry = patterns.next();
 			Pattern pattern = this.globalPatternMap.get(entry.getKey());
 			if (pattern.matcher(methodName).find()) {
 				if (log.logDebug()) {
 					log.debug("Handler matched on pattern [" + pattern + "]");
 				}
-				handler = (RequestHandler) entry.getValue();
+				handler = entry.getValue();
 			}
 		}
 		return handler;
@@ -656,14 +657,14 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	
 	// TODO: Document
 	protected Encoding selectResponseEncoding(HttpRequestBuffer request) {
-		Map accepted = request.getAcceptedEncodings();
+		Map<String, Float> accepted = request.getAcceptedEncodings();
 		if (accepted == null) {
 			return null;
 		}
 		
-		Iterator encodings = accepted.keySet().iterator();
+		Iterator<String> encodings = accepted.keySet().iterator();
 		while (encodings.hasNext()) {
-			String encodingName = (String) encodings.next();
+			String encodingName = encodings.next();
 			Encoding encoding = this.contentEncodingMap.getEncoding(encodingName);
 			if (encoding != null) {
 				return encoding;
@@ -764,7 +765,8 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 
 		// Add the new SocketChannel to our Selector
 		socketChannel.configureBlocking(false);
-		SelectionKey acceptKey = socketChannel.register(this.getSocketSelector(), SelectionKey.OP_READ);
+		@SuppressWarnings("unused")
+        SelectionKey acceptKey = socketChannel.register(this.getSocketSelector(), SelectionKey.OP_READ);
 		
 		this.resetClientTimer(socketChannel.socket());
 	}
@@ -964,7 +966,7 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 			if (existing != null) {
 				existing.add(data);
 			} else {
-				LinkedList<ByteBuffer> list = new LinkedList<ByteBuffer>();
+				LinkedList<ByteBuffer> list = new LinkedList<>();
 				list.add(data);
 				this.responseBuffers.put(socket, list);
 			}
@@ -1013,7 +1015,7 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 		}
 
 		@Override
-        public Class getType(String methodName, int index) {
+        public Class<?> getType(String methodName, int index) {
 			MethodCallUnmarshallerAid aid = this.lookupAid(methodName);
 			if (aid == null) {
 				return null;

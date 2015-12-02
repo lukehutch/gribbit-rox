@@ -58,7 +58,7 @@ public class ValidationSuiteServer implements IValidationSuite {
 	}
 
 	@Override
-    public Map echoStructTest(Map struct) {
+    public Map<?, ?> echoStructTest(Map<?, ?> struct) {
 		return struct;
 	}
 
@@ -74,10 +74,10 @@ public class ValidationSuiteServer implements IValidationSuite {
 	}
 
 	@Override
-    public int nestedStructTest(Map calendar) {
-		Map months = (Map) calendar.get("2000");
-		Map days = (Map) months.get("04");
-		Map buriedStruct = (Map) days.get("01");
+    public int nestedStructTest(Map<?, ?> calendar) {
+		Map<?, ?> months = (Map<?, ?>) calendar.get("2000");
+		Map<?, ?> days = (Map<?, ?>) months.get("04");
+		Map<?, ?> buriedStruct = (Map<?, ?>) days.get("01");
 		Integer moe = (Integer) buriedStruct.get("moe");
 		Integer larry = (Integer) buriedStruct.get("larry");
 		Integer curly = (Integer) buriedStruct.get("curly");

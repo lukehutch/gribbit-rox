@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Timer;
 
@@ -95,7 +96,7 @@ public abstract class HttpRpcProcessor {
 	private ByteBuffer nonBlockingReadBuf = ByteBuffer.allocate(8192);
 
 	// A local buffer for all blocking I/O read operations.
-	private byte[] blockingReadBuf = new byte[8192];
+	// private byte[] blockingReadBuf = new byte[8192];
 
 	// An empty buffer used as the source buffer for wrap() operations during
 	// SSL handshakes.
@@ -122,12 +123,12 @@ public abstract class HttpRpcProcessor {
 	private Selector socketSelector;
 
 	// Maps Socket to OP_WRITE or OP_READ.
-	private Map<Socket, Integer> pendingInterestOps = new LinkedHashMap<Socket, Integer>();
+	private Map<Socket, Integer> pendingInterestOps = new LinkedHashMap<>();
 
-	private Set<SocketChannel> pendingRegistrations = new HashSet<SocketChannel>();
-	private Set<AbstractSelectableChannel> pendingCancellations = new HashSet<AbstractSelectableChannel>();
+	private Set<SocketChannel> pendingRegistrations = new HashSet<>();
+	private Set<AbstractSelectableChannel> pendingCancellations = new HashSet<>();
 
-	private Map<Socket, SSLSessionMetadata> sslEngineMap = new HashMap<Socket, SSLSessionMetadata>();
+	private Map<Socket, SSLSessionMetadata> sslEngineMap = new HashMap<>();
 	private SSLContext sslContext;
 
 	// true if we're using SSL
@@ -429,10 +430,10 @@ public abstract class HttpRpcProcessor {
 		// Process any queued interestOps updates.
 		synchronized (this.pendingInterestOps) {
 			if (this.pendingInterestOps.size() > 0) {
-				Iterator entries = this.pendingInterestOps.entrySet().iterator();
+				Iterator<Entry<Socket, Integer>> entries = this.pendingInterestOps.entrySet().iterator();
 				while (entries.hasNext()) {
-					Map.Entry entry = (Map.Entry) entries.next();
-					Socket socket = (Socket) entry.getKey();
+					Entry<Socket, Integer> entry = entries.next();
+					Socket socket = entry.getKey();
 					SelectionKey sk = socket.getChannel().keyFor(this.getSocketSelector());
 					if (socket.getChannel().isConnected()) {
 						// Only update the interest ops set if we're not
@@ -440,7 +441,7 @@ public abstract class HttpRpcProcessor {
 						// disable the OP_CONNECT interest op and never see
 						// the connection complete).
 						if (sk != null && sk.isValid()) {
-							int ops = ((Integer) entry.getValue()).intValue();
+							int ops = entry.getValue().intValue();
 							if (log.logTrace()) {
 								log.trace("Interest ops change for " + Utils.toString(socket) + ": " + (ops == OP_READ ? "OP_READ" : "OP_WRITE"));
 							}
@@ -1272,7 +1273,7 @@ public abstract class HttpRpcProcessor {
 				// The engine wants to give us data to send to the remote party to advance
 				// the handshake. Let it :-)
 
-				ByteBuffer sslBuf;
+				// ByteBuffer sslBuf;
 				if (sessionMetadata.netBuffer.position() == 0) {
 					// We have no outstanding data to write for the handshake (from a previous wrap())
 					// so ask the engine for more.
@@ -1345,7 +1346,7 @@ public abstract class HttpRpcProcessor {
 			}
 			task.run();
 		}
-		if (task != null && log.logTrace()) {
+		if (log.logTrace()) {
 			log.trace(this.getClass().getSimpleName() + ": All SSL delegated tasks complete: "
 					+ engine.getHandshakeStatus());
 		}

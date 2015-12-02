@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.flat502.rox.http.MethodCallURI;
 import com.flat502.rox.marshal.ClassDescriptor;
@@ -42,7 +43,7 @@ public class CgiMethodCallUnmarshaller {
 			for (int i = 0; i < keys.length; i++) {
 				keys[i] = names[i];
 				if (aid != null) {
-					Class type = aid.getType(uri.getMethodName(), i);
+					Class<?> type = aid.getType(uri.getMethodName(), i);
 					if (type != null) {
 						keys[i] = this.convert(names[i], type);
 					}
@@ -54,7 +55,7 @@ public class CgiMethodCallUnmarshaller {
 		// Some of the values are non-null so we'll treat this as a method
 		// call with a single struct parameter. This may still require some
 		// type coercion.
-		Class structClass = aid == null ? null : aid.getType(uri.getMethodName(), 0);
+		Class<?> structClass = aid == null ? null : aid.getType(uri.getMethodName(), 0);
 		if (structClass == null || Map.class.isAssignableFrom(structClass)) {
 			return new Object[] { parameters };
 		}
@@ -69,12 +70,12 @@ public class CgiMethodCallUnmarshaller {
 		ClassDescriptor cd = ClassDescriptor.getInstance(structClass);
 		Object structObject = this.newStructObject(structClass);
 
-		Iterator iter = parameters.entrySet().iterator();
+		Iterator<Entry<String, Serializable>> iter = parameters.entrySet().iterator();
 		while (iter.hasNext()) {
-			Map.Entry entry = (Map.Entry) iter.next();
+			Entry<String, Serializable> entry = iter.next();
 			if (entry.getValue() != null) {
-				String key = (String) entry.getKey();
-				Class clazz = cd.getSetterType(key);
+				String key = entry.getKey();
+				Class<?> clazz = cd.getSetterType(key);
 				cd.setValue(structObject, key, this.convert(entry.getValue(), clazz));
 			}
 		}
@@ -82,16 +83,16 @@ public class CgiMethodCallUnmarshaller {
 		return new Object[] { structObject };
 	}
 
-	private Object convert(Object value, Class targetType) throws ParseException {
+	private Object convert(Object value, Class<?> targetType) throws ParseException {
 		if (targetType == Date.class) {
 			return DATE_FORMAT.getFormatter().parse((String) value);
 		}
 		return Utils.convert(value, targetType);
 	}
 
-	private Object newStructObject(Class structClass) throws MarshallingException {
+	private Object newStructObject(Class<?> structClass) throws MarshallingException {
 		if (structClass == Map.class) {
-			return new HashMap();
+			return new HashMap<Object, Object>();
 		}
 
 		try {

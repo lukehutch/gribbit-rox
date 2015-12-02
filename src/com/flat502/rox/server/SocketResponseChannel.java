@@ -1,7 +1,6 @@
 package com.flat502.rox.server;
 
 import java.io.IOException;
-import java.net.Socket;
 
 import com.flat502.rox.encoding.Encoding;
 import com.flat502.rox.http.HttpRequestBuffer;
@@ -20,7 +19,7 @@ class SocketResponseChannel implements ResponseChannel {
 	private int rspId;
 
 	private HttpRequestBuffer request;
-	private Socket socket;
+	// private Socket socket;
 	private Encoding encoding;
 	
 	SocketResponseChannel(ResponseCoordinator coord, HttpRequestBuffer request, Encoding encoding) {

@@ -24,6 +24,7 @@ import org.xml.sax.XMLReader;
 /**
  * Simple XML parser, for internal XML RPC usage. Doesn't support much.
  */
+@SuppressWarnings("deprecation")
 public class XmlRpcSaxParser extends SAXParser implements Parser {
     private static class EmptyAttributeList implements AttributeList {
 	@Override
@@ -105,9 +106,12 @@ public class XmlRpcSaxParser extends SAXParser implements Parser {
     private static final int STATE_ATTR_VAL_WS;
     */
 
+    @SuppressWarnings("unused")
     private EntityResolver entityResolver;
+    @SuppressWarnings("unused")
     private DTDHandler dtdHandler;
     private DocumentHandler documentHandler;
+    @SuppressWarnings("unused")
     private ErrorHandler errorHandler;
     private char[] buf = new char[BUF_SIZE];
     private int pos, limit;

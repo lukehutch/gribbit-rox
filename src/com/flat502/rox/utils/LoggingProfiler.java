@@ -9,10 +9,11 @@ import com.flat502.rox.log.LogFactory;
 public class LoggingProfiler implements Profiler {
 	private static Log log = LogFactory.getLog(LoggingProfiler.class);
 
-	private Map<Object, Entry> begunMap = new HashMap<Object, Entry>();
+	private Map<Object, Entry> begunMap = new HashMap<>();
 	
 	private class Entry {
-		private String operation;
+		@SuppressWarnings("unused")
+        private String operation;
 		private long start;
 
 		public Entry(String operation) {

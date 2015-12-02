@@ -154,7 +154,7 @@ public class Test_Pipelining extends TestCase {
 			assertEquals("second call", handler.calls.get(1).getParameters()[0]);
 			
 			InputStream is = socket.getInputStream();
-			List<String> rspLines = new ArrayList<String>();
+			List<String> rspLines = new ArrayList<>();
 			while (rspLines.size() < 15) {
 				rspLines.addAll(readMessage(is));
 //				System.out.println(rspLines);
@@ -275,7 +275,7 @@ public class Test_Pipelining extends TestCase {
 		int numRead = is.read(rsp);
 		BufferedReader rspIs = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(rsp, 0, numRead)));
 		String line = null;
-		List<String> rspLines = new ArrayList<String>();
+		List<String> rspLines = new ArrayList<>();
 		while ((line = rspIs.readLine()) != null) {
 			rspLines.add(line);
 		}
@@ -283,10 +283,10 @@ public class Test_Pipelining extends TestCase {
 	}
 
 	private class AsyncServerHandler implements AsynchronousRequestHandler {
-		public List<RpcCall> calls = new ArrayList<RpcCall>();
+		public List<RpcCall> calls = new ArrayList<>();
 		public Exception exception;
-		private List<ResponseChannel> channels = new ArrayList<ResponseChannel>();
-		private List<XmlRpcMethodResponse> rsps = new ArrayList<XmlRpcMethodResponse>();
+		private List<ResponseChannel> channels = new ArrayList<>();
+		private List<XmlRpcMethodResponse> rsps = new ArrayList<>();
 		
 		@Override
         public synchronized void handleRequest(RpcCall call, RpcCallContext context, ResponseChannel rspChannel) throws Exception {

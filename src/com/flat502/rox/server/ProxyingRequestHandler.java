@@ -44,7 +44,7 @@ public abstract class ProxyingRequestHandler extends MethodCallUnmarshallerAid i
 	}
 
 	@Override
-    public Class getType(String methodName, int index) {
+    public Class<?> getType(String methodName, int index) {
 		return this.proxy.getType(methodName, index);
 	}
 

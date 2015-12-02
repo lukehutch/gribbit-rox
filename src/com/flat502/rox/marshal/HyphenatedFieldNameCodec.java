@@ -45,7 +45,7 @@ public class HyphenatedFieldNameCodec implements FieldNameCodec {
 	@Override
     public String decodeFieldName(String name) {
 		StringBuffer sb = new StringBuffer();
-		int startIdx = 0;
+		// int startIdx = 0;
 		boolean upcase = false;
 		for (int i = 0; i < name.length(); i++) {
 			char ch = name.charAt(i);

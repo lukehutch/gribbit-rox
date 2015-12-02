@@ -2,10 +2,11 @@ package com.flat502.rox.http;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 
 public class HttpResponseException extends HttpMessageException {
-	private Map headers;
+	private Map<String, String> headers;
 	private int statusCode;
 	private String reasonPhrase;
 
@@ -14,10 +15,10 @@ public class HttpResponseException extends HttpMessageException {
 	}
 
 	public HttpResponseException(int statusCode, String reasonPhrase, HttpRequestBuffer req) {
-		this(statusCode, reasonPhrase, req, (Map)null);
+		this(statusCode, reasonPhrase, req, (Map<String, String>)null);
 	}
 	
-	public HttpResponseException(int statusCode, String reasonPhrase, HttpRequestBuffer req, Map headers) {
+	public HttpResponseException(int statusCode, String reasonPhrase, HttpRequestBuffer req, Map<String, String> headers) {
 		super(statusCode+": "+reasonPhrase, req);
 		this.statusCode = statusCode;
 		this.reasonPhrase = reasonPhrase;
@@ -44,10 +45,10 @@ public class HttpResponseException extends HttpMessageException {
 	public HttpResponse toHttpResponse(String httpVersion) {
 		HttpResponse rsp = new HttpResponse(httpVersion, this.getStatusCode(), this.getReasonPhrase());
 		if (this.headers != null) {
-			Iterator iter = this.headers.entrySet().iterator();
+		    Iterator<Entry<String, String>> iter = this.headers.entrySet().iterator();
 			while (iter.hasNext()) {
-				Map.Entry entry = (Map.Entry) iter.next();
-				rsp.addHeader((String) entry.getKey(), (String) entry.getValue());
+				Entry<String, String> entry = iter.next();
+				rsp.addHeader(entry.getKey(), entry.getValue());
 			}
 			
 			if (!this.headers.containsKey(HttpConstants.Headers.CONNECTION)) {
