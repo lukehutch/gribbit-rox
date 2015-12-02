@@ -81,6 +81,10 @@ public class TestBase_XmlRpcMethod extends XMLTestCase {
 		return cal.getTime();
 	}
 
+	public void testNothing() {
+	    // Needed to silence JUnit4 warning
+	}
+	
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(TestBase_XmlRpcMethod.class);
 	}
