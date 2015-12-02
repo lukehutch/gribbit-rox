@@ -1,6 +1,14 @@
 # gribbit-rox
 
-Update of the RoX (RPC over XML) XML-RPC system for modern Java, hosted at [http://rox-xmlrpc.sourceforge.net/](http://rox-xmlrpc.sourceforge.net/).
+Update of the RoX (RPC over XML) XML-RPC system for modern Java, originally hosted at [http://rox-xmlrpc.sourceforge.net/](http://rox-xmlrpc.sourceforge.net/).
+
+RoX is a well-written, efficient and scalable XML-RPC server. Its code has not been modified by its author (James Greenfield) since 2008. It was developed for Java 1.4 and updated for Java 1.5, but lacks generic type parameters, and depends on old versions of a number of libraries, including obsolete Sun SSL APIs.  
+
+I plan to use RoX as a foundation for an HTTP server project, so I have imported the code here, and I am gradually transforming it into modern Java.
+
+
+------------------------------ 
+
 
 ## Original README.txt:
 
