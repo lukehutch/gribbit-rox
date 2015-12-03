@@ -19,11 +19,11 @@ class SSLSessionMetadata {
 	public final ByteBuffer appBuffer;
 	private TimerTask handshakeTimerTask;
 
-	private HttpRpcProcessor processor;
+	private HttpProcessor processor;
 	private Socket socket;
 	private boolean handshakeTimeout;
 
-	public SSLSessionMetadata(HttpRpcProcessor processor, SSLEngine engine, Socket socket) {
+	public SSLSessionMetadata(HttpProcessor processor, SSLEngine engine, Socket socket) {
 		this.processor = processor;
 		this.engine = engine;
 		this.socket = socket;

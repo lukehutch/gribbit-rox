@@ -2,14 +2,14 @@ package com.flat502.rox.http;
 
 import java.net.Socket;
 
-import com.flat502.rox.processing.HttpRpcProcessor;
+import com.flat502.rox.processing.HttpProcessor;
 
 /**
  * Encapsulates a general processing exception.
  * <p>
  * An exception that wraps up another exception that was raised
  * during processing performed in the central processing loop
- * of an {@link com.flat502.rox.processing.HttpRpcProcessor}
+ * of an {@link com.flat502.rox.processing.HttpProcessor}
  * instance and that was not directly related to an HTTP message
  * instance.
  * <p>
@@ -19,13 +19,13 @@ import com.flat502.rox.processing.HttpRpcProcessor;
  */
 public class ProcessingException extends Exception {
 	private Socket socket;
-	private HttpRpcProcessor processor;
+	private HttpProcessor processor;
 
 	public ProcessingException(Throwable cause) {
 		super(cause);
 	}
 	
-	public ProcessingException(HttpRpcProcessor processor, Socket socket, Throwable cause) {
+	public ProcessingException(HttpProcessor processor, Socket socket, Throwable cause) {
 		super(cause);
 		this.processor = processor;
 		this.socket = socket;
@@ -42,7 +42,7 @@ public class ProcessingException extends Exception {
 		return this.socket;
 	}
 	
-	public HttpRpcProcessor getProcessor() {
+	public HttpProcessor getProcessor() {
 		return this.processor;
 	}
 }

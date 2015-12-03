@@ -36,7 +36,7 @@ public abstract class HttpMessageHandler implements Runnable {
 	 * Processes work items dequeued from the {@link BlockingQueue} associated
 	 * with this instance.
 	 * <p>
-	 * The default implementation of {@link HttpRpcProcessor}
+	 * The default implementation of {@link HttpProcessor}
 	 * enqueues two types of items on the underlying queue:
 	 * <ol>
 	 * <li>{@link HttpMessageBuffer} instances, representing complete

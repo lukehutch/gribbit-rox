@@ -24,8 +24,8 @@ class ChannelSelector implements Runnable {
 
 	private boolean shouldShutdown;
 	private Object mutex = new Object();
-	private Set<HttpRpcProcessor> processors = new HashSet<>();
-	private Map<SelectableChannel, HttpRpcProcessor> channelOwners = new HashMap<>();
+	private Set<HttpProcessor> processors = new HashSet<>();
+	private Map<SelectableChannel, HttpProcessor> channelOwners = new HashMap<>();
 
 	// A local buffer used when we read() to check for remote closure
 	private ByteBuffer closureTestBuf = ByteBuffer.allocate(16);
@@ -42,7 +42,7 @@ class ChannelSelector implements Runnable {
 		return this.socketSelector;
 	}
 
-	protected void register(HttpRpcProcessor processor) {
+	protected void register(HttpProcessor processor) {
 		if (log.logTrace()) {
 			log.trace("ChannelSelector registers " + processor);
 		}
@@ -52,7 +52,7 @@ class ChannelSelector implements Runnable {
 		}
 	}
 
-	protected void deregister(HttpRpcProcessor processor) throws IOException {
+	protected void deregister(HttpProcessor processor) throws IOException {
 		if (log.logTrace()) {
 			log.trace("ChannelSelector deregisters " + processor);
 		}
@@ -61,9 +61,9 @@ class ChannelSelector implements Runnable {
 			this.processors.remove(processor);
 			
 			// Cleaning up all channels associated with this processor.
-			Iterator<Entry<SelectableChannel, HttpRpcProcessor>> i = this.channelOwners.entrySet().iterator();
+			Iterator<Entry<SelectableChannel, HttpProcessor>> i = this.channelOwners.entrySet().iterator();
 			while (i.hasNext()) {
-				Entry<SelectableChannel, HttpRpcProcessor> entry = i.next();
+				Entry<SelectableChannel, HttpProcessor> entry = i.next();
 				if (processor == entry.getValue()) {
 					i.remove();
 					
@@ -85,7 +85,7 @@ class ChannelSelector implements Runnable {
 		this.socketSelector.wakeup();
 	}
 
-	protected void addChannel(HttpRpcProcessor processor, SelectableChannel channel) {
+	protected void addChannel(HttpProcessor processor, SelectableChannel channel) {
 		synchronized (this.mutex) {
 			this.channelOwners.put(channel, processor);
 		}
@@ -145,7 +145,7 @@ class ChannelSelector implements Runnable {
 						log.trace("select() returned key: " + Utils.toString(key));
 					}
 					
-					HttpRpcProcessor processor = null;
+					HttpProcessor processor = null;
 					if (key.isValid()) {
 						// Decide who should handle it
 						synchronized (this) {
@@ -236,9 +236,9 @@ class ChannelSelector implements Runnable {
 
 	private void processPendingSelectorChanges() {
 		synchronized (this.mutex) {
-			Iterator<HttpRpcProcessor> i = processors.iterator();
+			Iterator<HttpProcessor> i = processors.iterator();
 			while (i.hasNext()) {
-				HttpRpcProcessor processor = i.next();
+				HttpProcessor processor = i.next();
 				try {
 					processor.processPendingSelectorChanges();
 				} catch (IOException e) {
@@ -250,9 +250,9 @@ class ChannelSelector implements Runnable {
 
 	private void handleProcessingException(Exception e) {
 		synchronized (this.mutex) {
-			Iterator<HttpRpcProcessor> i = processors.iterator();
+			Iterator<HttpProcessor> i = processors.iterator();
 			while (i.hasNext()) {
-				HttpRpcProcessor processor = i.next();
+				HttpProcessor processor = i.next();
 				processor.handleProcessingException(e);
 			}
 		}

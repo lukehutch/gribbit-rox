@@ -59,9 +59,6 @@ class HttpRequestHandler extends HttpMessageHandler {
 		} catch (NoSuchMethodException e) {
 			httpRsp = server.newHttpResponse(msg, HttpConstants.StatusCodes._404_NOT_FOUND,
 					"Not Found (" + e.getMessage() + ")", null);
-		} catch (MarshallingException e) {
-			httpRsp = server.newHttpResponse(msg, HttpConstants.StatusCodes._400_BAD_REQUEST,
-					"Bad Request (illegal argument: " + e.getMessage() + ")", null);
 		} catch (Exception e) {
 			httpRsp = server.newHttpResponse(msg, HttpConstants.StatusCodes._500_INTERNAL_SERVER_ERROR,
 					"Internal Server Error (" + e.getMessage() + ")", null);

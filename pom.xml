@@ -38,16 +38,6 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.w3c</groupId>
-			<artifactId>dom</artifactId>
-			<version>2.3.0-jaxb-1.0.6</version>
-		</dependency>
-		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xercesImpl</artifactId>
-			<version>2.11.0</version>
-		</dependency>
-		<dependency>
 			<groupId>xmlunit</groupId>
 			<artifactId>xmlunit</artifactId>
 			<version>1.6</version>
@@ -67,11 +57,6 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>2.4.1</version>
-		</dependency>
-		<dependency>
-			<groupId>be.cyberelf.nanoxml</groupId>
-			<artifactId>nanoxml</artifactId>
-			<version>2.2.3</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -166,17 +166,17 @@ public abstract class ResourcePool {
 	 * @param target
 	 * @return
 	 * 	This implementation returns a new instance of
-	 * 	{@link HttpRpcProcessor}.
+	 * 	{@link HttpProcessor}.
 	 */
 	protected Thread newProcessingThread(Runnable target) {
-		return new Thread(target, HttpRpcProcessor.class.getName());
+		return new Thread(target, HttpProcessor.class.getName());
 	}
 	
 	protected ChannelSelector newChannelSelector() throws IOException {
 		return new ChannelSelector(this);
 	}
 	
-	protected void detach(HttpRpcProcessor processor) throws IOException {
+	protected void detach(HttpProcessor processor) throws IOException {
 		synchronized (workers) {
 			this.channelSelector.deregister(processor);
 		}

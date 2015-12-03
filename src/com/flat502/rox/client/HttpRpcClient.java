@@ -36,7 +36,7 @@ import com.flat502.rox.marshal.RpcCall;
 import com.flat502.rox.marshal.RpcFault;
 import com.flat502.rox.marshal.RpcResponse;
 import com.flat502.rox.marshal.UnmarshallerAid;
-import com.flat502.rox.processing.HttpRpcProcessor;
+import com.flat502.rox.processing.HttpProcessor;
 import com.flat502.rox.processing.ResourcePool;
 import com.flat502.rox.processing.RpcFaultException;
 import com.flat502.rox.processing.SSLConfiguration;
@@ -55,12 +55,12 @@ import com.flat502.rox.processing.SSLConfiguration;
  * <p>
  * The number of worker threads may be adjusted dynamically
  * using the inherited 
- * {@link HttpRpcProcessor#addWorker()}
- * and {@link HttpRpcProcessor#removeWorker()}
+ * {@link HttpProcessor#addWorker()}
+ * and {@link HttpProcessor#removeWorker()}
  * methods. Worker threads are responsible for callbacks
  * when the asynchronous API is used.
  */
-public abstract class HttpRpcClient extends HttpRpcProcessor {
+public abstract class HttpRpcClient extends HttpProcessor {
 	private static Log log = LogFactory.getLog(HttpRpcClient.class);
 	
 	// A mutex used to protect access to the notificationMap
@@ -137,338 +137,6 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 		// This initializes the Selector which we need so the pool can look up
 		// SelectionKeys when it shuts connections down (see getConnection()).
 		this.initialize();
-	}
-
-	/**
-	 * Executes the named RPC method call synchronously,
-	 * using the parameter list specified.
-	 * <p>
-	 * The type of the return value is dependent on the value
-	 * encoded within the RPC response. Details are dependent
-	 * on the particular implementation of the
-	 * {@link com.flat502.rox.marshal.RpcMethod} interface
-	 * this instance is configured to use.
-	 * @param name
-	 * 	The name of the method to execute.
-	 * @param params
-	 * 	The list of parameters to pass along with the method call.
-	 * 	This list may be <code>null</code> or empty (these are
-	 * 	equivalent).
-	 * @return
-	 * 	The return value specified in the RPC method response.
-	 * @throws RpcFaultException
-	 * 	if an the remote server responds with an RPC fault.
-	 * @throws Exception
-	 * 	if any other error occurs while attempting to execute
-	 * 	the method call.
-	 */
-	public Object execute(String name, Object[] params) throws Exception {
-		return this.execute(name, params, new ReturnTypeMapper(null));
-	}
-
-	/**
-	 * Executes the named RPC method call synchronously,
-	 * using the parameter list specified.
-	 * <p>
-	 * The type of the return value is dependent on the value
-	 * encoded within the RPC response. The details are
-	 * dependent on the particular implementation of the
-	 * {@link com.flat502.rox.marshal.RpcMethod} interface
-	 * this instance is configured to use.
-	 * @param name
-	 * 	The name of the method to execute.
-	 * @param params
-	 * 	The list of parameters to pass along with the method call.
-	 * 	This list may be <code>null</code> or empty (these are
-	 * 	equivalent).
-	 * @param retClass
-	 * 	The class to use when unmarshalling the response if
-	 * 	the return value is a struct.
-	 * @return
-	 * 	The return value specified in the RPC method response.
-	 * @throws RpcFaultException
-	 * 	if an the remote server responds with an RPC fault.
-	 * @throws Exception
-	 * 	if any other error occurs while attempting to execute
-	 * 	the method call.
-	 */
-	public Object execute(String name, Object[] params, Class<?> retClass) throws Exception {
-		return this.execute(name, params, new ReturnTypeMapper(retClass));
-	}
-	
-	/**
-	 * Executes the named RPC method call synchronously,
-	 * using the parameter list specified.
-	 * <p>
-	 * The type of the return value is dependent on the value
-	 * encoded within the RPC response. The details are
-	 * dependent on the particular implementation of the
-	 * {@link com.flat502.rox.marshal.RpcMethod} interface
-	 * this instance is configured to use.
-	 * @param name
-	 * 	The name of the method to execute.
-	 * @param params
-	 * 	The list of parameters to pass along with the method call.
-	 * 	This list may be <code>null</code> or empty (these are
-	 * 	equivalent).
-	 * @param aid
-	 * 	The {@link MethodResponseUnmarshallerAid} to use when unmarshalling the response.
-	 * @return
-	 * 	The return value specified in the RPC method response.
-	 * @throws RpcFaultException
-	 * 	if an the remote server responds with an RPC fault.
-	 * @throws Exception
-	 * 	if any other error occurs while attempting to execute
-	 * 	the method call.
-	 */
-	public Object execute(String name, Object[] params, MethodResponseUnmarshallerAid aid) throws Exception {
-		RpcCall req = this.newRpcCall(name, params);
-
-		RpcResponse rsp = this.executeSync(req, aid);
-		if (rsp instanceof RpcFault) {
-			throw new RpcFaultException((RpcFault) rsp);
-		}
-
-		return rsp.getReturnValue();
-	}
-
-	/**
-	 * Executes the named RPC method call asynchronously,
-	 * using the parameter list specified.
-	 * <p>
-	 * The type of the return value is dependent on the value
-	 * encoded within the RPC response. Details are dependent
-	 * on the particular implementation of the
-	 * {@link com.flat502.rox.marshal.RpcMethod} interface
-	 * this instance is configured to use.
-	 * @param name
-	 * 	The name of the method to execute.
-	 * @param params
-	 * 	The list of parameters to pass along with the method call.
-	 * 	This list may be <code>null</code> or empty (these are
-	 * 	equivalent).
-	 * @param handler
-	 * 	The handler to notify when the response is available.
-	 * @throws RpcFaultException
-	 * 	if an the remote server responds with an RPC fault.
-	 * @throws Exception
-	 * 	if any other error occurs while attempting to execute
-	 * 	the method call.
-	 * @deprecated Use {@link #execute(String, Object[], AsynchronousResponseHandler)} instead.
-	 */
-	@Deprecated
-    public void execute(String name, Object[] params, ResponseHandler handler) throws Exception {
-		this.execute(name, params, new ReturnTypeMapper(null), new AsynchronousResponseHandlerAdaptor(handler));
-	}
-
-	/**
-	 * Executes the named RPC method call asynchronously,
-	 * using the parameter list specified.
-	 * <p>
-	 * The type of the return value is dependent on the value
-	 * encoded within the RPC response. Details are dependent
-	 * on the particular implementation of the
-	 * {@link com.flat502.rox.marshal.RpcMethod} interface
-	 * this instance is configured to use.
-	 * @param name
-	 * 	The name of the method to execute.
-	 * @param params
-	 * 	The list of parameters to pass along with the method call.
-	 * 	This list may be <code>null</code> or empty (these are
-	 * 	equivalent).
-	 * @param handler
-	 * 	The handler to notify when the response is available.
-	 * @throws RpcFaultException
-	 * 	if an the remote server responds with an RPC fault.
-	 * @throws Exception
-	 * 	if any other error occurs while attempting to execute
-	 * 	the method call.
-	 */
-	public void execute(String name, Object[] params, AsynchronousResponseHandler handler) throws Exception {
-		this.execute(name, params, new ReturnTypeMapper(null), handler);
-	}
-
-	/**
-	 * Executes the named RPC method call asynchronously,
-	 * using the parameter list specified.
-	 * <p>
-	 * The type of the return value is dependent on the value
-	 * encoded within the RPC response.  Details are dependent
-	 * on the particular implementation of the
-	 * {@link com.flat502.rox.marshal.RpcMethod} interface
-	 * this instance is configured to use.
-	 * @param name
-	 * 	The name of the method to execute.
-	 * @param params
-	 * 	The list of parameters to pass along with the method call.
-	 * 	This list may be <code>null</code> or empty (these are
-	 * 	equivalent).
-	 * @param retClass
-	 * 	The class to use when unmarshalling the response if
-	 * 	the return value is a struct.
-	 * @param handler
-	 * 	The handler to notify when the response is available.
-	 * @throws RpcFaultException
-	 * 	if an the remote server responds with an RPC fault.
-	 * @throws Exception
-	 * 	if any other error occurs while attempting to execute
-	 * 	the method call.
-	 * @deprecated Use {@link #execute(String, Object[], Class, AsynchronousResponseHandler)} instead.
-	 */
-	@Deprecated
-    public void execute(String name, Object[] params, Class<?> retClass, ResponseHandler handler) throws Exception {
-		this.execute(name, params, new ReturnTypeMapper(retClass), new AsynchronousResponseHandlerAdaptor(handler));
-	}
-	
-	/**
-	 * Executes the named RPC method call asynchronously,
-	 * using the parameter list specified.
-	 * <p>
-	 * The type of the return value is dependent on the value
-	 * encoded within the RPC response.  Details are dependent
-	 * on the particular implementation of the
-	 * {@link com.flat502.rox.marshal.RpcMethod} interface
-	 * this instance is configured to use.
-	 * @param name
-	 * 	The name of the method to execute.
-	 * @param params
-	 * 	The list of parameters to pass along with the method call.
-	 * 	This list may be <code>null</code> or empty (these are
-	 * 	equivalent).
-	 * @param retClass
-	 * 	The class to use when unmarshalling the response if
-	 * 	the return value is a struct.
-	 * @param handler
-	 * 	The handler to notify when the response is available.
-	 * @throws RpcFaultException
-	 * 	if an the remote server responds with an RPC fault.
-	 * @throws Exception
-	 * 	if any other error occurs while attempting to execute
-	 * 	the method call.
-	 */
-	public void execute(String name, Object[] params, Class<?> retClass, AsynchronousResponseHandler handler) throws Exception {
-		this.execute(name, params, new ReturnTypeMapper(retClass), handler);
-	}
-	
-	/**
-	 * Executes the named RPC method call asynchronously,
-	 * using the parameter list specified.
-	 * <p>
-	 * The type of the return value is dependent on the value
-	 * encoded within the RPC response.  Details are dependent
-	 * on the particular implementation of the
-	 * {@link com.flat502.rox.marshal.RpcMethod} interface
-	 * this instance is configured to use.
-	 * @param name
-	 * 	The name of the method to execute.
-	 * @param params
-	 * 	The list of parameters to pass along with the method call.
-	 * 	This list may be <code>null</code> or empty (these are
-	 * 	equivalent).
-	 * @param aid
-	 * 	The {@link MethodResponseUnmarshallerAid} to use when unmarshalling the response.
-	 * @param handler
-	 * 	The handler to notify when the response is available.
-	 * @throws RpcFaultException
-	 * 	if an the remote server responds with an RPC fault.
-	 * @throws Exception
-	 * 	if any other error occurs while attempting to execute
-	 * 	the method call.
-	 * @deprecated Use {@link #execute(String, Object[], MethodResponseUnmarshallerAid, AsynchronousResponseHandler)} instead.
-	 */
-	@Deprecated
-    public void execute(String name, Object[] params, MethodResponseUnmarshallerAid aid, ResponseHandler handler) throws Exception {
-		RpcCall req = this.newRpcCall(name, params);
-		this.executeAsync(req, aid, new AsynchronousResponseHandlerAdaptor(handler));
-	}
-
-	/**
-	 * Executes the named RPC method call asynchronously,
-	 * using the parameter list specified.
-	 * <p>
-	 * The type of the return value is dependent on the value
-	 * encoded within the RPC response.  Details are dependent
-	 * on the particular implementation of the
-	 * {@link com.flat502.rox.marshal.RpcMethod} interface
-	 * this instance is configured to use.
-	 * @param name
-	 * 	The name of the method to execute.
-	 * @param params
-	 * 	The list of parameters to pass along with the method call.
-	 * 	This list may be <code>null</code> or empty (these are
-	 * 	equivalent).
-	 * @param aid
-	 * 	The {@link MethodResponseUnmarshallerAid} to use when unmarshalling the response.
-	 * @param handler
-	 * 	The handler to notify when the response is available.
-	 * @throws RpcFaultException
-	 * 	if an the remote server responds with an RPC fault.
-	 * @throws Exception
-	 * 	if any other error occurs while attempting to execute
-	 * 	the method call.
-	 */
-	public void execute(String name, Object[] params, MethodResponseUnmarshallerAid aid, AsynchronousResponseHandler handler) throws Exception {
-		RpcCall req = this.newRpcCall(name, params);
-		this.executeAsync(req, aid, handler);
-	}
-
-	/**
-	 * Convenience method for proxying an object without a
-	 * method prefix.
-	 * <p>
-	 * This is equivalent to invoking
-	 * {@link #proxyObject(String, Class)} with a <code>null</code>
-	 * method prefix.
-	 * @param targetClass
-	 * 	The class to generate a proxy for.
-	 * @return
-	 * 	A proxy object that will result in RPC
-	 * 	calls when methods are invoked.
-	 * @throws Exception
-	 * 	If an error occurs generating the dynamic proxy.
-	 * @see java.lang.reflect.Proxy
-	 */
-	public Object proxyObject(Class<?> targetClass) throws Exception {
-		return this.proxyObject(null, targetClass);
-	}
-
-	/**
-	 * Supports dynamic mapping of Java method calls onto
-	 * RPC method calls.
-	 * <p>
-	 * This method generates a dynamic {@link java.lang.reflect.Proxy} 
-	 * based on <code>targetClass</code> (which may be an interface)
-	 * and associates it with this instance. The returned object
-	 * <i>must</i> implement at least one public interface (it may
-	 * implement more than one) and is subject to the restrictions
-	 * discussed under the description of the 
-	 * {@link java.lang.reflect.Proxy} class. The returned object
-	 * may be cast to any of the public interfaces it implements
-	 * (but not to an instance of <code>targetClass</code>).
-	 * <p>
-	 * Calls made to methods on the returned object are mapped
-	 * to RPC calls to the remote server this instance is
-	 * connected to.
-	 * <p>
-	 * How parameters are marshalled is dependent on the
-	 * particular implementation of the
-	 * {@link com.flat502.rox.marshal.RpcMethod} interface
-	 * this instance is configured to use.
-	 * @param methodPrefix
-	 * 	The prefix to prepend when generating the RPC
-	 * 	method name. This may be null, in which case no prefix
-	 * 	is used.
-	 * @param targetClass
-	 * 	The class to generate a proxy for.
-	 * @return
-	 * 	A proxy object that will result in RPC
-	 * 	calls when methods are invoked.
-	 * @throws Exception
-	 * 	If an error occurs generating the dynamic proxy.
-	 * @see java.lang.reflect.Proxy
-	 */
-	public Object proxyObject(String methodPrefix, Class<?> targetClass) throws Exception {
-		return new RpcClientProxy(methodPrefix, targetClass, this).getProxiedTarget();
 	}
 
 	/**
@@ -621,7 +289,7 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 
 	/**
 	 * This method exists to provide classes in this package with access to
-	 * {@link HttpRpcProcessor#queueRegistration(SocketChannel)} without having to make
+	 * {@link HttpProcessor#queueRegistration(SocketChannel)} without having to make
 	 * it public.
 	 */
 	void register(SocketChannel channel) {
@@ -643,7 +311,7 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 
 	/**
 	 * This method exists to provide classes in this package with access to
-	 * {@link HttpRpcProcessor#queueCancellation(SocketChannel)} without having to make
+	 * {@link HttpProcessor#queueCancellation(SocketChannel)} without having to make
 	 * it public.
 	 */
 	void cancel(SocketChannel channel) {
@@ -673,44 +341,20 @@ public abstract class HttpRpcClient extends HttpRpcProcessor {
 		}
 	}
 
-	private RpcResponse executeSync(RpcCall call, MethodResponseUnmarshallerAid aid) throws Exception {
-		HttpRequest httpReq = this.newHttpRequest(call);
-
-		Socket socket;
-		SynchronousNotifier notifier;
-		// We synchronize here to avoid the following race condition:
-		//		1. A socket is created (and a connection attempt started)
-		//		2. The connection attempt fails in connect()
-		//		3. We attempt to find the notifier to tell it about the failure
-		//		4. The notifier here is put into the map.
-		//	If the above order of events occurs we can't find the
-		// notifier to tell the caller about the connection failure.
-		// By synchronizing on notifiedMutex we ensure that the
-		// notifier is registered before connect() can try to call it
-		// back.
-		synchronized (this.notifierMutex) {
-			socket = this.getConnection();
-
-			notifier = new SynchronousNotifier();
-			this.registerNotifier(socket, notifier);
-		}
-
-		// Queue the request to be sent when the connection
-		// completes.
-		this.queueWrite(socket, httpReq.marshal(), false);
-
-		// Block until a response is available.
-		HttpResponseBuffer response = notifier.waitForResponse();
-		this.validateHttpResponse(call, response);
-
-		return this.unmarshalResponse(response.getContentReader(), aid);
-	}
-
 	private void executeAsync(RpcCall call, MethodResponseUnmarshallerAid aid, AsynchronousResponseHandler handler) throws Exception {
 		HttpRequest httpReq = this.newHttpRequest(call);
 
 		Socket socket;
-		// SynchronousNotifier notifier;
+        // We synchronize here to avoid the following race condition:
+        //      1. A socket is created (and a connection attempt started)
+        //      2. The connection attempt fails in connect()
+        //      3. We attempt to find the notifier to tell it about the failure
+        //      4. The notifier here is put into the map.
+        //  If the above order of events occurs we can't find the
+        // notifier to tell the caller about the connection failure.
+        // By synchronizing on notifiedMutex we ensure that the
+        // notifier is registered before connect() can try to call it
+        // back.
 		synchronized (this.notifierMutex) {
 			socket = this.getConnection();
 

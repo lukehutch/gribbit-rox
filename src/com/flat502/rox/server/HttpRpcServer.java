@@ -36,16 +36,9 @@ import com.flat502.rox.http.MethodNotAllowedException;
 import com.flat502.rox.http.MethodNotAllowedResponseException;
 import com.flat502.rox.log.Log;
 import com.flat502.rox.log.LogFactory;
-import com.flat502.rox.marshal.FieldNameCodec;
-import com.flat502.rox.marshal.MarshallingException;
-import com.flat502.rox.marshal.MethodCallUnmarshallerAid;
-import com.flat502.rox.marshal.RpcCall;
-import com.flat502.rox.marshal.RpcResponse;
-import com.flat502.rox.marshal.UnmarshallerAid;
-import com.flat502.rox.processing.HttpRpcProcessor;
+import com.flat502.rox.processing.HttpProcessor;
 import com.flat502.rox.processing.RemoteSocketClosedException;
 import com.flat502.rox.processing.ResourcePool;
-import com.flat502.rox.processing.RpcFaultException;
 import com.flat502.rox.processing.SSLConfiguration;
 import com.flat502.rox.utils.Utils;
 
@@ -63,12 +56,12 @@ import com.flat502.rox.utils.Utils;
  * <p>
  * The number of worker threads may be adjusted dynamically
  * using the inherited 
- * {@link HttpRpcProcessor#addWorker()}
- * and {@link HttpRpcProcessor#removeWorker()}
+ * {@link HttpProcessor#addWorker()}
+ * and {@link HttpProcessor#removeWorker()}
  * methods. Worker threads are responsible for notification
  * of registered {@link com.flat502.rox.server.RequestHandler}s.
  */
-public abstract class HttpRpcServer extends HttpRpcProcessor {
+public abstract class HttpRpcServer extends HttpProcessor {
 	private static Log log = LogFactory.getLog(HttpRpcServer.class);
 	
 	// Maps (normalized) URI instances to an ordered Map
@@ -78,13 +71,6 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	// 	AsyncRequestHandler
 	// A null URI key is a wildcard.
 	private Map<String, Map<String, RequestHandler>> uriHandlers = new HashMap<>();
-	
-	// Maps HTTP methods (strings) onto HttpRequestUnmarshaller instances.
-	private Map<String, HttpRequestUnmarshaller> reqUnmarshallers = new HashMap<>();
-
-	// Maps RequestHandler instances to MethodCallUnmarshallerAid
-	// instances.
-	private Map<RequestHandler, MethodCallUnmarshallerAid> handlerUnmarshallerAids = new HashMap<>();
 
 	// Maps strings to their compiled Pattern
 	// instance. This is stored separately from
@@ -195,272 +181,7 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 		this.idleClientTimeout = timeout;
 	}
 
-	/**
-	 * Register an {@link HttpRequestUnmarshaller} instance
-	 * for a given HTTP method.
-	 * <p>
-	 * If a prior unmarshaller instance exists for the named
-	 * HTTP method the unmarshaller instance is replaced and
-	 * the previously registered instance is returned.
-	 * @param httpMethod
-	 * 	The HTTP method to register the unmarshaller to handle.
-	 * 	Custom HTTP methods may be used. No validation is performed
-	 * 	on this value, it is only used as a mapping key.
-	 * @param unmarshaller
-	 * 	The {@link HttpRequestUnmarshaller} instance to register
-	 * 	for the given HTTP method. This may be <code>null</code>
-	 * 	which effectively deregisters any existing handler for
-	 * 	the given HTTP method.
-	 * @return
-	 * 	The {@link HttpRequestUnmarshaller} instance previously
-	 * 	registered to handle the given HTTP method, or <code>null</code>
-	 * 	if no prior instance was registered.
-	 * @see CgiRequestUnmarshaller
-	 * @see XmlRpcRequestUnmarshaller
-	 * @see com.flat502.rox.http.HttpConstants.Methods
-	 */
-	public HttpRequestUnmarshaller registerRequestUnmarshaller(String httpMethod, HttpRequestUnmarshaller unmarshaller) {
-		synchronized(this.reqUnmarshallers) {
-			return this.reqUnmarshallers.put(httpMethod, unmarshaller);
-		}
-	}
-
-	/**
-	 * Register an asynchronous XML-RPC method call handler.
-	 * 
-	 * @param uriPath
-	 * 	URIs for which this handler is responsible. <code>null</code>
-	 * 	indicates all URIs.
-	 * @param method
-	 * 	A regular expression (see {@link java.util.regex.Pattern}) to
-	 *    match method names on. Matching is performed as for the
-	 *    {@link java.util.regex.Matcher#find()} method.
-	 * @param handler
-	 * 	The handler to call back when a request is received matching
-	 * 	the indicated URI and method name pattern.
-	 * @return 
-	 * 	If a previously registered request handler existed and this
-	 *    handler replaced it (i.e. their URI and method regular expression 
-	 *    were identical)
-	 * @see #registerHandler(String, String, SyncRequestHandler, MethodCallUnmarshallerAid)
-	 * @deprecated Use {@link #registerHandler(String, String, AsynchronousRequestHandler)} instead.
-	 */
-	@Deprecated
-    public RequestHandler registerHandler(String uriPath, String method, AsyncRequestHandler handler) {
-		return this.registerHandler(uriPath, method, new AsynchronousAsyncAdapter(handler), null);
-	}
-
-	/**
-	 * Register an asynchronous XML-RPC method call handler.
-	 * 
-	 * @param uriPath
-	 * 	URIs for which this handler is responsible. <code>null</code>
-	 * 	indicates all URIs.
-	 * @param method
-	 * 	A regular expression (see {@link java.util.regex.Pattern}) to
-	 *    match method names on. Matching is performed as for the
-	 *    {@link java.util.regex.Matcher#find()} method.
-	 * @param handler
-	 * 	The handler to call back when a request is received matching
-	 * 	the indicated URI and method name pattern.
-	 * @return 
-	 * 	If a previously registered request handler existed and this
-	 *    handler replaced it (i.e. their URI and method regular expression 
-	 *    were identical)
-	 * @see #registerHandler(String, String, SyncRequestHandler, MethodCallUnmarshallerAid)
-	 */
-	public RequestHandler registerHandler(String uriPath, String method, AsynchronousRequestHandler handler) {
-		return this.registerHandler(uriPath, method, handler, null);
-	}
-
-	/**
-	 * Register an asynchronous XML-RPC method call handler.
-	 * 
-	 * @param uriPath
-	 * 	URIs for which this handler is responsible. <code>null</code>
-	 * 	indicates all URIs.
-	 * @param method
-	 * 	A regular expression (see {@link java.util.regex.Pattern}) to
-	 *    match method names on. Matching is performed as for the
-	 *    {@link java.util.regex.Matcher#find()} method.
-	 * @param handler
-	 * 	The handler to call back when a request is received matching
-	 * 	the indicated URI and method name pattern.
-	 *	@param aid
-	 *		A mapper to be used during the unmarshalling of parameters
-	 *		of incoming method calls. May be <code>null</code>.
-	 * @return 
-	 * 	If a previously registered request handler existed and this
-	 *    handler replaced it (i.e. their URI and method regular expression 
-	 *    were identical)
-	 * @see #registerHandler(String, String, SyncRequestHandler, MethodCallUnmarshallerAid)
-	 * @deprecated Use {@link #registerHandler(String, String, AsynchronousRequestHandler, MethodCallUnmarshallerAid)} instead.
-	 */
-	@Deprecated
-    public RequestHandler registerHandler(String uriPath, String method, AsyncRequestHandler handler, MethodCallUnmarshallerAid aid) {
-		return this.registerHandler(uriPath, method, new AsynchronousAsyncAdapter(handler), aid);
-	}
-
-	/**
-	 * Register an asynchronous XML-RPC method call handler.
-	 * 
-	 * @param uriPath
-	 * 	URIs for which this handler is responsible. <code>null</code>
-	 * 	indicates all URIs.
-	 * @param method
-	 * 	A regular expression (see {@link java.util.regex.Pattern}) to
-	 *    match method names on. Matching is performed as for the
-	 *    {@link java.util.regex.Matcher#find()} method.
-	 * @param handler
-	 * 	The handler to call back when a request is received matching
-	 * 	the indicated URI and method name pattern.
-	 *	@param aid
-	 *		A mapper to be used during the unmarshalling of parameters
-	 *		of incoming method calls. May be <code>null</code>.
-	 * @return 
-	 * 	If a previously registered request handler existed and this
-	 *    handler replaced it (i.e. their URI and method regular expression 
-	 *    were identical)
-	 * @see #registerHandler(String, String, SyncRequestHandler, MethodCallUnmarshallerAid)
-	 */
-	public RequestHandler registerHandler(String uriPath, String method, AsynchronousRequestHandler handler, MethodCallUnmarshallerAid aid) {
-		return this.registerHandler(uriPath, method, (RequestHandler) handler, aid);
-	}
-
-	/**
-	 * Register a synchronous XML-RPC method call handler.
-	 * 
-	 * @param uriPath
-	 * 	URIs for which this handler is responsible. <code>null</code>
-	 * 	indicates all URIs.
-	 * @param method
-	 * 	A regular expression (see {@link java.util.regex.Pattern}) to
-	 *    match method names on. Matching is performed as for the
-	 *    {@link java.util.regex.Matcher#find()} method.
-	 * @param handler
-	 * 	The handler to call back when a request is received matching
-	 * 	the indicated URI and method name pattern.
-	 * @return 
-	 * 	If a previously registered request handler existed and this
-	 *    handler replaced it (i.e. their URI and method regular expression 
-	 *    were identical)
-	 * @see #registerHandler(String, String, SyncRequestHandler, MethodCallUnmarshallerAid)
-	 * @deprecated Use {@link #registerHandler(String, String, SynchronousRequestHandler)} instead.
-	 */
-	@Deprecated
-    public RequestHandler registerHandler(String uriPath, String method, SyncRequestHandler handler) {
-		return this.registerHandler(uriPath, method, new SynchronousSyncAdapter(handler), null);
-	}
-
-	/**
-	 * Register a synchronous XML-RPC method call handler.
-	 * 
-	 * @param uriPath
-	 * 	URIs for which this handler is responsible. <code>null</code>
-	 * 	indicates all URIs.
-	 * @param method
-	 * 	A regular expression (see {@link java.util.regex.Pattern}) to
-	 *    match method names on. Matching is performed as for the
-	 *    {@link java.util.regex.Matcher#find()} method.
-	 * @param handler
-	 * 	The handler to call back when a request is received matching
-	 * 	the indicated URI and method name pattern.
-	 * @return 
-	 * 	If a previously registered request handler existed and this
-	 *    handler replaced it (i.e. their URI and method regular expression 
-	 *    were identical)
-	 * @see #registerHandler(String, String, SyncRequestHandler, MethodCallUnmarshallerAid)
-	 */
-	public RequestHandler registerHandler(String uriPath, String method, SynchronousRequestHandler handler) {
-		return this.registerHandler(uriPath, method, handler, null);
-	}
-
-	/**
-	 * Register a synchronous XML-RPC method call handler.
-	 * <P>
-	 * Handlers are indexed first using the {@link Utils#normalizeURIPath(String) normalized}
-	 * URI and then using the method name regular expression.
-	 * <P>
-	 * When a request is available the handler for the request is chosen by
-	 * looking up the list of handlers registered under the associated URI (after
-	 * normalization). This list is then scanned until a regular expression
-	 * matches the given method name. If no match is found this is repeated using
-	 * a <code>null</code> URI (i.e. a more specific URI match takes
-	 * precedence).
-	 * <P>
-	 * If no handler is found an HTTP "404 Not Found" response is sent to the
-	 * client.
-	 * 
-	 * @param uriPath
-	 * 	URIs for which this handler is responsible. <code>null</code>
-	 * 	indicates all URIs.
-	 * @param method
-	 * 	A regular expression (see {@link java.util.regex.Pattern}) to
-	 *    match method names on. Matching is performed as for the
-	 *    {@link java.util.regex.Matcher#find()} method.
-	 * @param handler
-	 * 	The handler to call back when a request is received matching
-	 * 	the indicated URI and method name pattern.
-	 *	@param aid
-	 *		A mapper to be used during the unmarshalling of parameters
-	 *		of incoming method calls. May be <code>null</code>.
-	 * @return 
-	 * 	If a previously registered request handler existed and this
-	 *    handler replaced it (i.e. their URI and method regular expression 
-	 *    were identical)
-	 * @deprecated Use {@link #registerHandler(String, String, SynchronousRequestHandler, MethodCallUnmarshallerAid)} instead.
-	 */
-	@Deprecated
-    public RequestHandler registerHandler(String uriPath, String method, SyncRequestHandler handler, MethodCallUnmarshallerAid aid) {
-		return this.registerHandler(uriPath, method, new SynchronousSyncAdapter(handler), aid);
-	}
-
-	/**
-	 * Register a synchronous XML-RPC method call handler.
-	 * <P>
-	 * Handlers are indexed first using the {@link Utils#normalizeURIPath(String) normalized}
-	 * URI and then using the method name regular expression.
-	 * <P>
-	 * When a request is available the handler for the request is chosen by
-	 * looking up the list of handlers registered under the associated URI (after
-	 * normalization). This list is then scanned until a regular expression
-	 * matches the given method name. If no match is found this is repeated using
-	 * a <code>null</code> URI (i.e. a more specific URI match takes
-	 * precedence).
-	 * <P>
-	 * If no handler is found an HTTP "404 Not Found" response is sent to the
-	 * client.
-	 * 
-	 * @param uriPath
-	 * 	URIs for which this handler is responsible. <code>null</code>
-	 * 	indicates all URIs.
-	 * @param method
-	 * 	A regular expression (see {@link java.util.regex.Pattern}) to
-	 *    match method names on. Matching is performed as for the
-	 *    {@link java.util.regex.Matcher#find()} method.
-	 * @param handler
-	 * 	The handler to call back when a request is received matching
-	 * 	the indicated URI and method name pattern.
-	 *	@param aid
-	 *		A mapper to be used during the unmarshalling of parameters
-	 *		of incoming method calls. May be <code>null</code>.
-	 * @return 
-	 * 	If a previously registered request handler existed and this
-	 *    handler replaced it (i.e. their URI and method regular expression 
-	 *    were identical)
-	 */
-	public RequestHandler registerHandler(String uriPath, String method, SynchronousRequestHandler handler, MethodCallUnmarshallerAid aid) {
-		return this.registerHandler(uriPath, method, (RequestHandler) handler, aid);
-	}
-
-	private RequestHandler registerHandler(String uriPath, String method, RequestHandler handler, MethodCallUnmarshallerAid aid) {
-		// I anticipate a common mistake when using the ProxyingRequestHandler 
-		// will be to forget to pass it in as the aid, so let's
-		// cater for that.
-		if (aid == null && handler instanceof MethodCallUnmarshallerAid) {
-			aid = (MethodCallUnmarshallerAid) handler;
-		}
-
+	public RequestHandler registerHandler(String uriPath, String method, RequestHandler handler) {
 		synchronized (this.uriHandlers) {
 			if (uriPath != null) {
 				uriPath = Utils.normalizeURIPath(uriPath);
@@ -478,14 +199,6 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 				this.globalPatternMap.put(method, pattern);
 			}
 			RequestHandler prevHandler = patternMap.put(method, handler);
-			synchronized (this.handlerUnmarshallerAids) {
-				if (prevHandler != null) {
-					this.handlerUnmarshallerAids.remove(prevHandler);
-				}
-				if (aid != null) {
-					this.handlerUnmarshallerAids.put(handler, aid);
-				}
-			}
 			return prevHandler;
 		}
 	}
@@ -525,39 +238,20 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 			throw new MethodNotAllowedResponseException("(misconfigured handler for " + e.getMethod() + "?)", allowed);
 		}
 		
-		RequestHandler handler = aid.getRequestHandler();
-		if (handler == null) {
-			// No match with a specific URI, try with a wildcard URI
-			handler = this.lookupHandler(null, call.getName());
+		RequestHandler handler = this.lookupHandler(null, call.getName());
 			if (handler == null) {
 				throw new HttpResponseException(HttpConstants.StatusCodes._404_NOT_FOUND, "Not Found (handler for "
 						+ call.getName() + ")", request);
-			}
 		}
 
 		try {
-			return dispatchRpcCall(socket, request, call, handler);
+	        SocketChannel channel = socket == null ? null : socket.getChannel();
+	        RpcCallContext context = new RpcCallContext(channel, this.newSSLSession(socket), request);
+	        SocketResponseChannel rspChannel = this.newSocketResponseChannel(socket, request);
+	        ((AsynchronousRequestHandler) handler).handleRequest(call, context, rspChannel);
+	        return null;
 		} catch (RpcFaultException e) {
 			return e.toFault();
-		}
-	}
-
-	private RpcResponse dispatchRpcCall(Socket socket, HttpRequestBuffer request, RpcCall call, RequestHandler handler) throws Exception, HttpResponseException {
-		RpcCallContext context = this.newRpcCallContext(socket, request);
-		if (handler instanceof SynchronousRequestHandler) {
-			RpcResponse rsp = ((SynchronousRequestHandler) handler).handleRequest(call, context);
-			if (rsp == null) {
-				throw new HttpResponseException(HttpConstants.StatusCodes._500_INTERNAL_SERVER_ERROR,
-						"A synchronous handler (for " + call.getName() + ") returned a null value");
-			}
-			return rsp;
-		} else {
-			// TODO: _TEST_ Select the content based on Accept-Encoding
-//			Encoding rspEncoding = this.selectResponseEncoding(request);
-//			SocketResponseChannel rspChannel = new SocketResponseChannel(this, request, socket, rspEncoding);
-			SocketResponseChannel rspChannel = this.newSocketResponseChannel(socket, request);
-			((AsynchronousRequestHandler) handler).handleRequest(call, context, rspChannel);
-			return null;
 		}
 	}
 
@@ -578,14 +272,9 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 		return new ResponseCoordinator(this, socket);
 	}
 
-	protected RpcCallContext newRpcCallContext(Socket socket, HttpRequestBuffer req) {
-		SocketChannel channel = socket == null ? null : socket.getChannel();
-		return new RpcCallContext(channel, this.newSSLSession(socket), req);
-	}
-
 	/**
 	 * This package private method exists purely to route calls to the protected
-	 * {@link XmlRpcProcessor#queueWrite(Socket, byte[])} method from classes
+	 * {@link #queueWrite(Socket, byte[])} method from classes
 	 * within this package without forcing it to be public.
 	 * @param socket
 	 * @param rspData
@@ -682,7 +371,7 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
 	/**
 	 * This implementation defers to the 
 	 * {@link #accept(SelectionKey)} method if a connection
-	 * is pending. In all other cases it defers to it's
+	 * is pending. In all other cases it defers to its
 	 * parent.
 	 * @param key
 	 * 	The {@link SelectionKey} for the socket on which
@@ -1003,49 +692,6 @@ public abstract class HttpRpcServer extends HttpRpcProcessor {
     protected void removeWriteBuffers(Socket socket) {
 		synchronized (this.responseBuffers) {
 			this.responseBuffers.remove(socket);
-		}
-	}
-
-	private class ServerUnmarshallerAid extends MethodCallUnmarshallerAid {
-		private String uri;
-		private RequestHandler handler;
-
-		public ServerUnmarshallerAid(String uri) {
-			this.uri = uri;
-		}
-
-		@Override
-        public Class<?> getType(String methodName, int index) {
-			MethodCallUnmarshallerAid aid = this.lookupAid(methodName);
-			if (aid == null) {
-				return null;
-			}
-			return aid.getType(methodName, index);
-		}
-
-		@Override
-        public FieldNameCodec getFieldNameCodec(String methodName) {
-			UnmarshallerAid aid = this.lookupAid(methodName);
-			if (aid == null) {
-				return null;
-			}
-			return aid.getFieldNameCodec(methodName);
-		}
-
-		RequestHandler getRequestHandler() {
-			return this.handler;
-		}
-
-		private MethodCallUnmarshallerAid lookupAid(String methodName) {
-			this.handler = lookupHandler(this.uri, methodName);
-			if (handler == null) {
-				// No match with a specific URI, try with a wildcard URI
-				handler = lookupHandler(null, methodName);
-			}
-
-			synchronized (handlerUnmarshallerAids) {
-				return handlerUnmarshallerAids.get(handler);
-			}
 		}
 	}
 

@@ -16,7 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.flat502.rox.processing.HttpRpcProcessor;
+import com.flat502.rox.processing.HttpProcessor;
 import com.flat502.rox.utils.Utils;
 
 /**
@@ -26,7 +26,7 @@ import com.flat502.rox.utils.Utils;
 public abstract class HttpMessageBuffer {
 	// private static final Pattern HTTP_VERSION = Pattern.compile("HTTP/(\\d+\\.\\d+)");
 
-	private HttpRpcProcessor processor;
+	private HttpProcessor processor;
 	private Socket socket;
 
 	private byte[] data;
@@ -46,7 +46,7 @@ public abstract class HttpMessageBuffer {
 	 * 	The socket from which data for this buffer will be
 	 * 	gathered.
 	 */
-	protected HttpMessageBuffer(HttpRpcProcessor processor, Socket socket) {
+	protected HttpMessageBuffer(HttpProcessor processor, Socket socket) {
 		this.processor = processor;
 		this.socket = socket;
 		this.contentStarts = -1;
@@ -62,7 +62,7 @@ public abstract class HttpMessageBuffer {
 	}
 	
 	// TODO: Document
-	public HttpRpcProcessor getOrigin() {
+	public HttpProcessor getOrigin() {
 		return this.processor;
 	}
 
