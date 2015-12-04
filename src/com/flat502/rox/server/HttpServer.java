@@ -100,7 +100,45 @@ public class HttpServer extends HttpProcessor {
 	// Maps Sockets to an object responsible for coordinating responses
 	// so we handle pipelined requests correctly.
 	private Map<Socket, ResponseCoordinator> socketResponseCoordinators = new HashMap<>();
-	
+	   /**
+     * Initialize an instance listening for connections
+     * on all local addresses.
+     * <p>
+     * HTTPS (SSL) and logging are disabled and no
+     * {@link AcceptPolicy accept policy} is installed.
+     * @param port
+     *  The port to listen on.
+     * @throws IOException
+     *  if an error occurs initializing the underlying
+     *  server socket.
+     */
+    public HttpServer(int port) throws IOException {
+        this(null, port, false, null, null);
+    }
+
+    /**
+     * Initialize an instance listening for connections
+     * on a specified local address.
+     * <p>
+     * HTTPS (SSL) is disabled and no
+     * {@link AcceptPolicy accept policy} is installed.
+     * @param hostAddress
+     *  The address to listen on. If this is <code>null</code>
+     *  this instance will listen on all local addresses.
+     * @param port
+     *  The port to listen on.
+     * @throws IOException
+     *  if an error occurs initializing the underlying
+     *  server socket.
+     */
+    public HttpServer(InetAddress hostAddress, int port) throws IOException {
+        this(hostAddress, port, false, null, null);
+    }
+
+    public HttpServer(InetAddress hostAddress, int port, SSLConfiguration sslCfg) throws IOException {
+        this(hostAddress, port, (sslCfg != null), null, sslCfg);
+    }
+
 	/**
 	 * Initialize a new HTTP RPC server.
 	 * <p>
