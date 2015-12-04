@@ -14,10 +14,12 @@ import com.flat502.rox.server.ResponseChannel;
  */
 public class HttpServerDemo implements AsynchronousRequestHandler {
     @Override
-    public void handleRequest(RequestContext context, ResponseChannel rspChannel) throws Exception {
+    public boolean handleRequest(RequestContext context, ResponseChannel rspChannel) throws Exception {
         final HttpRequestBuffer req = context.getHttpRequest();
         String body = new String(req.getContent());
         System.out.println("Got request " + req.getURI() + " with body:\n" + body);
+        
+        // TODO: hand response generation off to a worker thread
         rspChannel.respond(new Response() {
             @Override
             public byte[] getContent() {
@@ -30,10 +32,6 @@ public class HttpServerDemo implements AsynchronousRequestHandler {
                 return "text/html";
             }
         });
-    }
-
-    @Override
-    public boolean canHandleURI(String uri) {
         return true;
     }
 

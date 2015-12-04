@@ -5,17 +5,12 @@ package com.flat502.rox.server;
  * @see com.flat502.rox.server.HttpRpcServer#registerHandler(String, String, AsynchronousRequestHandler)
  */
 public interface AsynchronousRequestHandler {
-    /**
-     * Returns true if this request handler can handle the given URI. 
-     */
-    boolean canHandleURI(String uri);
-    
 	/**
-	 * Invoked to handle a method call.
+	 * Invoked to handle an HTTP request.
 	 * <p>
-	 * This method is responsible for processing the method
+	 * This method is responsible for processing the request
 	 * asynchronously. Responses can be sent using the
-	 * {@link ResponseChannel#respond(RpcResponse)}
+	 * {@link ResponseChannel#respond(Response)}
 	 * method.
 	 * <p>
 	 * Although an implement could do all of its work using
@@ -34,9 +29,11 @@ public interface AsynchronousRequestHandler {
 	 * @param context
 	 * 	An {@link RequestContext} instance providing information about
 	 * 	the call context.
+	 * @return
+	 *  Returns true if this handler was able to handle the URI in context.getHttpRequest().getURI(), false if not.
 	 * @throws Exception
 	 * 	Implementations are permitted to raise
 	 * 	an exception as part of their processing.
 	 */
-	void handleRequest(RequestContext context, ResponseChannel rspChannel) throws Exception;
+	boolean handleRequest(RequestContext context, ResponseChannel rspChannel) throws Exception;
 }

@@ -217,12 +217,13 @@ public class HttpServer extends HttpProcessor {
         if (log.logDebug()) {
             log.debug("Look up handler for URI [" + uri + "] and method [" + request.getMethod() + "]");
         }
+        SocketChannel channel = socket == null ? null : socket.getChannel();
+        RequestContext context = new RequestContext(channel, this.newSSLSession(socket), request);
+        SocketResponseChannel rspChannel = this.newSocketResponseChannel(socket, request);
 	    for (AsynchronousRequestHandler handler : this.uriHandlers) {
-	        if (handler.canHandleURI(uri)) {
-	            SocketChannel channel = socket == null ? null : socket.getChannel();
-	            RequestContext context = new RequestContext(channel, this.newSSLSession(socket), request);
-	            SocketResponseChannel rspChannel = this.newSocketResponseChannel(socket, request);
-	            handler.handleRequest(context, rspChannel);	            
+	        if (handler.handleRequest(context, rspChannel)) {
+	            // Handled successfully
+	            return;
 	        }
 	    }
 	    if (log.logDebug()) {
