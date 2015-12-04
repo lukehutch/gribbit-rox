@@ -106,14 +106,14 @@ public class ClientResourcePool extends ResourcePool {
 	/**
 	 * Configure a <em>default</em> timeout value for RPC method calls.
 	 * <p>
-	 * All {@link HttpRpcClient} instances sharing a resource pool
+	 * All {@link HttpClient} instances sharing a resource pool
 	 * "inherit" this timeout as their initial timeout value.
 	 * @param timeout
 	 * 	The timeout (in milliseconds). A value of 0 indicates no timeout should be
 	 * 	enforced.
 	 * @throws IllegalArgumentException
 	 * 	If the timeout provided is negative.
-	 * @see HttpRpcClient#setRequestTimeout(long)
+	 * @see HttpClient#setRequestTimeout(long)
 	 */
 	public void setRequestTimeout(long timeout) {
 		if (timeout < 0) {
@@ -164,7 +164,7 @@ public class ClientResourcePool extends ResourcePool {
 		return t;
 	}
 	
-	protected void detach(HttpRpcClient client) throws IOException {
+	protected void detach(HttpClient client) throws IOException {
 		synchronized (this.notifierMutex) {
 			if (this.connPool != null) {
 				this.connPool.detach(client);

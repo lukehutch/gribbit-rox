@@ -1,6 +1,5 @@
 package com.flat502.rox.server;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -10,17 +9,14 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.regex.Pattern;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLException;
@@ -32,8 +28,6 @@ import com.flat502.rox.http.HttpMessageBuffer;
 import com.flat502.rox.http.HttpRequestBuffer;
 import com.flat502.rox.http.HttpResponse;
 import com.flat502.rox.http.HttpResponseException;
-import com.flat502.rox.http.MethodNotAllowedException;
-import com.flat502.rox.http.MethodNotAllowedResponseException;
 import com.flat502.rox.log.Log;
 import com.flat502.rox.log.LogFactory;
 import com.flat502.rox.processing.HttpProcessor;
@@ -61,23 +55,11 @@ import com.flat502.rox.utils.Utils;
  * methods. Worker threads are responsible for notification
  * of registered {@link com.flat502.rox.server.RequestHandler}s.
  */
-public abstract class HttpRpcServer extends HttpProcessor {
-	private static Log log = LogFactory.getLog(HttpRpcServer.class);
+public class HttpServer extends HttpProcessor {
+	private static Log log = LogFactory.getLog(HttpServer.class);
 	
-	// Maps (normalized) URI instances to an ordered Map
-	// that itself maps regular expression String instances to handlers.
-	// Handlers implement one of the following interfaces:
-	// 	SyncRequestHandler
-	// 	AsyncRequestHandler
-	// A null URI key is a wildcard.
-	private Map<String, Map<String, RequestHandler>> uriHandlers = new HashMap<>();
-
-	// Maps strings to their compiled Pattern
-	// instance. This is stored separately from
-	// the above since Pattern doesn't override
-	// equals() or hashCode() and we want to be
-	// able to detect duplicate patterns.
-	private Map<String, Pattern> globalPatternMap = new HashMap<>();
+	// Asynchronous request handlers that test for matching request URIs.
+	private ConcurrentLinkedDeque<AsynchronousRequestHandler> uriHandlers = new ConcurrentLinkedDeque<>();
 
 	// The address (and name) and port we bind on.
 	// We store the host along with the host so we
@@ -136,13 +118,13 @@ public abstract class HttpRpcServer extends HttpProcessor {
 	 * @throws IOException
 	 */
 	// TODO: Document parameters
-	public HttpRpcServer(InetAddress hostAddress, int port, boolean useHttps, ServerResourcePool workerPool) throws IOException {
+	public HttpServer(InetAddress hostAddress, int port, boolean useHttps, ServerResourcePool workerPool) throws IOException {
 		this(hostAddress, port, useHttps, workerPool, null);
 	}
 	
-	public HttpRpcServer(InetAddress hostAddress, int port, boolean useHttps, ServerResourcePool workerPool, SSLConfiguration sslCfg)
+	public HttpServer(InetAddress hostAddress, int port, boolean useHttps, ServerResourcePool workerPool, SSLConfiguration sslCfg)
 			throws IOException {
-		super(useHttps, workerPool, sslCfg);
+		super(useHttps, workerPool, useHttps && sslCfg == null ? new SSLConfiguration() : null);
 
 		this.hostAddress = hostAddress;
 		if (hostAddress != null) {
@@ -181,26 +163,8 @@ public abstract class HttpRpcServer extends HttpProcessor {
 		this.idleClientTimeout = timeout;
 	}
 
-	public RequestHandler registerHandler(String uriPath, String method, RequestHandler handler) {
-		synchronized (this.uriHandlers) {
-			if (uriPath != null) {
-				uriPath = Utils.normalizeURIPath(uriPath);
-			}
-
-			Map<String, RequestHandler> patternMap = this.uriHandlers.get(uriPath);
-			if (patternMap == null) {
-				patternMap = new LinkedHashMap<>();
-				this.uriHandlers.put(uriPath, patternMap);
-			}
-
-			Pattern pattern = this.globalPatternMap.get(method);
-			if (pattern == null) {
-				pattern = Pattern.compile(method);
-				this.globalPatternMap.put(method, pattern);
-			}
-			RequestHandler prevHandler = patternMap.put(method, handler);
-			return prevHandler;
-		}
+	public void registerHandler(AsynchronousRequestHandler handler) {
+	    this.uriHandlers.add(handler);
 	}
 
 	/**
@@ -208,51 +172,26 @@ public abstract class HttpRpcServer extends HttpProcessor {
 	 * 
 	 * @param sk
 	 * @param request
-	 * @return For synchronous handlers a method response is returned. For
-	 *         asynchronous handlers <code>null</code> is returned.
 	 * @throws Exception
 	 */
-	RpcResponse routeRequest(Socket socket, HttpRequestBuffer request) throws Exception {
-		String reqMountPoint = Utils.normalizeURIPath(request.getURI());
-		ServerUnmarshallerAid aid = new ServerUnmarshallerAid(reqMountPoint);
-		
-		HttpRequestUnmarshaller unmarshaller = null;
-		synchronized(this.reqUnmarshallers) {
-			unmarshaller = this.reqUnmarshallers.get(request.getMethod());
-
-			if (unmarshaller == null) {
-				// No registered handler for this method.
-				// TODO: Add testcase
-				Iterator<String> iter = this.reqUnmarshallers.keySet().iterator();
-				String allowed = Utils.join(", ", iter);
-				throw new MethodNotAllowedResponseException("(no handler for " + request.getMethod() + ")", allowed);
-			}
-		}
-		
-		RpcCall call;
-		try {
-			call = unmarshaller.unmarshal(request, aid);
-		} catch (MethodNotAllowedException e) {
-			// TODO: Add testcase
-			String allowed = Utils.join(", ", e.getAllowed());
-			throw new MethodNotAllowedResponseException("(misconfigured handler for " + e.getMethod() + "?)", allowed);
-		}
-		
-		RequestHandler handler = this.lookupHandler(null, call.getName());
-			if (handler == null) {
-				throw new HttpResponseException(HttpConstants.StatusCodes._404_NOT_FOUND, "Not Found (handler for "
-						+ call.getName() + ")", request);
-		}
-
-		try {
-	        SocketChannel channel = socket == null ? null : socket.getChannel();
-	        RpcCallContext context = new RpcCallContext(channel, this.newSSLSession(socket), request);
-	        SocketResponseChannel rspChannel = this.newSocketResponseChannel(socket, request);
-	        ((AsynchronousRequestHandler) handler).handleRequest(call, context, rspChannel);
-	        return null;
-		} catch (RpcFaultException e) {
-			return e.toFault();
-		}
+	void routeRequest(Socket socket, HttpRequestBuffer request) throws Exception {
+	    String uri = request.getURI();
+        if (log.logDebug()) {
+            log.debug("Look up handler for URI [" + uri + "] and method [" + request.getMethod() + "]");
+        }
+	    for (AsynchronousRequestHandler handler : this.uriHandlers) {
+	        if (handler.canHandleURI(uri)) {
+	            SocketChannel channel = socket == null ? null : socket.getChannel();
+	            RequestContext context = new RequestContext(channel, this.newSSLSession(socket), request);
+	            SocketResponseChannel rspChannel = this.newSocketResponseChannel(socket, request);
+	            handler.handleRequest(context, rspChannel);	            
+	        }
+	    }
+	    if (log.logDebug()) {
+	        log.debug("Nothing registered for uri [" + uri + "]");
+	    }
+	    throw new HttpResponseException(HttpConstants.StatusCodes._404_NOT_FOUND, "Not Found (handler for "
+	            + uri + ")", request);
 	}
 
 	private SocketResponseChannel newSocketResponseChannel(Socket socket, HttpRequestBuffer request) {
@@ -283,35 +222,6 @@ public abstract class HttpRpcServer extends HttpProcessor {
 		this.queueWrite(socket, rspData, close);
 	}
 
-	private RequestHandler lookupHandler(String uri, String methodName) {
-		// We don't normalize the URI here because it is normalized when
-		// the HTTP request comes in.
-		if (log.logDebug()) {
-			log.debug("Look up handler for URI [" + uri + "] and method [" + methodName + "]");
-		}
-
-		RequestHandler handler = null;
-		Map<String, RequestHandler> patternMap = this.uriHandlers.get(uri);
-		if (patternMap == null) {
-			if (log.logDebug()) {
-				log.debug("Nothing registered for uri [" + uri + "]");
-			}
-			return null;
-		}
-		Iterator<Entry<String, RequestHandler>> patterns = patternMap.entrySet().iterator();
-		while (patterns.hasNext()) {
-			Entry<String, RequestHandler> entry = patterns.next();
-			Pattern pattern = this.globalPatternMap.get(entry.getKey());
-			if (pattern.matcher(methodName).find()) {
-				if (log.logDebug()) {
-					log.debug("Handler matched on pattern [" + pattern + "]");
-				}
-				handler = entry.getValue();
-			}
-		}
-		return handler;
-	}
-
 	/**
 	 * Constructs a new {@link HttpResponse} containing the
 	 * given XML-RPC method response.
@@ -319,7 +229,7 @@ public abstract class HttpRpcServer extends HttpProcessor {
 	 * This implementation encodes the response using <code>UTF-8</code>,
 	 * sets the status code to <code>200</code>, and sets <code>Content-Type</code>
 	 * header to <code>text/xml</code> as required. No other headers are set.
-	 * @param methodRsp
+	 * @param rsp
 	 * 	The XML-RPC method response to be returned in the HTTP response.
 	 * @param encoding 
 	 * 	An {@link Encoding} describing the encoding to use when 
@@ -333,14 +243,10 @@ public abstract class HttpRpcServer extends HttpProcessor {
 	 * 	if an error occurs while marshalling the XML-RPC response.
 	 * @throws MarshallingException 
 	 */
-	protected HttpResponse toHttpResponse(HttpMessageBuffer origMsg, RpcResponse methodRsp, Encoding encoding) throws IOException,
-			MarshallingException {
-		ByteArrayOutputStream byteOs = new ByteArrayOutputStream();
-		methodRsp.marshal(byteOs, Charset.forName("UTF-8"));
-		byte[] rspXml = byteOs.toByteArray();
+	protected HttpResponse toHttpResponse(HttpMessageBuffer origMsg, Response rsp, Encoding encoding) throws IOException {
 		HttpResponse httpRsp = this.newHttpResponse(origMsg, 200, "OK", encoding);
-		httpRsp.addHeader(HttpConstants.Headers.CONTENT_TYPE, methodRsp.getContentType());
-		httpRsp.setContent(rspXml);
+		httpRsp.addHeader(HttpConstants.Headers.CONTENT_TYPE, rsp.getContentType());
+		httpRsp.setContent(rsp.getContent());
 		return httpRsp;
 	}
 	
@@ -502,14 +408,14 @@ public abstract class HttpRpcServer extends HttpProcessor {
 					log.trace("Idle client timer expired: " + System.identityHashCode(socket));
 				}
 				SocketChannel socketChannel = this.socket.getChannel();
-				socketChannel.keyFor(HttpRpcServer.this.getSocketSelector()).cancel();
+				socketChannel.keyFor(HttpServer.this.getSocketSelector()).cancel();
 				// This (shutting down the output stream) seems unnecessary but 
 				// without it the client never sees a disconnect under Linux.
 				// For good measure we shutdown the input stream too.
 				socketChannel.socket().shutdownOutput();
 				socketChannel.socket().shutdownInput();
 				socketChannel.close();
-				HttpRpcServer.this.deregisterSocket(socket);
+				HttpServer.this.deregisterSocket(socket);
 			} catch(Exception e) {
 				log.warn("IdleClientTimerTask caught an exception", e);
 			}

@@ -222,18 +222,18 @@ public class Test_DeprecatedAsyncClientWithoutURI extends TestCase {
 		}
 		
 		@Override
-        public SocketChannel getChannel(HttpRpcClient client) throws IOException {
+        public SocketChannel getChannel(HttpClient client) throws IOException {
 			this.lastChannel = this.pool.getChannel(client);
 			return lastChannel;
 		}
 		
 		@Override
-        public void returnChannel(HttpRpcClient client, SocketChannel channel) {
+        public void returnChannel(HttpClient client, SocketChannel channel) {
 			this.pool.returnChannel(client, channel);
 		}
 		
 		@Override
-        public void removeChannel(HttpRpcClient client, SocketChannel channel) {
+        public void removeChannel(HttpClient client, SocketChannel channel) {
 			this.pool.removeChannel(client, channel);
 		}
 		
@@ -248,7 +248,7 @@ public class Test_DeprecatedAsyncClientWithoutURI extends TestCase {
 		}
 		
 		@Override
-        public void detach(HttpRpcClient client) {
+        public void detach(HttpClient client) {
 			this.pool.detach(client);
 		}
 		

@@ -3,7 +3,7 @@ package com.flat502.rox.demo;
 import java.net.URL;
 
 import com.flat502.rox.client.AsynchronousResponseHandler;
-import com.flat502.rox.client.RpcResponseContext;
+import com.flat502.rox.client.ResponseContext;
 import com.flat502.rox.client.XmlRpcClient;
 import com.flat502.rox.marshal.RpcCall;
 import com.flat502.rox.marshal.RpcResponse;
@@ -17,7 +17,7 @@ public class AsyncClientDemo implements AsynchronousResponseHandler {
 	private static boolean responseReceived = false;
 	
 	@Override
-    public void handleResponse(RpcCall call, RpcResponse response, RpcResponseContext context) {
+    public void handleResponse(Request call, RpcResponse response, ResponseContext context) {
 		TimeInfo timeinfo = (TimeInfo) response.getReturnValue();
 		System.out.println("getDate() returned with");
 		System.out.println("   today is " + timeinfo.today);
@@ -27,7 +27,7 @@ public class AsyncClientDemo implements AsynchronousResponseHandler {
 	}
 
 	@Override
-    public void handleException(RpcCall call, Throwable e, RpcResponseContext context) {
+    public void handleException(Request call, Throwable e, ResponseContext context) {
 		e.printStackTrace();
 		
 		responseReceived = true;

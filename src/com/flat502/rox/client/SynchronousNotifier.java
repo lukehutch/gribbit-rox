@@ -18,9 +18,9 @@ class SynchronousNotifier implements Notifiable {
 			if (this.rsp != null) {
 				return rsp;
 			} else if (this.timeOut) {
-				throw new RpcCallTimeoutException(this.exception);
+				throw new RequestTimeoutException(this.exception);
 			} else if (this.exception != null) {
-				throw new RpcCallFailedException(this.exception);
+				throw new RequestFailedException(this.exception);
 			}
 
 			try {
@@ -36,7 +36,7 @@ class SynchronousNotifier implements Notifiable {
 	}
 
 	@Override
-    public void notify(HttpResponseBuffer rsp, RpcResponseContext context) {
+    public void notify(HttpResponseBuffer rsp, ResponseContext context) {
 		synchronized (this) {
 			this.rsp = rsp;
 			this.notify();
@@ -44,7 +44,7 @@ class SynchronousNotifier implements Notifiable {
 	}
 
 	@Override
-    public void notify(Throwable e, RpcResponseContext context) {
+    public void notify(Throwable e, ResponseContext context) {
 		synchronized (this) {
 			this.exception = e;
 			this.notify();
@@ -52,7 +52,7 @@ class SynchronousNotifier implements Notifiable {
 	}
 	
 	@Override
-    public void notifyTimedOut(Throwable cause, RpcResponseContext context) {
+    public void notifyTimedOut(Throwable cause, ResponseContext context) {
 		synchronized (this) {
 			this.timeOut = true;
 			this.exception = cause;

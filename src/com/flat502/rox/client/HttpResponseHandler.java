@@ -31,7 +31,7 @@ class HttpResponseHandler extends HttpMessageHandler {
 	
 	@Override
     protected void handleProcessingException(ProcessingException exception) {
-		((HttpRpcClient)exception.getProcessor()).handleException(exception);
+		((HttpClient)exception.getProcessor()).handleException(exception);
 	}
 	
 	private HttpResponseBuffer getResponse(HttpMessageBuffer msg) {
@@ -42,11 +42,11 @@ class HttpResponseHandler extends HttpMessageHandler {
 		return (HttpResponseBuffer) msg;
 	}
 	
-	private HttpRpcClient getClient(HttpResponseBuffer response) {
-		if (!(response.getOrigin() instanceof HttpRpcClient)) {
-			throw new IllegalArgumentException("Expected instance of " + HttpRpcClient.class.getName() + ", got "
+	private HttpClient getClient(HttpResponseBuffer response) {
+		if (!(response.getOrigin() instanceof HttpClient)) {
+			throw new IllegalArgumentException("Expected instance of " + HttpClient.class.getName() + ", got "
 					+ response.getOrigin().getClass().getName());
 		}
-		return (HttpRpcClient) response.getOrigin();
+		return (HttpClient) response.getOrigin();
 	}
 }

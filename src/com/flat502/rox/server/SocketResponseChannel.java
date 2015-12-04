@@ -5,8 +5,6 @@ import java.io.IOException;
 import com.flat502.rox.encoding.Encoding;
 import com.flat502.rox.http.HttpRequestBuffer;
 import com.flat502.rox.http.HttpResponseException;
-import com.flat502.rox.marshal.MarshallingException;
-import com.flat502.rox.marshal.RpcResponse;
 
 /**
  * A response channel wrapping an underlying SocketChannel.
@@ -30,7 +28,7 @@ class SocketResponseChannel implements ResponseChannel {
 	}
 	
 	@Override
-    public void respond(RpcResponse rsp) throws IOException, MarshallingException {
+    public void respond(Response rsp) throws IOException {
 //		HttpResponse httpRsp = this.server.toHttpResponse(this.request, rsp, this.encoding);
 //		this.server.queueResponse(socket, httpRsp.marshal(), httpRsp.mustCloseConnection());
 		this.coord.respond(this.rspId, this.request, rsp, this.encoding);

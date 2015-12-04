@@ -32,7 +32,7 @@ public class Test_MultiFunctionServer extends TestCase {
 		public HttpRequestBuffer request;
 
 		@Override
-        public RpcCall unmarshal(HttpRequestBuffer request, MethodCallUnmarshallerAid aid) throws Exception {
+        public Request unmarshal(HttpRequestBuffer request, MethodCallUnmarshallerAid aid) throws Exception {
 			this.request = request;
 			return super.unmarshal(request, aid);
 		}
@@ -46,7 +46,7 @@ public class Test_MultiFunctionServer extends TestCase {
 		}
 
 		@Override
-        public RpcCall unmarshal(HttpRequestBuffer request, MethodCallUnmarshallerAid aid) throws Exception {
+        public Request unmarshal(HttpRequestBuffer request, MethodCallUnmarshallerAid aid) throws Exception {
 			this.request = request;
 			return super.unmarshal(request, aid);
 		}

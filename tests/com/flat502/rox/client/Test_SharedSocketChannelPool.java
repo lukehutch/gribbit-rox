@@ -373,13 +373,13 @@ public class Test_SharedSocketChannelPool extends TestCase {
 		}
 	}
 
-	private class MockHttpRpcClient extends HttpRpcClient {
+	private class MockHttpRpcClient extends HttpClient {
 		protected MockHttpRpcClient(String urlString) throws IOException {
 			super(new URL(urlString), null);
 		}
 
 		@Override
-        protected RpcCall newRpcCall(String name, Object[] params) {
+        protected Request newRpcCall(String name, Object[] params) {
 			return null;
 		}
 

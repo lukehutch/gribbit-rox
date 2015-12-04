@@ -7,7 +7,8 @@ import java.util.List;
 import com.flat502.rox.marshal.RpcCall;
 import com.flat502.rox.marshal.RpcResponse;
 import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodResponse;
-import com.flat502.rox.server.RpcCallContext;
+import com.flat502.rox.server.HttpServer;
+import com.flat502.rox.server.RequestContext;
 import com.flat502.rox.server.SynchronousRequestHandler;
 import com.flat502.rox.server.XmlRpcServer;
 
@@ -17,7 +18,7 @@ import com.flat502.rox.server.XmlRpcServer;
  */
 public class SSLServerDemo implements SynchronousRequestHandler {
 	@Override
-    public RpcResponse handleRequest(RpcCall call, RpcCallContext context) throws Exception {
+    public RpcResponse handleRequest(Request call, RequestContext context) throws Exception {
 		Object[] params = call.getParameters();
 		System.out.println("Method [" + call.getName() + "] called with "
 				+ params.length + " parameters");
@@ -77,7 +78,7 @@ public class SSLServerDemo implements SynchronousRequestHandler {
 			}
 			System.out.println("Starting server on " + host + ":" + port);
 
-			XmlRpcServer server = new XmlRpcServer(InetAddress.getByName(host), port, true);
+			HttpServer server = new HttpServer(InetAddress.getByName(host), port, true);
 			server.registerHandler(null, "^example\\.", new SSLServerDemo());
 			server.start();
 		} catch (Exception e) {

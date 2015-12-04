@@ -392,7 +392,7 @@ public abstract class HttpMessageBuffer {
 	 * of headers without producing headers that are unappealing.
 	 * Most documentation uses headers like "Content-Type" and this
 	 * method aims to ensure that headers are formatted using this
-	 * "convention.
+	 * convention.
 	 * <p>
 	 * The header name is normalized as though the value were
 	 * converted to lowercase split on the '-' character, the 

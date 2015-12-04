@@ -50,7 +50,7 @@ public class Test_AsyncClientTimeouts extends TestCase {
 			client.execute("test.waitFor", new Object[]{_2_SECONDS}, handler);
 			Object rsp = handler.waitForResponse(_5_SECONDS.intValue());
 			fail();
-		} catch (RpcCallTimeoutException e) {
+		} catch (RequestTimeoutException e) {
 		} finally {
 			client.stop();
 			server.stop();
@@ -67,7 +67,7 @@ public class Test_AsyncClientTimeouts extends TestCase {
 			client.execute("test.waitFor", new Object[]{_2_SECONDS}, handler);
 			Object rsp = handler.waitForResponse(_5_SECONDS.intValue());
 			fail();
-		} catch (RpcCallTimeoutException e) {
+		} catch (RequestTimeoutException e) {
 		} finally {
 			client.stop();
 			server.stop();
@@ -85,7 +85,7 @@ public class Test_AsyncClientTimeouts extends TestCase {
 			client.execute("test.waitFor", new Object[]{_2_SECONDS}, handler);
 			Object rsp = handler.waitForResponse(_5_SECONDS.intValue());
 			fail();
-		} catch (RpcCallTimeoutException e) {
+		} catch (RequestTimeoutException e) {
 		} finally {
 			client.stop();
 			server.shutdown();
@@ -102,7 +102,7 @@ public class Test_AsyncClientTimeouts extends TestCase {
 			client.execute("test.waitFor", new Object[]{_2_SECONDS}, handler);
 			Object rsp = handler.waitForResponse(_5_SECONDS.intValue());
 			fail();
-		} catch (RpcCallTimeoutException e) {
+		} catch (RequestTimeoutException e) {
 		} finally {
 			client.stop();
 			server.shutdown();

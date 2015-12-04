@@ -6,7 +6,7 @@ import java.nio.channels.SocketChannel;
  * A very simple accept policy interface.
  * <p>
  * An instance of this interface may be associated with an instance
- * of {@link com.flat502.rox.server.HttpRpcServer}. After a new connection has
+ * of {@link com.flat502.rox.server.HttpServer}. After a new connection has
  * been accepted, and before that connection is added to the underlying
  * {@link java.nio.channels.Selector} the installed {@link AcceptPolicy}
  * is consulted to check if the accepted connection should be retained.

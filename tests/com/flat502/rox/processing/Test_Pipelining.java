@@ -22,7 +22,7 @@ import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodResponse;
 import com.flat502.rox.server.AsynchronousRequestHandler;
 import com.flat502.rox.server.ManualSynchronousHandler;
 import com.flat502.rox.server.ResponseChannel;
-import com.flat502.rox.server.RpcCallContext;
+import com.flat502.rox.server.RequestContext;
 import com.flat502.rox.server.XmlRpcServer;
 import com.flat502.rox.utils.Utils;
 
@@ -283,13 +283,13 @@ public class Test_Pipelining extends TestCase {
 	}
 
 	private class AsyncServerHandler implements AsynchronousRequestHandler {
-		public List<RpcCall> calls = new ArrayList<>();
+		public List<Request> calls = new ArrayList<>();
 		public Exception exception;
 		private List<ResponseChannel> channels = new ArrayList<>();
 		private List<XmlRpcMethodResponse> rsps = new ArrayList<>();
 		
 		@Override
-        public synchronized void handleRequest(RpcCall call, RpcCallContext context, ResponseChannel rspChannel) throws Exception {
+        public synchronized void handleRequest(Request call, RequestContext context, ResponseChannel rspChannel) throws Exception {
 			try {
 				this.calls.add(call);
 				//System.out.println(System.identityHashCode(context.getHttpRequest().getSocket()));

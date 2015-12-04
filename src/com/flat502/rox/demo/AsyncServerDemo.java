@@ -6,7 +6,7 @@ import com.flat502.rox.marshal.RpcCall;
 import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodResponse;
 import com.flat502.rox.server.AsynchronousRequestHandler;
 import com.flat502.rox.server.ResponseChannel;
-import com.flat502.rox.server.RpcCallContext;
+import com.flat502.rox.server.RequestContext;
 import com.flat502.rox.server.XmlRpcServer;
 
 /**
@@ -15,7 +15,7 @@ import com.flat502.rox.server.XmlRpcServer;
  */
 public class AsyncServerDemo implements AsynchronousRequestHandler {
 	@Override
-    public void handleRequest(RpcCall call, RpcCallContext context, ResponseChannel rspChannel) throws Exception {
+    public void handleRequest(Request call, RequestContext context, ResponseChannel rspChannel) throws Exception {
 		Object[] params = call.getParameters();
 		System.out.println("Method [" + call.getName() + "] called with "
 				+ params.length + " parameters");

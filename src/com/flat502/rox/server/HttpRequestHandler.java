@@ -1,6 +1,5 @@
 package com.flat502.rox.server;
 
-import com.flat502.rox.encoding.Encoding;
 import com.flat502.rox.http.HttpConstants;
 import com.flat502.rox.http.HttpMessageBuffer;
 import com.flat502.rox.http.HttpRequestBuffer;
@@ -8,8 +7,6 @@ import com.flat502.rox.http.HttpResponse;
 import com.flat502.rox.http.HttpResponseException;
 import com.flat502.rox.log.Log;
 import com.flat502.rox.log.LogFactory;
-import com.flat502.rox.marshal.MarshallingException;
-import com.flat502.rox.marshal.RpcResponse;
 import com.flat502.rox.processing.HttpMessageHandler;
 import com.flat502.rox.utils.BlockingQueue;
 
@@ -30,11 +27,11 @@ class HttpRequestHandler extends HttpMessageHandler {
 		}
 		HttpRequestBuffer request = (HttpRequestBuffer) msg;
 		
-		if (!(request.getOrigin() instanceof HttpRpcServer)) {
-			throw new IllegalArgumentException("Expected instance of " + HttpRpcServer.class.getName() + ", got "
+		if (!(request.getOrigin() instanceof HttpServer)) {
+			throw new IllegalArgumentException("Expected instance of " + HttpServer.class.getName() + ", got "
 					+ request.getOrigin().getClass().getName());
 		}
-		HttpRpcServer server = (HttpRpcServer) request.getOrigin();
+		HttpServer server = (HttpServer) request.getOrigin();
 
 		if (!request.isComplete()) {
 			throw new IllegalStateException("Incomplete request on my queue");
@@ -42,15 +39,9 @@ class HttpRequestHandler extends HttpMessageHandler {
 		
 		HttpResponse httpRsp;
 		try {
-			RpcResponse methodRsp = server.routeRequest(request.getSocket(), request);
-			if (methodRsp == null) {
-				// The handler was asynchronous and will queue a response
-				// when it's done. We're done here.
-				return;
-			}
-			// TODO: _TEST_ Select the content based on Accept-Encoding
-			Encoding rspEncoding = server.selectResponseEncoding(request);
-			httpRsp = server.toHttpResponse(msg, methodRsp, rspEncoding);
+			server.routeRequest(request.getSocket(), request);
+			// Server handlers are always asynchronous and will queue a response when done. We're done here.
+			return;
 		} catch (HttpResponseException e) {
 			httpRsp = server.newHttpResponse(msg, e);
 		} catch (NoSuchMethodError e) {

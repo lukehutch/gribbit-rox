@@ -11,12 +11,12 @@ import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodFault;
 import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodResponse;
 
 public class ManualSynchronousHandler implements SynchronousRequestHandler {
-	public RpcCall call;
-	public List<RpcCall> calls = new ArrayList<>();
-	public RpcCallContext context;
+	public Request call;
+	public List<Request> calls = new ArrayList<>();
+	public RequestContext context;
 
 	@Override
-    public RpcResponse handleRequest(RpcCall call, RpcCallContext context) throws Exception {
+    public RpcResponse handleRequest(Request call, RequestContext context) throws Exception {
 		this.calls.add(call);
 		this.call = call;
 		this.context = context;

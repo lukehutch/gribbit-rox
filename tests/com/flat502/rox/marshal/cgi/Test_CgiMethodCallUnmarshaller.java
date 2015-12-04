@@ -22,7 +22,7 @@ public class Test_CgiMethodCallUnmarshaller extends TestCase {
 		//				"</methodCall>" };
 		//		String uriString = "/testMethod?" + join("&", xmlLines);
 
-		RpcCall call = this.unmarshal("/testMethod");
+		Request call = this.unmarshal("/testMethod");
 		assertEquals("testMethod", call.getName());
 		assertEquals(0, call.getParameters().length);
 	}
@@ -31,7 +31,7 @@ public class Test_CgiMethodCallUnmarshaller extends TestCase {
 		String[] params = new String[] { "foo", "bar", "2" };
 		String uriString = "/testMethod?" + join("&", params);
 
-		RpcCall call = this.unmarshal(uriString);
+		Request call = this.unmarshal(uriString);
 		assertEquals("testMethod", call.getName());
 		assertEquals(3, call.getParameters().length);
 		assertEquals("foo", call.getParameters()[0]);
@@ -43,7 +43,7 @@ public class Test_CgiMethodCallUnmarshaller extends TestCase {
 		String[] params = new String[] { "foo", "bar", "2", "bar" };
 		String uriString = "/testMethod?" + join("&", params);
 
-		RpcCall call = this.unmarshal(uriString);
+		Request call = this.unmarshal(uriString);
 		assertEquals("testMethod", call.getName());
 		assertEquals(4, call.getParameters().length);
 		assertEquals("foo", call.getParameters()[0]);
@@ -56,7 +56,7 @@ public class Test_CgiMethodCallUnmarshaller extends TestCase {
 		String[] params = new String[] { "foo", "bar", "2" };
 		String uriString = "/testMethod?" + join("&", params);
 
-		RpcCall call = this.unmarshal(uriString, new Class[] { null, null, Integer.class });
+		Request call = this.unmarshal(uriString, new Class[] { null, null, Integer.class });
 		assertEquals("testMethod", call.getName());
 		assertEquals(3, call.getParameters().length);
 		assertEquals("foo", call.getParameters()[0]);
@@ -68,7 +68,7 @@ public class Test_CgiMethodCallUnmarshaller extends TestCase {
 		String[] params = new String[] { "foo=bar", "hello=2" };
 		String uriString = "/testMethod?" + join("&", params);
 
-		RpcCall call = this.unmarshal(uriString);
+		Request call = this.unmarshal(uriString);
 		assertEquals("testMethod", call.getName());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof Map);
@@ -82,7 +82,7 @@ public class Test_CgiMethodCallUnmarshaller extends TestCase {
 		String[] params = new String[] { "foo=bar", "hello=2", "foo=bar2" };
 		String uriString = "/testMethod?" + join("&", params);
 
-		RpcCall call = this.unmarshal(uriString);
+		Request call = this.unmarshal(uriString);
 		assertEquals("testMethod", call.getName());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof Map);
@@ -99,7 +99,7 @@ public class Test_CgiMethodCallUnmarshaller extends TestCase {
 		String[] params = new String[] { "foo=bar", "hello=2" };
 		String uriString = "/testMethod?" + join("&", params);
 
-		RpcCall call = this.unmarshal(uriString, new Class[] { Map.class });
+		Request call = this.unmarshal(uriString, new Class[] { Map.class });
 		assertEquals("testMethod", call.getName());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof Map);
@@ -124,7 +124,7 @@ public class Test_CgiMethodCallUnmarshaller extends TestCase {
 		String[] params = new String[] { "foo=bar", "hello=2" };
 		String uriString = "/testMethod?" + join("&", params);
 
-		RpcCall call = this.unmarshal(uriString, new Class[] { Struct.class });
+		Request call = this.unmarshal(uriString, new Class[] { Struct.class });
 		assertEquals("testMethod", call.getName());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof Struct);
@@ -137,7 +137,7 @@ public class Test_CgiMethodCallUnmarshaller extends TestCase {
 		String[] params = new String[] { "foo=1", "bar=hello", "foo=2" };
 		String uriString = "/testMethod?" + join("&", params);
 
-		RpcCall call = this.unmarshal(uriString, new Class[] { StructWithTypedArray.class });
+		Request call = this.unmarshal(uriString, new Class[] { StructWithTypedArray.class });
 		assertEquals("testMethod", call.getName());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof StructWithTypedArray);
@@ -164,12 +164,12 @@ public class Test_CgiMethodCallUnmarshaller extends TestCase {
 		return sb.toString();
 	}
 
-	private RpcCall unmarshal(String uriString) throws Exception {
+	private Request unmarshal(String uriString) throws Exception {
 		MethodCallURI uri = new MethodCallURI(uriString);
 		return new CgiMethodCallUnmarshaller().unmarshal(uri, null);
 	}
 
-	private RpcCall unmarshal(String uriString, Class[] types) throws Exception {
+	private Request unmarshal(String uriString, Class[] types) throws Exception {
 		MethodCallURI uri = new MethodCallURI(uriString);
 		return new CgiMethodCallUnmarshaller().unmarshal(uri, new ArrayParameterTypeMapper(types));
 	}

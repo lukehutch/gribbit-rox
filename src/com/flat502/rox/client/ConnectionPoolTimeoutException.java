@@ -5,9 +5,9 @@ package com.flat502.rox.client;
  * a connection from the underlying connection pool.
  * <p>
  * This exception is only raised if a non-zero 
- * {@link com.flat502.rox.client.HttpRpcClient#setConnectionPoolLimit(int) limit} 
+ * {@link com.flat502.rox.client.HttpClient#setConnectionPoolLimit(int) limit} 
  * and 
- * {@link com.flat502.rox.client.HttpRpcClient#setConnectionPoolTimeout(long) timeout}
+ * {@link com.flat502.rox.client.HttpClient#setConnectionPoolTimeout(long) timeout}
  * have been set on the underling connection pool, a connection is requested after
  * the limit has been reached, and a connection does not become available within
  * the specified timeout interval.

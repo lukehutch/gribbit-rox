@@ -32,7 +32,7 @@ public class Test_SyncClientWithoutURI extends TestCase {
 		try {
 			Object rsp = client.execute("test.stringResponse", null);
 			fail();
-		} catch(RpcCallFailedException e) {
+		} catch(RequestFailedException e) {
 		} finally {
 			client.stop();
 		}
@@ -122,7 +122,7 @@ public class Test_SyncClientWithoutURI extends TestCase {
 			// Ensure the next error we get is a connection refused
 			try {
 				rsp = client.execute("test.stringResponse", null);
-			} catch(RpcCallFailedException e) {
+			} catch(RequestFailedException e) {
 				assertTrue(e.getCause() instanceof ConnectException);
 			}
 		} finally {

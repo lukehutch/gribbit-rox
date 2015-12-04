@@ -37,7 +37,7 @@ class SharedSocketChannelPool {
 	
 	// Maps Destinations -> Set<HttpRpcClient> so we can track all
 	// known clients for a given key (see createClientKey()).
-	private Map<Object, Set<HttpRpcClient>> knownClients = new HashMap<>();
+	private Map<Object, Set<HttpClient>> knownClients = new HashMap<>();
 	
 	// A binary heap holding PooledSocketChannel instances that aren't
 	// checked out. This is ordered by the last access time of said 
@@ -83,7 +83,7 @@ class SharedSocketChannelPool {
 		}
 	}
 
-	public SocketChannel getChannel(HttpRpcClient client) throws IOException {
+	public SocketChannel getChannel(HttpClient client) throws IOException {
 		long pid = client.hashCode() ^ System.nanoTime();
 		this.profiler.begin(pid, this.getClass().getName() + ".getChannel");
 		try {
@@ -94,7 +94,7 @@ class SharedSocketChannelPool {
 				
 				// Ensure this client is always recorded
 				Object key = this.createClientKey(client);
-				Set<HttpRpcClient> clientSet = this.knownClients.get(key);
+				Set<HttpClient> clientSet = this.knownClients.get(key);
 				if (clientSet == null) {
 					clientSet = new HashSet<>();
 					this.knownClients.put(key, clientSet);
@@ -164,7 +164,7 @@ class SharedSocketChannelPool {
 	
 	private static long classInit = System.currentTimeMillis();
 	
-	private void dbgLog(String id, HttpRpcClient client, SocketChannel channel) {
+	private void dbgLog(String id, HttpClient client, SocketChannel channel) {
 		if (!log.logTrace()) {
 			return;
 		}
@@ -174,7 +174,7 @@ class SharedSocketChannelPool {
 		log.trace(time+": "+id+": client="+System.identityHashCode(client)+" ["+key+"]: ch="+System.identityHashCode(channel)+": "+this);
 	}
 	
-	public void returnChannel(HttpRpcClient client, SocketChannel channel) {
+	public void returnChannel(HttpClient client, SocketChannel channel) {
 		boolean bailing = false;
 		synchronized (this.mutex) {
 			try {
@@ -218,7 +218,7 @@ class SharedSocketChannelPool {
 		}
 	}
 	
-	public void removeChannel(HttpRpcClient client, SocketChannel channel) {
+	public void removeChannel(HttpClient client, SocketChannel channel) {
 		synchronized (this.mutex) {
 			try {
 				dbgLog("REMOVE starts", client, channel);
@@ -271,7 +271,7 @@ class SharedSocketChannelPool {
 				// calling through after being woken up subsequently).
 				List<PooledSocketChannel> connStack = this.pooledConnStacks.get(pooledChannel.getPoolingKey());
 				if (connStack != null) {
-					Set<HttpRpcClient> clientSet = this.knownClients.get(pooledChannel.getPoolingKey());
+					Set<HttpClient> clientSet = this.knownClients.get(pooledChannel.getPoolingKey());
 					if (clientSet == null) {
 						if (connStack.remove(pooledChannel)) {
 							this.availableConnections--;
@@ -300,7 +300,7 @@ class SharedSocketChannelPool {
 					pooledChannels.remove();
 				}
 				
-				Set<HttpRpcClient> clientSet = this.knownClients.get(key);
+				Set<HttpClient> clientSet = this.knownClients.get(key);
 				if (clientSet != null && clientSet.isEmpty()) {
 					// Only remove this stack if we know of no other clients using this key (URL)
 					stacks.remove();
@@ -315,7 +315,7 @@ class SharedSocketChannelPool {
 		return "Pool[size=" + total + ", active=" + this.activeConnections + ", pooled=" + this.availableConnections + ", max=" + this.maxConnections + "]";
 	}
 	
-	public void detach(HttpRpcClient client) {
+	public void detach(HttpClient client) {
 		synchronized(this.mutex) {
 			try {
 				// String hc = ""+System.identityHashCode(client);
@@ -325,7 +325,7 @@ class SharedSocketChannelPool {
 				// By definition, pooled connections are not "owned" by this client.
 				// However, if no other clients we know of share their key then
 				// we need to clean up those pooled connections.
-				Set<HttpRpcClient> clientSet = this.knownClients.get(key);
+				Set<HttpClient> clientSet = this.knownClients.get(key);
 				// We may never have seen connections on this URL
 				if (clientSet != null) {
 					clientSet.remove(client);
@@ -380,7 +380,7 @@ class SharedSocketChannelPool {
 		}
 	}
 	
-	protected Object createClientKey(HttpRpcClient client) {
+	protected Object createClientKey(HttpClient client) {
 		// It might make sense to put this method onto the client so
 		// this value can be constructed once.
 		URL url = client.getURL();
@@ -398,7 +398,7 @@ class SharedSocketChannelPool {
 	 * can be created. 
 	 * @throws IOException 
 	 */
-	private SocketChannel getNewChannel(HttpRpcClient client) throws IOException {
+	private SocketChannel getNewChannel(HttpClient client) throws IOException {
 		Object key = createClientKey(client);
 		
 		if (log.logTrace()) {
@@ -424,7 +424,7 @@ class SharedSocketChannelPool {
 		return channel;
 	}
 
-	private SocketChannel newChannel(HttpRpcClient client) throws IOException {
+	private SocketChannel newChannel(HttpClient client) throws IOException {
 		// Create a non-blocking socket channel
 		SocketChannel clientChannel = SocketChannel.open();
 		clientChannel.configureBlocking(false);
@@ -486,7 +486,7 @@ class SharedSocketChannelPool {
 		this.closePooledChannel(pooledChannel);
 	}
 	
-	private SocketChannel checkOut(HttpRpcClient client) {
+	private SocketChannel checkOut(HttpClient client) {
 		if (this.availableConnections > 0) {
 			this.removeExpiredChannels();
 		}
@@ -530,7 +530,7 @@ class SharedSocketChannelPool {
 		return pooledChannel.getPhysicalConnection();
 	}
 	
-	private void checkIn(HttpRpcClient client, PooledSocketChannel pooledChannel) {
+	private void checkIn(HttpClient client, PooledSocketChannel pooledChannel) {
 		Object key = pooledChannel.getPoolingKey();
 
 		if (log.logTrace()) {
@@ -556,7 +556,7 @@ class SharedSocketChannelPool {
 	private void closePooledChannel(PooledSocketChannel pooledChannel) {
 		this.channelMap.remove(pooledChannel.getPhysicalConnection());
 		try {
-			HttpRpcClient owner = pooledChannel.getOwner();
+			HttpClient owner = pooledChannel.getOwner();
 			if (owner != null) {
 				owner.cancel(pooledChannel.getPhysicalConnection());
 			}
@@ -571,7 +571,7 @@ class SharedSocketChannelPool {
 	private void closeActiveChannel(PooledSocketChannel pooledChannel) {
 		this.channelMap.remove(pooledChannel.getPhysicalConnection());
 		try {
-			HttpRpcClient owner = pooledChannel.getOwner();
+			HttpClient owner = pooledChannel.getOwner();
 			if (owner != null) {
 				owner.cancel(pooledChannel.getPhysicalConnection());
 			}

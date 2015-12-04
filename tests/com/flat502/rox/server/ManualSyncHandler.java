@@ -10,10 +10,10 @@ import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodResponse;
 
 @SuppressWarnings("deprecation")
 public class ManualSyncHandler implements SyncRequestHandler {
-	public RpcCall call;
+	public Request call;
 
 	@Override
-    public RpcResponse handleRequest(RpcCall call) throws Exception {
+    public RpcResponse handleRequest(Request call) throws Exception {
 		this.call = call;
 		if (call.getName().equals("server.toUpper")) {
 			return new XmlRpcMethodResponse(((String)call.getParameters()[0]).toUpperCase());

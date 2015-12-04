@@ -6,17 +6,17 @@ class PooledSocketChannel {
 	// private long creationTime = System.currentTimeMillis();
 	private long accessTime = System.currentTimeMillis();
 
-	private HttpRpcClient owner;
+	private HttpClient owner;
 	private SocketChannel channel;
 	private Object poolingKey;
 
-	public PooledSocketChannel(HttpRpcClient owner, SocketChannel channel, Object poolingKey) {
+	public PooledSocketChannel(HttpClient owner, SocketChannel channel, Object poolingKey) {
 		this.owner = owner;
 		this.channel = channel;
 		this.poolingKey = poolingKey;
 	}
 	
-	public void setOwner(HttpRpcClient owner) {
+	public void setOwner(HttpClient owner) {
 		this.owner = owner;
 	}
 
@@ -24,7 +24,7 @@ class PooledSocketChannel {
 		this.accessTime = System.currentTimeMillis();
 	}
 
-	public HttpRpcClient getOwner() {
+	public HttpClient getOwner() {
 		return this.owner;
 	}
 	

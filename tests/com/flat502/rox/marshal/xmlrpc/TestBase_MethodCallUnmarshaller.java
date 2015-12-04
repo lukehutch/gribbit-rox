@@ -32,10 +32,10 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 		super(name);
 	}
 
-	protected abstract RpcCall unmarshal(String xml, Class[] types) throws Exception;
-	protected abstract RpcCall unmarshalWithAid(String xml, MethodCallUnmarshallerAid aid) throws Exception;
+	protected abstract Request unmarshal(String xml, Class[] types) throws Exception;
+	protected abstract Request unmarshalWithAid(String xml, MethodCallUnmarshallerAid aid) throws Exception;
 
-	protected abstract RpcCall unmarshal(InputStream xml, Class[] types) throws Exception;
+	protected abstract Request unmarshal(InputStream xml, Class[] types) throws Exception;
 
 	public void testMethodName() throws Exception {
 		String[] xmlLines = new String[] {
@@ -45,7 +45,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertEquals("testMethod", call.getName());
 	}
 
@@ -57,7 +57,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 	}
 
 	public void testMalformedXMLRPC() throws Exception {
@@ -252,7 +252,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertEquals("", call.getParameters()[0]);
@@ -271,7 +271,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertEquals("", call.getParameters()[0]);
@@ -475,7 +475,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 		String xml = toString(xmlLines);
 
 		InputStream xmlStream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
-		RpcCall call = this.unmarshal(xmlStream, null);
+		Request call = this.unmarshal(xmlStream, null);
 		// Just check there's no exception
 	}
 
@@ -498,7 +498,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(3, call.getParameters().length);
 	}
@@ -517,7 +517,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 		String xml = toString(xmlLines);
 
 		try {
-			RpcCall call = this.unmarshal(xml, null);
+			Request call = this.unmarshal(xml, null);
 			fail();
 		} catch (MarshallingException e) {
 		}
@@ -536,7 +536,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof Integer);
@@ -556,7 +556,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof Integer);
@@ -576,7 +576,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof String);
@@ -596,7 +596,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof String);
@@ -616,7 +616,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof String);
@@ -638,7 +638,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof String);
@@ -663,7 +663,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof String);
@@ -683,7 +683,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof Double);
@@ -703,7 +703,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof Date);
@@ -723,7 +723,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof byte[]);
@@ -754,7 +754,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof Map);
@@ -780,7 +780,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof Map);
@@ -808,7 +808,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof Map);
@@ -838,7 +838,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof Map);
@@ -868,7 +868,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, null);
+		Request call = this.unmarshal(xml, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof List);
@@ -919,7 +919,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { TypedArrayStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { TypedArrayStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof TypedArrayStruct);
@@ -971,7 +971,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { TypedArrayStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { TypedArrayStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof TypedArrayStruct);
@@ -1009,7 +1009,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof PrimitiveArraysStruct);
@@ -1047,7 +1047,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof PrimitiveArraysStruct);
@@ -1085,7 +1085,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof PrimitiveArraysStruct);
@@ -1123,7 +1123,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof PrimitiveArraysStruct);
@@ -1161,7 +1161,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof PrimitiveArraysStruct);
@@ -1199,7 +1199,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof PrimitiveArraysStruct);
@@ -1237,7 +1237,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { IntegerArraysStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { IntegerArraysStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof IntegerArraysStruct);
@@ -1275,7 +1275,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof PrimitiveArraysStruct);
@@ -1328,7 +1328,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { ListStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { ListStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof ListStruct);
@@ -1386,7 +1386,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { ListStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { ListStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof ListStruct);
@@ -1429,7 +1429,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { ListStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { ListStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof ListStruct);
@@ -1467,7 +1467,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { LinkedListStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { LinkedListStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof LinkedListStruct);
@@ -1505,7 +1505,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { LinkedListStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { LinkedListStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof LinkedListStruct);
@@ -1543,7 +1543,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { ListStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { ListStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof ListStruct);
@@ -1581,7 +1581,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { MapStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { MapStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof MapStruct);
@@ -1618,7 +1618,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { MapStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { MapStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		MapStruct struct = (MapStruct) call.getParameters()[0];
@@ -1655,7 +1655,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { TreeMapStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { TreeMapStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof TreeMapStruct);
@@ -1692,7 +1692,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { TreeMapStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { TreeMapStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		TreeMapStruct struct = (TreeMapStruct) call.getParameters()[0];
@@ -1744,7 +1744,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { JaggedIntArraysStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { JaggedIntArraysStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof JaggedIntArraysStruct);
@@ -1837,7 +1837,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { JaggedCustomTypeArraysStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { JaggedCustomTypeArraysStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof JaggedCustomTypeArraysStruct);
@@ -1930,7 +1930,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { JaggedCustomTypeArraysStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { JaggedCustomTypeArraysStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof JaggedCustomTypeArraysStruct);
@@ -1987,7 +1987,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { JaggedObjectArraysStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { JaggedObjectArraysStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof JaggedObjectArraysStruct);
@@ -2047,7 +2047,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { JaggedObjectArraysStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { JaggedObjectArraysStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof JaggedObjectArraysStruct);
@@ -2126,7 +2126,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { TestObject.class });
+		Request call = this.unmarshal(xml, new Class[] { TestObject.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof TestObject);
@@ -2219,7 +2219,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { TestStruct.class });
+		Request call = this.unmarshal(xml, new Class[] { TestStruct.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof TestStruct);
@@ -2280,7 +2280,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { FirstLevel.class });
+		Request call = this.unmarshal(xml, new Class[] { FirstLevel.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof FirstLevel);
@@ -2356,7 +2356,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				return true;
 			}
 		};
-		RpcCall call = this.unmarshalWithAid(xml, aid);
+		Request call = this.unmarshalWithAid(xml, aid);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof TestObject);
@@ -2432,7 +2432,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				return true;
 			}
 		};
-		RpcCall call = this.unmarshalWithAid(xml, aid);
+		Request call = this.unmarshalWithAid(xml, aid);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof TestStruct);
@@ -2444,7 +2444,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 
 	public void testValidationSuiteArrayOfStructsTest() throws Exception {
 		InputStream is = this.getClass().getResourceAsStream("arrayOfStructsTest.xml");
-		RpcCall call = this.unmarshal(is, new Class[] { MoeLarryAndCurly[].class });
+		Request call = this.unmarshal(is, new Class[] { MoeLarryAndCurly[].class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof MoeLarryAndCurly[]);
@@ -2452,7 +2452,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 
 	public void testValidationSuiteCountTheEntities() throws Exception {
 		InputStream is = this.getClass().getResourceAsStream("countTheEntities.xml");
-		RpcCall call = this.unmarshal(is, null);
+		Request call = this.unmarshal(is, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof String);
@@ -2461,7 +2461,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 
 	public void testValidationSuiteEasyStructTest() throws Exception {
 		InputStream is = this.getClass().getResourceAsStream("easyStructTest.xml");
-		RpcCall call = this.unmarshal(is, new Class[] { MoeLarryAndCurly.class });
+		Request call = this.unmarshal(is, new Class[] { MoeLarryAndCurly.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof MoeLarryAndCurly);
@@ -2469,7 +2469,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 
 	public void testValidationSuiteEchoStructTest() throws Exception {
 		InputStream is = this.getClass().getResourceAsStream("echoStructTest.xml");
-		RpcCall call = this.unmarshal(is, null);
+		Request call = this.unmarshal(is, null);
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof Map);
@@ -2477,7 +2477,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 
 	public void testValidationSuiteManyTypesTest() throws Exception {
 		InputStream is = this.getClass().getResourceAsStream("manyTypesTest.xml");
-		RpcCall call = this.unmarshal(is, null);
+		Request call = this.unmarshal(is, null);
 		assertNotNull(call.getParameters());
 		assertEquals(6, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof Integer);
@@ -2490,7 +2490,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 
 	public void testValidationModerateSizeArrayCheck() throws Exception {
 		InputStream is = this.getClass().getResourceAsStream("moderateSizeArrayCheck.xml");
-		RpcCall call = this.unmarshal(is, new Class[] { String[].class });
+		Request call = this.unmarshal(is, new Class[] { String[].class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof String[]);
@@ -2502,12 +2502,12 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 
 	public void testValidationSuiteNestedStructTest() throws Exception {
 		InputStream is = this.getClass().getResourceAsStream("nestedStructTest.xml");
-		RpcCall call = this.unmarshal(is, null);
+		Request call = this.unmarshal(is, null);
 	}
 
 	public void testValidationSuiteSimpleStructReturnTest() throws Exception {
 		InputStream is = this.getClass().getResourceAsStream("simpleStructReturnTest.xml");
-		RpcCall call = this.unmarshal(is, null);
+		Request call = this.unmarshal(is, null);
 	}
 
     public static class Testes {
@@ -2554,7 +2554,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
     public void testValidationSuiteComplicatedNestedStructsAndArrays() throws Exception {
 	// TODO flesh out complexNestedStruct.xml - RPJ lost the original
 		InputStream is = this.getClass().getResourceAsStream("complexNestedStruct.xml");
-		RpcCall call = this.unmarshal(is, new Class[] { Testes.class } );
+		Request call = this.unmarshal(is, new Class[] { Testes.class } );
     }
 
 	// Testcase for a bug in the SaxUnmarshaller
@@ -2597,7 +2597,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
 				"</methodCall>" };
 		String xml = toString(xmlLines);
 
-		RpcCall call = this.unmarshal(xml, new Class[] { Reservation.class });
+		Request call = this.unmarshal(xml, new Class[] { Reservation.class });
 		assertNotNull(call.getParameters());
 		assertEquals(1, call.getParameters().length);
 		assertTrue(call.getParameters()[0] instanceof Reservation);

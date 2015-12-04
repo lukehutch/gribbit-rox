@@ -3,9 +3,6 @@ package com.flat502.rox.server;
 import java.io.IOException;
 
 import com.flat502.rox.http.HttpResponseException;
-import com.flat502.rox.marshal.MarshallingException;
-import com.flat502.rox.marshal.RpcCall;
-import com.flat502.rox.marshal.RpcResponse;
 
 /**
  * An interface for delivering asynchronous RPC method responses.
@@ -18,7 +15,7 @@ import com.flat502.rox.marshal.RpcResponse;
  */
 public interface ResponseChannel {
 	/**
-	 * Deliver an RPC method response to a remote caller.
+	 * Deliver an HTTP response to a remote caller.
 	 * @param rsp
 	 * 	The response to marshal and send back.
 	 * @throws IOException
@@ -26,7 +23,7 @@ public interface ResponseChannel {
 	 * 	send the response to the client.
 	 * @throws MarshallingException 
 	 */
-	public void respond(RpcResponse rsp) throws IOException, MarshallingException;
+	public void respond(Response rsp) throws IOException;
 
 	/**
 	 * Deliver an HTTP error response to a remote caller.
@@ -39,8 +36,7 @@ public interface ResponseChannel {
 	public void respond(HttpResponseException e) throws IOException;
 	
 	/**
-	 * Close the channel on which the original RPC method call
-	 * was received.
+	 * Close the channel on which the original request was received.
 	 * <p>
 	 * Implementations are not required to close this channel
 	 * under normal operations. Typically closing this channel is

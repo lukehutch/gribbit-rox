@@ -275,6 +275,7 @@ public class Utils {
 	 * 	The normalized header name.
 	 */
 	public static String normalizeHttpHeaderName(String name) {
+	    // TODO: Return original String object if the header name is already in the right format
 		char[] chars = name.toCharArray();
 		int newWord = -1;
 		for (int i = 0; i < chars.length; i++) {

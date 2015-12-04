@@ -13,19 +13,37 @@ import java.util.TreeMap;
 
 import com.flat502.rox.encoding.Encoding;
 import com.flat502.rox.encoding.EncodingMap;
-import com.flat502.rox.server.HttpRpcServer;
+import com.flat502.rox.server.HttpServer;
+import com.flat502.rox.utils.Utils;
 
 /**
  * This class represents a buffer built up from one or more network messages,
  * and containing an HTTP request.
  */
 public class HttpRequestBuffer extends HttpMessageBuffer {
-	private static final HttpQValueComparator QVALUE_CMP = new HttpQValueComparator();
+	private static final Comparator<Float> QVALUE_CMP = new Comparator<Float>() {
+        @Override
+        public int compare(Float qvalue1, Float qvalue2) {
+            if (qvalue1 == null && qvalue2 == null) {
+                return 0;
+            }
+            if (qvalue1 == null) {
+                // a > b
+                return 1;
+            }
+            if (qvalue2 == null) {
+                // a < b
+                return -1;
+            }
+            return qvalue1.compareTo(qvalue2);
+        }
+	};
 
 	// private static final Pattern REQUEST_LINE = Pattern.compile("(\\S+) (\\S+) (\\S+)");
 
 	private String method;
-	private String uri;
+    private String rawUri;
+    private String uri;
 	private double httpVersion;
 	private String httpVersionString;
 
@@ -34,7 +52,7 @@ public class HttpRequestBuffer extends HttpMessageBuffer {
 
 	private Map<String, Float> acceptedEncodings;
 
-	public HttpRequestBuffer(HttpRpcServer server, Socket socket) {
+	public HttpRequestBuffer(HttpServer server, Socket socket) {
 		this(server, socket, null);
 	}
 
@@ -49,7 +67,7 @@ public class HttpRequestBuffer extends HttpMessageBuffer {
 	 * 	header values to an appropriate {@link Encoding}. May be
 	 * 	<code>null</code>.
 	 */
-	public HttpRequestBuffer(HttpRpcServer server, Socket socket, EncodingMap encodingMap) {
+	public HttpRequestBuffer(HttpServer server, Socket socket, EncodingMap encodingMap) {
 		super(server, socket);
 		this.encodingMap = encodingMap;
 	}
@@ -153,13 +171,15 @@ public class HttpRequestBuffer extends HttpMessageBuffer {
 			}
 
 			int splitIdx2 = line.indexOf(' ', splitIdx + 1);
-			this.uri = line.substring(splitIdx + 1, splitIdx2);
+			this.rawUri = line.substring(splitIdx + 1, splitIdx2);
 			splitIdx = splitIdx2;
-			if (this.uri.equals("*")) {
+			if (this.rawUri.equals("*")) {
 				throw new HttpResponseException(HttpConstants.StatusCodes._501_NOT_IMPLEMENTED,
 						"Not Implemented (wildcard URI)", this);
 			}
 			// TODO: Do we really want URI to validate this too?
+			
+			this.uri = Utils.normalizeURIPath(this.rawUri);
 
 			this.httpVersionString = line.substring(splitIdx + 1);
 

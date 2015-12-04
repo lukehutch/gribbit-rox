@@ -15,7 +15,7 @@ import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodFault;
 import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodResponse;
 import com.flat502.rox.processing.SSLConfiguration;
 import com.flat502.rox.processing.SSLSession;
-import com.flat502.rox.server.RpcCallContext;
+import com.flat502.rox.server.RequestContext;
 import com.flat502.rox.server.SSLSessionPolicy;
 import com.flat502.rox.server.SynchronousRequestHandler;
 import com.flat502.rox.server.XmlRpcServer;
@@ -23,7 +23,7 @@ import com.flat502.rox.server.XmlRpcServer;
 public class TestSecureServer implements SynchronousRequestHandler {
 	private XmlRpcServer server;
 	private Map map;
-	public RpcCallContext context;
+	public RequestContext context;
 	public SSLSession session;
 
 	public TestSecureServer(String uri, String prefix, int port) throws IOException {
@@ -92,7 +92,7 @@ public class TestSecureServer implements SynchronousRequestHandler {
 	}
 
 	@Override
-    public RpcResponse handleRequest(RpcCall call, RpcCallContext context) throws Exception {
+    public RpcResponse handleRequest(Request call, RequestContext context) throws Exception {
 		this.context = context;
 		this.session = context.getSSLSession();
 		if (call.getName().equalsIgnoreCase("test.stringResponse")) {

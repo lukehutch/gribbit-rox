@@ -59,7 +59,7 @@ public class Test_ResponseCoordinator extends TestCase {
 		assertTrue(rc.lastRsps.get(2).toString().contains("third-response"));
 	}
 	
-	private class StubHttpRpcServer extends HttpRpcServer {
+	private class StubHttpRpcServer extends HttpServer {
 		public StubHttpRpcServer() throws Exception {
 			super(InetAddress.getLocalHost(), 8080, false, null);
 		}

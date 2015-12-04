@@ -58,8 +58,8 @@ public abstract class TestBase_MethodResponseUnmarshaller extends TestBase_Unmar
 		String xml = toString(xmlLines);
 
 		RpcResponse rsp = this.unmarshal(xml, null);
-		assertTrue(rsp instanceof RpcFault);
-		RpcFault fault = (RpcFault)rsp;
+		assertTrue(rsp instanceof RequestFault);
+		RequestFault fault = (RequestFault)rsp;
 		assertEquals(42, fault.getFaultCode());
 		assertEquals("Life, the Universe and Everything", fault.getFaultString());
 	}

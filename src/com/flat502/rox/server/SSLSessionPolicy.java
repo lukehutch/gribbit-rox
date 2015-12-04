@@ -8,7 +8,7 @@ import com.flat502.rox.processing.SSLSession;
  * A very simple accept policy interface.
  * <p>
  * An instance of this interface may be associated with an instance
- * of {@link com.flat502.rox.server.HttpRpcServer}. After a new SSL connection has
+ * of {@link com.flat502.rox.server.HttpServer}. After a new SSL connection has
  * completed handshaking the installed {@link SSLSessionPolicy}
  * is consulted to check if the SSL session should be retained.
  * <p>

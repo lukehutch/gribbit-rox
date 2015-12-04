@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.Socket;
 
-import com.flat502.rox.client.HttpRpcClient;
+import com.flat502.rox.client.HttpClient;
 import com.flat502.rox.encoding.Encoding;
 
 /**
@@ -24,12 +24,12 @@ public class HttpResponseBuffer extends HttpMessageBuffer {
 	private Encoding acceptableEncoding;
 	private Encoding responseEncoding;
 
-	public HttpResponseBuffer(HttpRpcClient client, Socket socket) {
+	public HttpResponseBuffer(HttpClient client, Socket socket) {
 		this(client, socket, null);
 	}
 
 	// TODO: Document: encoding only used if encoding specified (otherwise identity)
-	public HttpResponseBuffer(HttpRpcClient client, Socket socket, Encoding acceptableEncoding) {
+	public HttpResponseBuffer(HttpClient client, Socket socket, Encoding acceptableEncoding) {
 		super(client, socket);
 		this.acceptableEncoding = acceptableEncoding;
 	}

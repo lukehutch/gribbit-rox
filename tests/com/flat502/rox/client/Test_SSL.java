@@ -80,7 +80,7 @@ public class Test_SSL extends TestCase {
 		try {
 			client.execute("test.stringResponse", null);
 			fail();
-		} catch (RpcCallTimeoutException e) {
+		} catch (RequestTimeoutException e) {
 			assertTrue(e.getCause() instanceof SSLException);
 			long elapsed = System.currentTimeMillis() - start;
 			assertTrue(9500 < elapsed);
@@ -99,7 +99,7 @@ public class Test_SSL extends TestCase {
 		try {
 			client.execute("test.stringResponse", null);
 			fail();
-		} catch (RpcCallTimeoutException e) {
+		} catch (RequestTimeoutException e) {
 			assertTrue(e.getCause() instanceof SSLException);
 			long elapsed = System.currentTimeMillis() - start;
 			assertTrue(2500 < elapsed);
@@ -116,7 +116,7 @@ public class Test_SSL extends TestCase {
 		try {
 			client.execute("test.stringResponse", null);
 			fail();
-		} catch (RpcCallFailedException e) {
+		} catch (RequestFailedException e) {
 		} finally {
 			client.stop();
 			server.stop();
@@ -285,7 +285,7 @@ public class Test_SSL extends TestCase {
 			server.start();
 			client.execute("test.stringResponse", null);
 			fail();
-		} catch (RpcCallFailedException e) {
+		} catch (RequestFailedException e) {
 		} finally {
 			client.stop();
 			server.stop();

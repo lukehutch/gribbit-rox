@@ -33,7 +33,7 @@ public class Test_SyncClientTimeouts extends TestCase {
 		try {
 			client.execute("test.waitFor", new Object[]{_2_SECONDS});
 			fail();
-		} catch (RpcCallTimeoutException e) {
+		} catch (RequestTimeoutException e) {
 		} finally {
 			client.stop();
 			server.stop();
@@ -48,7 +48,7 @@ public class Test_SyncClientTimeouts extends TestCase {
 		try {
 			client.execute("test.waitFor", new Object[]{_2_SECONDS});
 			fail();
-		} catch (RpcCallTimeoutException e) {
+		} catch (RequestTimeoutException e) {
 		} finally {
 			client.stop();
 			server.stop();
@@ -64,7 +64,7 @@ public class Test_SyncClientTimeouts extends TestCase {
 		try {
 			client.execute("test.waitFor", new Object[]{_2_SECONDS});
 			fail();
-		} catch (RpcCallTimeoutException e) {
+		} catch (RequestTimeoutException e) {
 		} finally {
 			client.stop();
 			server.shutdown();
@@ -79,7 +79,7 @@ public class Test_SyncClientTimeouts extends TestCase {
 		try {
 			client.execute("test.waitFor", new Object[]{_2_SECONDS});
 			fail();
-		} catch (RpcCallTimeoutException e) {
+		} catch (RequestTimeoutException e) {
 		} finally {
 			client.stop();
 			server.shutdown();

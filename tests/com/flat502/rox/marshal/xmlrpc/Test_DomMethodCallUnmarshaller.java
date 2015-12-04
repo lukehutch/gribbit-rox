@@ -11,17 +11,17 @@ public class Test_DomMethodCallUnmarshaller extends TestBase_MethodCallUnmarshal
 	}
 	
 	@Override
-    protected RpcCall unmarshal(String xml, Class[] types) throws Exception {
+    protected Request unmarshal(String xml, Class[] types) throws Exception {
 		return new DomMethodCallUnmarshaller().unmarshal(xml, types);
 	}
 	
 	@Override
-    protected RpcCall unmarshal(InputStream xml, Class[] types) throws Exception {
+    protected Request unmarshal(InputStream xml, Class[] types) throws Exception {
 		return new DomMethodCallUnmarshaller().unmarshal(xml, types);
 	}
 
 	@Override
-    protected RpcCall unmarshalWithAid(String xml, MethodCallUnmarshallerAid aid) throws Exception {
+    protected Request unmarshalWithAid(String xml, MethodCallUnmarshallerAid aid) throws Exception {
 		return new DomMethodCallUnmarshaller().unmarshal(xml, aid);
 	}
 

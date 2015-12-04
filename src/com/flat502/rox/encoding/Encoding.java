@@ -8,9 +8,9 @@ import java.io.OutputStream;
  * An interface representing an arbitrary HTTP encoding.
  * <p>
  * An implementation of this interface can be specified on the
- * {@link com.flat502.rox.client.HttpRpcClient#setContentEncoding(Encoding) client API}
+ * {@link com.flat502.rox.client.HttpClient#setContentEncoding(Encoding) client API}
  * for request encoding, or on the
- * {@link com.flat502.rox.server.HttpRpcServer#registerContentEncoding(Encoding) server API}
+ * {@link com.flat502.rox.server.HttpServer#registerContentEncoding(Encoding) server API}
  * for handling encoded requests.
  * <p>
  * An implementation essentially exposes the ability to wrap an

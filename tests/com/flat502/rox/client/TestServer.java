@@ -13,15 +13,15 @@ import com.flat502.rox.marshal.RpcResponse;
 import com.flat502.rox.marshal.xmlrpc.XmlRpcFaultException;
 import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodFault;
 import com.flat502.rox.marshal.xmlrpc.XmlRpcMethodResponse;
-import com.flat502.rox.server.RpcCallContext;
+import com.flat502.rox.server.RequestContext;
 import com.flat502.rox.server.SynchronousRequestHandler;
 import com.flat502.rox.server.XmlRpcServer;
 
 public class TestServer implements SynchronousRequestHandler {
 	private XmlRpcServer server;
 	private Map map;
-	public RpcCall call;
-	public RpcCallContext context;
+	public Request call;
+	public RequestContext context;
 
 	public TestServer(String uri, String prefix, int port) throws IOException {
 		this(uri, prefix, port, false, null);
@@ -87,7 +87,7 @@ public class TestServer implements SynchronousRequestHandler {
 	}
 
 	@Override
-    public RpcResponse handleRequest(RpcCall call, RpcCallContext context) throws Exception {
+    public RpcResponse handleRequest(Request call, RequestContext context) throws Exception {
 		this.call = call;
 		this.context = context;
 		if (call.getName().equalsIgnoreCase("test.stringResponse")) {

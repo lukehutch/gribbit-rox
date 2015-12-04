@@ -89,7 +89,7 @@ public class Test_AsyncClientWithoutURI extends TestCase {
 			client.execute("test.returnXmlRpcMethofFault", null, handler);
 			Object rsp = handler.waitForResponse(_5_SECONDS.intValue());
 			fail();
-		} catch(RpcFaultException e) {
+		} catch(RequestFaultException e) {
 			assertEquals(21, e.getFaultCode());
 			assertEquals("Half the meaning of Life", e.getFaultString());
 		} finally {
@@ -104,7 +104,7 @@ public class Test_AsyncClientWithoutURI extends TestCase {
 			client.execute("test.raiseXmlRpcFaultException", null, handler);
 			Object rsp = handler.waitForResponse(_5_SECONDS.intValue());
 			fail();
-		} catch(RpcFaultException e) {
+		} catch(RequestFaultException e) {
 			assertEquals(42, e.getFaultCode());
 			assertEquals("The meaning of Life", e.getFaultString());
 		} finally {
@@ -221,18 +221,18 @@ public class Test_AsyncClientWithoutURI extends TestCase {
 		}
 		
 		@Override
-        public SocketChannel getChannel(HttpRpcClient client) throws IOException {
+        public SocketChannel getChannel(HttpClient client) throws IOException {
 			this.lastChannel = this.pool.getChannel(client);
 			return lastChannel;
 		}
 		
 		@Override
-        public void returnChannel(HttpRpcClient client, SocketChannel channel) {
+        public void returnChannel(HttpClient client, SocketChannel channel) {
 			this.pool.returnChannel(client, channel);
 		}
 		
 		@Override
-        public void removeChannel(HttpRpcClient client, SocketChannel channel) {
+        public void removeChannel(HttpClient client, SocketChannel channel) {
 			this.pool.removeChannel(client, channel);
 		}
 		
@@ -247,7 +247,7 @@ public class Test_AsyncClientWithoutURI extends TestCase {
 		}
 		
 		@Override
-        public void detach(HttpRpcClient client) {
+        public void detach(HttpClient client) {
 			this.pool.detach(client);
 		}
 		
