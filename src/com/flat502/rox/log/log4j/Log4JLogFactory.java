@@ -4,8 +4,8 @@ import com.flat502.rox.log.Log;
 import com.flat502.rox.log.LogFactoryImpl;
 
 public class Log4JLogFactory extends LogFactoryImpl {
-	@Override
+    @Override
     public Log newLog(String name) {
-		return new Log4JAdapter(name);
-	}
+        return new Log4JAdapter(name);
+    }
 }

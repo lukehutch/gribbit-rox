@@ -9,18 +9,18 @@ import java.util.zip.GZIPOutputStream;
 import com.flat502.rox.http.HttpConstants;
 
 public class GZipEncoding implements Encoding {
-	@Override
+    @Override
     public String getName() {
-		return HttpConstants.ContentEncoding.GZIP;
-	}
+        return HttpConstants.ContentEncoding.GZIP;
+    }
 
-	@Override
+    @Override
     public InputStream getDecoder(InputStream in) throws IOException {
-		return new GZIPInputStream(in);
-	}
+        return new GZIPInputStream(in);
+    }
 
-	@Override
+    @Override
     public OutputStream getEncoder(OutputStream out) throws IOException {
-		return new GZIPOutputStream(out);
-	}
+        return new GZIPOutputStream(out);
+    }
 }

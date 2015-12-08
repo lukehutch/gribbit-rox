@@ -4,23 +4,23 @@
 package com.flat502.rox.marshal;
 
 public class JaggedIntArraysStruct {
-	public int[][] publicIntArray;
+    public int[][] publicIntArray;
 
-	private int[][] privateIntArray;
+    private int[][] privateIntArray;
 
-	public JaggedIntArraysStruct(int[][] publicIntArray, int[][] privateIntArray) {
-		this.publicIntArray = publicIntArray;
-		this.privateIntArray = privateIntArray;
-	}
+    public JaggedIntArraysStruct(int[][] publicIntArray, int[][] privateIntArray) {
+        this.publicIntArray = publicIntArray;
+        this.privateIntArray = privateIntArray;
+    }
 
-	public JaggedIntArraysStruct() {
-	}
+    public JaggedIntArraysStruct() {
+    }
 
-	public int[][] getPrivateIntArray() {
-		return this.privateIntArray;
-	}
+    public int[][] getPrivateIntArray() {
+        return this.privateIntArray;
+    }
 
-	public void setPrivateIntArray(int[][] v) {
-		this.privateIntArray = v;
-	}
+    public void setPrivateIntArray(int[][] v) {
+        this.privateIntArray = v;
+    }
 }

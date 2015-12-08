@@ -228,7 +228,7 @@ public class HttpServer extends HttpProcessor {
         SocketChannel channel = socket == null ? null : socket.getChannel();
         final RequestContext context = new RequestContext(channel, this.newSSLSession(socket), request);
         final SocketResponseChannel rspChannel = this.newSocketResponseChannel(socket, request);
-        
+
         // Pass request to the application thread pool so it can be handled asynchronously
         applicationThreadPool.submit(new Runnable() {
             @Override

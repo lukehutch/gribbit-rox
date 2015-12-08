@@ -4,24 +4,23 @@
 package com.flat502.rox.marshal;
 
 public class JaggedObjectArraysStruct {
-	public Object[][] publicObjectArray;
+    public Object[][] publicObjectArray;
 
-	private Object[][] privateObjectArray;
+    private Object[][] privateObjectArray;
 
-	public JaggedObjectArraysStruct(Object[][] publicObjectArray,
-			Object[][] privateObjectArray) {
-		this.publicObjectArray = publicObjectArray;
-		this.privateObjectArray = privateObjectArray;
-	}
+    public JaggedObjectArraysStruct(Object[][] publicObjectArray, Object[][] privateObjectArray) {
+        this.publicObjectArray = publicObjectArray;
+        this.privateObjectArray = privateObjectArray;
+    }
 
-	public JaggedObjectArraysStruct() {
-	}
+    public JaggedObjectArraysStruct() {
+    }
 
-	public Object[][] getPrivateObjectArray() {
-		return this.privateObjectArray;
-	}
+    public Object[][] getPrivateObjectArray() {
+        return this.privateObjectArray;
+    }
 
-	public void setprivateObjectArray(Object[][] v) {
-		this.privateObjectArray = v;
-	}
+    public void setprivateObjectArray(Object[][] v) {
+        this.privateObjectArray = v;
+    }
 }

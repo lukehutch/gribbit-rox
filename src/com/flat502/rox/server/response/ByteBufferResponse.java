@@ -10,7 +10,7 @@ public class ByteBufferResponse implements Response {
         this.byteBuffer = byteBuffer;
         this.contentType = contentType;
     }
-    
+
     @Override
     public byte[] getContent() {
         return byteBuffer.array();

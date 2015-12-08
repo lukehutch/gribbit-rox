@@ -4,42 +4,42 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ProfilerCollection implements Profiler {
-	private Set<Profiler> profilers = null;
+    private Set<Profiler> profilers = null;
 
-	public void addProfiler(Profiler p) {
-		if (this.profilers == null) {
-			this.profilers = new HashSet<>();
-		}
-		this.profilers.add(p);
-	}
+    public void addProfiler(Profiler p) {
+        if (this.profilers == null) {
+            this.profilers = new HashSet<>();
+        }
+        this.profilers.add(p);
+    }
 
-	@Override
+    @Override
     public void begin(long id, String operation) {
-		if (this.profilers == null) {
-			return;
-		}
-		for (Profiler p : this.profilers) {
-			p.begin(id, operation);
-		}
-	}
+        if (this.profilers == null) {
+            return;
+        }
+        for (Profiler p : this.profilers) {
+            p.begin(id, operation);
+        }
+    }
 
-	@Override
+    @Override
     public void end(long id, String operation) {
-		if (this.profilers == null) {
-			return;
-		}
-		for (Profiler p : this.profilers) {
-			p.end(id, operation);
-		}
-	}
+        if (this.profilers == null) {
+            return;
+        }
+        for (Profiler p : this.profilers) {
+            p.end(id, operation);
+        }
+    }
 
-	@Override
+    @Override
     public void count(long id, String operation) {
-		if (this.profilers == null) {
-			return;
-		}
-		for (Profiler p : this.profilers) {
-			p.count(id, operation);
-		}
-	}
+        if (this.profilers == null) {
+            return;
+        }
+        for (Profiler p : this.profilers) {
+            p.count(id, operation);
+        }
+    }
 }

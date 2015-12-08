@@ -4,24 +4,23 @@
 package com.flat502.rox.marshal;
 
 public class JaggedCustomTypeArraysStruct {
-	public SimpleStruct[][] publicCustomArray;
+    public SimpleStruct[][] publicCustomArray;
 
-	private SimpleStruct[][] privateCustomArray;
+    private SimpleStruct[][] privateCustomArray;
 
-	public JaggedCustomTypeArraysStruct(SimpleStruct[][] publicCustomArray,
-			SimpleStruct[][] privateCustomArray) {
-		this.publicCustomArray = publicCustomArray;
-		this.privateCustomArray = privateCustomArray;
-	}
+    public JaggedCustomTypeArraysStruct(SimpleStruct[][] publicCustomArray, SimpleStruct[][] privateCustomArray) {
+        this.publicCustomArray = publicCustomArray;
+        this.privateCustomArray = privateCustomArray;
+    }
 
-	public JaggedCustomTypeArraysStruct() {
-	}
+    public JaggedCustomTypeArraysStruct() {
+    }
 
-	public SimpleStruct[][] getPrivateCustomArray() {
-		return this.privateCustomArray;
-	}
+    public SimpleStruct[][] getPrivateCustomArray() {
+        return this.privateCustomArray;
+    }
 
-	public void setprivateCustomArray(SimpleStruct[][] v) {
-		this.privateCustomArray = v;
-	}
+    public void setprivateCustomArray(SimpleStruct[][] v) {
+        this.privateCustomArray = v;
+    }
 }

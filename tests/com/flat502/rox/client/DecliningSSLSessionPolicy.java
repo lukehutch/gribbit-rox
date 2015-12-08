@@ -6,15 +6,15 @@ import com.flat502.rox.processing.SSLSession;
 import com.flat502.rox.server.SSLSessionPolicy;
 
 public class DecliningSSLSessionPolicy implements SSLSessionPolicy {
-	public boolean invoked;
-	public SocketChannel channel;
-	public SSLSession session;
+    public boolean invoked;
+    public SocketChannel channel;
+    public SSLSession session;
 
-	@Override
+    @Override
     public boolean shouldRetain(SocketChannel channel, SSLSession session) {
-		this.invoked = true;
-		this.channel = channel;
-		this.session = session;
-		return false;
-	}
+        this.invoked = true;
+        this.channel = channel;
+        this.session = session;
+        return false;
+    }
 }

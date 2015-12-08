@@ -1,6 +1,5 @@
 package com.flat502.rox.server.response;
 
-
 public class ByteArrayResponse implements Response {
     private byte[] byteArray;
     private String contentType;
@@ -9,7 +8,7 @@ public class ByteArrayResponse implements Response {
         this.byteArray = byteArray;
         this.contentType = contentType;
     }
-    
+
     @Override
     public byte[] getContent() {
         return byteArray;

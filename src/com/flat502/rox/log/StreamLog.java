@@ -6,75 +6,74 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * A {@link com.flat502.rox.log.Log} implementation backed by an
- * a {@link java.io.OutputStream}.
+ * A {@link com.flat502.rox.log.Log} implementation backed by an a {@link java.io.OutputStream}.
  */
 public class StreamLog extends AbstractLog {
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd HH:mm:ss.SSS");
-	
-	private PrintWriter out;
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd HH:mm:ss.SSS");
 
-	public StreamLog(OutputStream os, Level level) {
-		super(level);
-		this.out = new PrintWriter(os);
-	}
+    private PrintWriter out;
 
-	@Override
+    public StreamLog(OutputStream os, Level level) {
+        super(level);
+        this.out = new PrintWriter(os);
+    }
+
+    @Override
     protected void traceImpl(String msg, Throwable e) {
-		this.out.println(this.format(now()+" [trace]", msg));
-		if (e != null) {
-			e.printStackTrace(this.out);
-		}
-		this.out.flush();
-	}
+        this.out.println(this.format(now() + " [trace]", msg));
+        if (e != null) {
+            e.printStackTrace(this.out);
+        }
+        this.out.flush();
+    }
 
-	@Override
+    @Override
     protected void debugImpl(String msg, Throwable e) {
-		this.out.println(this.format(now()+" [debug]", msg));
-		if (e != null) {
-			e.printStackTrace(this.out);
-		}
-		this.out.flush();
-	}
+        this.out.println(this.format(now() + " [debug]", msg));
+        if (e != null) {
+            e.printStackTrace(this.out);
+        }
+        this.out.flush();
+    }
 
-	@Override
+    @Override
     protected void infoImpl(String msg, Throwable e) {
-		this.out.println(this.format(now()+" [info]", msg));
-		if (e != null) {
-			e.printStackTrace(this.out);
-		}
-		this.out.flush();
-	}
+        this.out.println(this.format(now() + " [info]", msg));
+        if (e != null) {
+            e.printStackTrace(this.out);
+        }
+        this.out.flush();
+    }
 
-	@Override
+    @Override
     protected void warnImpl(String msg, Throwable e) {
-		this.out.println(this.format(now()+" [warn]", msg));
-		if (e != null) {
-			e.printStackTrace(this.out);
-		}
-		this.out.flush();
-	}
+        this.out.println(this.format(now() + " [warn]", msg));
+        if (e != null) {
+            e.printStackTrace(this.out);
+        }
+        this.out.flush();
+    }
 
-	@Override
+    @Override
     protected void errorImpl(String msg, Throwable e) {
-		this.out.println(this.format(now()+" [error]", msg));
-		if (e != null) {
-			e.printStackTrace(this.out);
-		}
-		this.out.flush();
-	}
-	
-	private String now() {
-		return sdf.format(new Date());
-	}
+        this.out.println(this.format(now() + " [error]", msg));
+        if (e != null) {
+            e.printStackTrace(this.out);
+        }
+        this.out.flush();
+    }
 
-	private String format(String prefix, String msg) {
-		StringBuffer sb = new StringBuffer(prefix);
-		sb.append(' ');
-		while (sb.length() < 20) {
-			sb.append(' ');
-		}
-		sb.append(msg);
-		return sb.toString();
-	}
+    private String now() {
+        return sdf.format(new Date());
+    }
+
+    private String format(String prefix, String msg) {
+        StringBuffer sb = new StringBuffer(prefix);
+        sb.append(' ');
+        while (sb.length() < 20) {
+            sb.append(' ');
+        }
+        sb.append(msg);
+        return sb.toString();
+    }
 }

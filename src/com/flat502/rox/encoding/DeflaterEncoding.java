@@ -9,18 +9,18 @@ import java.util.zip.InflaterInputStream;
 import com.flat502.rox.http.HttpConstants;
 
 public class DeflaterEncoding implements Encoding {
-	@Override
+    @Override
     public String getName() {
-		return HttpConstants.ContentEncoding.DEFLATE;
-	}
+        return HttpConstants.ContentEncoding.DEFLATE;
+    }
 
-	@Override
+    @Override
     public InputStream getDecoder(InputStream in) throws IOException {
-		return new InflaterInputStream(in);
-	}
+        return new InflaterInputStream(in);
+    }
 
-	@Override
+    @Override
     public OutputStream getEncoder(OutputStream out) throws IOException {
-		return new DeflaterOutputStream(out);
-	}
+        return new DeflaterOutputStream(out);
+    }
 }

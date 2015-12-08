@@ -13,114 +13,112 @@ import junit.framework.TestCase;
 
 import com.flat502.rox.http.HttpRequestBuffer;
 import com.flat502.rox.http.HttpResponse;
-import com.flat502.rox.marshal.MarshallingException;
-import com.flat502.rox.marshal.RpcResponse;
 
 public class Test_ResponseCoordinator extends TestCase {
-	public void testCommonCase() throws Exception {
-		Socket sock = new Socket();
-		StubHttpRpcServer server = new StubHttpRpcServer();
-		HttpRequestBuffer req = new HttpRequestBuffer(server, sock);
-		MockRpcResponse rsp = new MockRpcResponse("test-common-case");
+    public void testCommonCase() throws Exception {
+        Socket sock = new Socket();
+        StubHttpRpcServer server = new StubHttpRpcServer();
+        HttpRequestBuffer req = new HttpRequestBuffer(server, sock);
+        MockRpcResponse rsp = new MockRpcResponse("test-common-case");
 
-		MockResponseCoordinator rc = new MockResponseCoordinator(server, sock);
-		int id1;
-		assertEquals(0, id1 = rc.nextId());
+        MockResponseCoordinator rc = new MockResponseCoordinator(server, sock);
+        int id1;
+        assertEquals(0, id1 = rc.nextId());
 
-		rc.respond(id1, req, rsp, null);
+        rc.respond(id1, req, rsp, null);
 
-		assertFalse(rc.lastRsps.isEmpty());
-		assertTrue(rc.lastRsps.get(0).toString().contains("test-common-case"));
-	}
-	
-	public void testReverseOrderResponses() throws Exception {
-		Socket sock = new Socket();
-		StubHttpRpcServer server = new StubHttpRpcServer();
-		HttpRequestBuffer req = new HttpRequestBuffer(server, sock);
+        assertFalse(rc.lastRsps.isEmpty());
+        assertTrue(rc.lastRsps.get(0).toString().contains("test-common-case"));
+    }
 
-		MockResponseCoordinator rc = new MockResponseCoordinator(server, sock);
+    public void testReverseOrderResponses() throws Exception {
+        Socket sock = new Socket();
+        StubHttpRpcServer server = new StubHttpRpcServer();
+        HttpRequestBuffer req = new HttpRequestBuffer(server, sock);
 
-		int id1;
-		assertEquals(0, id1 = rc.nextId());
-		int id2;
-		assertEquals(1, id2 = rc.nextId());
-		int id3;
-		assertEquals(2, id3 = rc.nextId());
+        MockResponseCoordinator rc = new MockResponseCoordinator(server, sock);
 
-		rc.respond(id3, req, new MockRpcResponse("third-response"), null);
-		assertTrue(rc.lastRsps.isEmpty());
-		rc.respond(id2, req, new MockRpcResponse("second-response"), null);
-		assertTrue(rc.lastRsps.isEmpty());
-		rc.respond(id1, req, new MockRpcResponse("first-response"), null);
-		assertEquals(3, rc.lastRsps.size());
+        int id1;
+        assertEquals(0, id1 = rc.nextId());
+        int id2;
+        assertEquals(1, id2 = rc.nextId());
+        int id3;
+        assertEquals(2, id3 = rc.nextId());
 
-		assertTrue(rc.lastRsps.get(0).toString().contains("first-response"));
-		assertTrue(rc.lastRsps.get(1).toString().contains("second-response"));
-		assertTrue(rc.lastRsps.get(2).toString().contains("third-response"));
-	}
-	
-	private class StubHttpRpcServer extends HttpServer {
-		public StubHttpRpcServer() throws Exception {
-			super(InetAddress.getLocalHost(), 8080, false, null);
-		}
-		
-		@Override
-		protected void initSelector(Selector selector) throws IOException {
-		}
-		
-		@Override
-		protected void queueWrite(Socket socket) {
-		}
-		
-		@Override
-		protected void queueWrite(Socket socket, byte[] data, boolean close) {
-		}
-	}
-	
-	private class MockRpcResponse implements RpcResponse {
-		private String value;
-		
-		public MockRpcResponse(String value) {
-			this.value = value;
-		}
-		
-		@Override
+        rc.respond(id3, req, new MockRpcResponse("third-response"), null);
+        assertTrue(rc.lastRsps.isEmpty());
+        rc.respond(id2, req, new MockRpcResponse("second-response"), null);
+        assertTrue(rc.lastRsps.isEmpty());
+        rc.respond(id1, req, new MockRpcResponse("first-response"), null);
+        assertEquals(3, rc.lastRsps.size());
+
+        assertTrue(rc.lastRsps.get(0).toString().contains("first-response"));
+        assertTrue(rc.lastRsps.get(1).toString().contains("second-response"));
+        assertTrue(rc.lastRsps.get(2).toString().contains("third-response"));
+    }
+
+    private class StubHttpRpcServer extends HttpServer {
+        public StubHttpRpcServer() throws Exception {
+            super(InetAddress.getLocalHost(), 8080, false, null);
+        }
+
+        @Override
+        protected void initSelector(Selector selector) throws IOException {
+        }
+
+        @Override
+        protected void queueWrite(Socket socket) {
+        }
+
+        @Override
+        protected void queueWrite(Socket socket, byte[] data, boolean close) {
+        }
+    }
+
+    private class MockRpcResponse implements RpcResponse {
+        private String value;
+
+        public MockRpcResponse(String value) {
+            this.value = value;
+        }
+
+        @Override
         public Object getReturnValue() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-		@Override
+        @Override
         public void marshal(OutputStream out, Charset charSet) throws IOException, MarshallingException {
-			out.write(value.getBytes());
-		}
+            out.write(value.getBytes());
+        }
 
-		@Override
+        @Override
         public String getContentType() {
-			return "text/xml";
-		}
-	}
-	
-	private class MockResponseCoordinator extends ResponseCoordinator {
-		public List<HttpResponse> lastRsps = new ArrayList<>();
-		
-		public MockResponseCoordinator(StubHttpRpcServer server, Socket socket) {
-			super(server, socket);
-		}
-		
-		@Override
-		protected void sendResponse(HttpResponse rsp) throws IOException {
-			super.sendResponse(rsp);
-			this.lastRsps.add(rsp);
-		}
-		
-		@Override
-		protected void stashResponse(int rspId, HttpResponse httpRsp) throws IOException {
-			super.stashResponse(rspId, httpRsp);
-		}
-	}
-	
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(Test_ResponseCoordinator.class);
-	}
+            return "text/xml";
+        }
+    }
+
+    private class MockResponseCoordinator extends ResponseCoordinator {
+        public List<HttpResponse> lastRsps = new ArrayList<>();
+
+        public MockResponseCoordinator(StubHttpRpcServer server, Socket socket) {
+            super(server, socket);
+        }
+
+        @Override
+        protected void sendResponse(HttpResponse rsp) throws IOException {
+            super.sendResponse(rsp);
+            this.lastRsps.add(rsp);
+        }
+
+        @Override
+        protected void stashResponse(int rspId, HttpResponse httpRsp) throws IOException {
+            super.stashResponse(rspId, httpRsp);
+        }
+    }
+
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(Test_ResponseCoordinator.class);
+    }
 }

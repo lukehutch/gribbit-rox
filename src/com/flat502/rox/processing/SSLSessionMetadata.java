@@ -12,54 +12,55 @@ import com.flat502.rox.log.LogFactory;
 import com.flat502.rox.utils.Utils;
 
 class SSLSessionMetadata {
-	private static Log log = LogFactory.getLog(SSLSessionMetadata.class);
+    private static Log log = LogFactory.getLog(SSLSessionMetadata.class);
 
-	public final SSLEngine engine;
-	public final ByteBuffer netBuffer;
-	public final ByteBuffer appBuffer;
-	private TimerTask handshakeTimerTask;
+    public final SSLEngine engine;
+    public final ByteBuffer netBuffer;
+    public final ByteBuffer appBuffer;
+    private TimerTask handshakeTimerTask;
 
-	private HttpProcessor processor;
-	private Socket socket;
-	private boolean handshakeTimeout;
+    private HttpProcessor processor;
+    private Socket socket;
+    private boolean handshakeTimeout;
 
-	public SSLSessionMetadata(HttpProcessor processor, SSLEngine engine, Socket socket) {
-		this.processor = processor;
-		this.engine = engine;
-		this.socket = socket;
-		this.netBuffer = ByteBuffer.allocate(engine.getSession().getPacketBufferSize());
-		this.appBuffer = ByteBuffer.allocate(engine.getSession().getApplicationBufferSize());
-	}
-	
-	public TimerTask newHandshakeTimerTask() {
-		return(this.handshakeTimerTask = new HandshakeTimerTask());
-	}
-	
-	public void cancelHandshakeTimer() {
-		if (this.handshakeTimerTask != null) {
-			this.handshakeTimerTask.cancel();
-		}
-	}
-	
-	public boolean handshakeTimeout() {
-		return this.handshakeTimeout;
-	}
-	
-	private class HandshakeTimerTask extends TimerTask {
-		@Override
+    public SSLSessionMetadata(HttpProcessor processor, SSLEngine engine, Socket socket) {
+        this.processor = processor;
+        this.engine = engine;
+        this.socket = socket;
+        this.netBuffer = ByteBuffer.allocate(engine.getSession().getPacketBufferSize());
+        this.appBuffer = ByteBuffer.allocate(engine.getSession().getApplicationBufferSize());
+    }
+
+    public TimerTask newHandshakeTimerTask() {
+        return (this.handshakeTimerTask = new HandshakeTimerTask());
+    }
+
+    public void cancelHandshakeTimer() {
+        if (this.handshakeTimerTask != null) {
+            this.handshakeTimerTask.cancel();
+        }
+    }
+
+    public boolean handshakeTimeout() {
+        return this.handshakeTimeout;
+    }
+
+    private class HandshakeTimerTask extends TimerTask {
+        @Override
         public void run() {
-			if (log.logDebug()) {
-				log.debug(processor.getClass().getSimpleName() + ": SSL handshake timer expired on " + Utils.toString(socket));
-			}
-			
-			handshakeTimeout = true;
-			
-			processor.handleTimeout(socket, new SSLException("Handshake timeout"));
-//			try {
-//				socket.close();
-//			} catch (IOException e) {
-//				log.trace("Handshake timeout: close() failed on " + Utils.toString(socket), e);
-//			}
-		}
-	}
+            if (log.logDebug()) {
+                log.debug(processor.getClass().getSimpleName() + ": SSL handshake timer expired on "
+                        + Utils.toString(socket));
+            }
+
+            handshakeTimeout = true;
+
+            processor.handleTimeout(socket, new SSLException("Handshake timeout"));
+            //			try {
+            //				socket.close();
+            //			} catch (IOException e) {
+            //				log.trace("Handshake timeout: close() failed on " + Utils.toString(socket), e);
+            //			}
+        }
+    }
 }

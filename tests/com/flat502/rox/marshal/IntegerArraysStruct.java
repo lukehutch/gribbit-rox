@@ -4,23 +4,23 @@
 package com.flat502.rox.marshal;
 
 public class IntegerArraysStruct {
-	public Integer[] publicIntegerArray;
+    public Integer[] publicIntegerArray;
 
-	private Integer[] privateIntegerArray;
+    private Integer[] privateIntegerArray;
 
-	public IntegerArraysStruct(Integer[] publicIntegerArray, Integer[] privateIntegerArray) {
-		this.publicIntegerArray = publicIntegerArray;
-		this.privateIntegerArray = privateIntegerArray;
-	}
+    public IntegerArraysStruct(Integer[] publicIntegerArray, Integer[] privateIntegerArray) {
+        this.publicIntegerArray = publicIntegerArray;
+        this.privateIntegerArray = privateIntegerArray;
+    }
 
-	public IntegerArraysStruct() {
-	}
+    public IntegerArraysStruct() {
+    }
 
-	public Integer[] getPrivateIntegerArray() {
-		return this.privateIntegerArray;
-	}
+    public Integer[] getPrivateIntegerArray() {
+        return this.privateIntegerArray;
+    }
 
-	public void setPrivateIntegerArray(Integer[] v) {
-		this.privateIntegerArray = v;
-	}
+    public void setPrivateIntegerArray(Integer[] v) {
+        this.privateIntegerArray = v;
+    }
 }

@@ -7,14 +7,14 @@ import com.flat502.rox.processing.Context;
 import com.flat502.rox.processing.SSLSession;
 
 public class ResponseContext extends Context {
-	private HttpResponseBuffer httpResponse;
+    private HttpResponseBuffer httpResponse;
 
-	public ResponseContext(SocketChannel channel, SSLSession sslSession, HttpResponseBuffer rsp) {
-		super(channel, sslSession);
-		this.httpResponse = rsp;
-	}
+    public ResponseContext(SocketChannel channel, SSLSession sslSession, HttpResponseBuffer rsp) {
+        super(channel, sslSession);
+        this.httpResponse = rsp;
+    }
 
-	public HttpResponseBuffer getHttpRequest() {
-		return this.httpResponse;
-	}
+    public HttpResponseBuffer getHttpRequest() {
+        return this.httpResponse;
+    }
 }

@@ -6,22 +6,22 @@ package com.flat502.rox.marshal;
 import java.util.List;
 
 public class ListStruct {
-	public List publicList;
-	private List privateList;
+    public List publicList;
+    private List privateList;
 
-	public ListStruct(List publicList, List privateList) {
-		this.publicList = publicList;
-		this.privateList = privateList;
-	}
+    public ListStruct(List publicList, List privateList) {
+        this.publicList = publicList;
+        this.privateList = privateList;
+    }
 
-	public ListStruct() {
-	}
+    public ListStruct() {
+    }
 
-	public List getPrivateList() {
-		return this.privateList;
-	}
+    public List getPrivateList() {
+        return this.privateList;
+    }
 
-	public void setPrivateList(List v) {
-		this.privateList = v;
-	}
+    public void setPrivateList(List v) {
+        this.privateList = v;
+    }
 }

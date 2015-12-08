@@ -2,35 +2,32 @@ package com.flat502.rox.marshal.xmlrpc;
 
 import java.io.InputStream;
 
-import com.flat502.rox.marshal.MethodCallUnmarshallerAid;
-import com.flat502.rox.marshal.RpcCall;
-
 public class Test_SaxMethodCallUnmarshaller extends TestBase_MethodCallUnmarshaller {
-	static {
-		System.getProperties().remove("javax.xml.parsers.SAXParserFactory");
-		SaxParserPool.reset();
-	}
+    static {
+        System.getProperties().remove("javax.xml.parsers.SAXParserFactory");
+        SaxParserPool.reset();
+    }
 
-	public Test_SaxMethodCallUnmarshaller(String name) {
-		super(name);
-	}
+    public Test_SaxMethodCallUnmarshaller(String name) {
+        super(name);
+    }
 
-	@Override
+    @Override
     protected Request unmarshal(String xml, Class[] types) throws Exception {
-		return new SaxMethodCallUnmarshaller().unmarshal(xml, types);
-	}
+        return new SaxMethodCallUnmarshaller().unmarshal(xml, types);
+    }
 
-	@Override
+    @Override
     protected Request unmarshal(InputStream xml, Class[] types) throws Exception {
-		return new SaxMethodCallUnmarshaller().unmarshal(xml, types);
-	}
+        return new SaxMethodCallUnmarshaller().unmarshal(xml, types);
+    }
 
-	@Override
+    @Override
     protected Request unmarshalWithAid(String xml, MethodCallUnmarshallerAid aid) throws Exception {
-		return new SaxMethodCallUnmarshaller().unmarshal(xml, aid);
-	}
+        return new SaxMethodCallUnmarshaller().unmarshal(xml, aid);
+    }
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(Test_SaxMethodCallUnmarshaller.class);
-	}
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(Test_SaxMethodCallUnmarshaller.class);
+    }
 }
