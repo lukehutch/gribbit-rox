@@ -97,6 +97,12 @@ public class Utils {
 
 	// TODO: Document
 	public static String normalizeURIPath(String uri) {
+	    if (uri.indexOf('%') < 0 && !uri.startsWith("./") && !uri.startsWith("../") && !uri.endsWith("/.")
+	            && !uri.endsWith("/..") && uri.indexOf("/../") < 0 && uri.indexOf("/./") < 0
+	            && uri.indexOf("//") < 0) {
+	        // Nothing %-encoded, and no special path elements
+	        return uri;
+	    }
 		try {
 			uri = new URI(uri).normalize().getPath();
 		} catch (URISyntaxException e) {

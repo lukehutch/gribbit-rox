@@ -4,7 +4,8 @@ import java.io.IOException;
 
 import com.flat502.rox.encoding.Encoding;
 import com.flat502.rox.http.HttpRequestBuffer;
-import com.flat502.rox.http.HttpResponseException;
+import com.flat502.rox.http.exception.HttpResponseException;
+import com.flat502.rox.server.response.Response;
 
 /**
  * A response channel wrapping an underlying SocketChannel.

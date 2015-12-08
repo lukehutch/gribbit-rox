@@ -20,13 +20,15 @@ import javax.net.ssl.SSLException;
 import org.omg.CORBA.portable.ResponseHandler;
 
 import com.flat502.rox.Version;
+import com.flat502.rox.client.exception.ConnectionPoolTimeoutException;
+import com.flat502.rox.client.exception.RequestTimeoutException;
 import com.flat502.rox.encoding.Encoding;
 import com.flat502.rox.http.HttpConstants;
 import com.flat502.rox.http.HttpMessageBuffer;
-import com.flat502.rox.http.HttpMessageException;
 import com.flat502.rox.http.HttpRequest;
 import com.flat502.rox.http.HttpResponseBuffer;
-import com.flat502.rox.http.ProcessingException;
+import com.flat502.rox.http.exception.HttpMessageException;
+import com.flat502.rox.http.exception.ProcessingException;
 import com.flat502.rox.log.Log;
 import com.flat502.rox.log.LogFactory;
 import com.flat502.rox.processing.HttpProcessor;

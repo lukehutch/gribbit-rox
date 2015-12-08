@@ -1,4 +1,4 @@
-package com.flat502.rox.server;
+package com.flat502.rox.server.response;
 
 public interface Response {
     /** The content of the response. */

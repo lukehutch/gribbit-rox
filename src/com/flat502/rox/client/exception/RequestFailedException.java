@@ -1,4 +1,4 @@
-package com.flat502.rox.client;
+package com.flat502.rox.client.exception;
 
 import java.io.IOException;
 

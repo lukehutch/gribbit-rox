@@ -9,7 +9,8 @@ import java.util.List;
 import com.flat502.rox.encoding.Encoding;
 import com.flat502.rox.http.HttpRequestBuffer;
 import com.flat502.rox.http.HttpResponse;
-import com.flat502.rox.http.HttpResponseException;
+import com.flat502.rox.http.exception.HttpResponseException;
+import com.flat502.rox.server.response.Response;
 
 /**
  * This class is responsible for ensuring that multiple responses on the same socket delivered via different

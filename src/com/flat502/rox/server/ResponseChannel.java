@@ -2,7 +2,8 @@ package com.flat502.rox.server;
 
 import java.io.IOException;
 
-import com.flat502.rox.http.HttpResponseException;
+import com.flat502.rox.http.exception.HttpResponseException;
+import com.flat502.rox.server.response.Response;
 
 /**
  * An interface for delivering asynchronous RPC method responses.

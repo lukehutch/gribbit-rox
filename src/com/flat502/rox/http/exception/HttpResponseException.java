@@ -1,8 +1,12 @@
-package com.flat502.rox.http;
+package com.flat502.rox.http.exception;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import com.flat502.rox.http.HttpConstants;
+import com.flat502.rox.http.HttpRequestBuffer;
+import com.flat502.rox.http.HttpResponse;
 
 
 public class HttpResponseException extends HttpMessageException {

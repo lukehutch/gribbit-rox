@@ -1,4 +1,4 @@
-package com.flat502.rox.http;
+package com.flat502.rox.http.exception;
 
 /**
  * Indicates an HTTP method is not supported.
@@ -8,7 +8,7 @@ public class MethodNotAllowedException extends HttpBufferException {
 	private String[] allowed;
 
 	public MethodNotAllowedException(String method, String[] allowed) {
-		super("Method Not Allows (" + method + ")");
+		super("Method Not Allowed (" + method + ")");
 		this.method = method;
 		this.allowed = allowed;
 	}

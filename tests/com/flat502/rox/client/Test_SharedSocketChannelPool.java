@@ -9,6 +9,7 @@ import javax.net.ssl.SSLServerSocketFactory;
 
 import junit.framework.TestCase;
 
+import com.flat502.rox.client.exception.ConnectionPoolTimeoutException;
 import com.flat502.rox.marshal.MethodResponseUnmarshaller;
 import com.flat502.rox.marshal.RpcCall;
 import com.flat502.rox.utils.LoggingProfiler;

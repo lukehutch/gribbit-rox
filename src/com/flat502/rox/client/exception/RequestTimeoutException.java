@@ -1,4 +1,5 @@
-package com.flat502.rox.client;
+package com.flat502.rox.client.exception;
+
 
 /**
  * An exception raised when a request times out.

@@ -1,21 +1,22 @@
 package com.flat502.rox.server;
 
+import java.util.concurrent.BlockingQueue;
+
 import com.flat502.rox.http.HttpConstants;
 import com.flat502.rox.http.HttpMessageBuffer;
 import com.flat502.rox.http.HttpRequestBuffer;
 import com.flat502.rox.http.HttpResponse;
-import com.flat502.rox.http.HttpResponseException;
+import com.flat502.rox.http.exception.HttpResponseException;
 import com.flat502.rox.log.Log;
 import com.flat502.rox.log.LogFactory;
 import com.flat502.rox.processing.HttpMessageHandler;
-import com.flat502.rox.utils.BlockingQueue;
 
 class HttpRequestHandler extends HttpMessageHandler {
 	private static Log log = LogFactory.getLog(HttpRequestHandler.class);
 
 	// private ByteBuffer readBuf = ByteBuffer.allocate(1024);
 
-	HttpRequestHandler(BlockingQueue queue) {
+	HttpRequestHandler(BlockingQueue<?> queue) {
 		super(queue);
 	}
 

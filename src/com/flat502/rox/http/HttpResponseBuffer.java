@@ -8,6 +8,9 @@ import java.net.Socket;
 
 import com.flat502.rox.client.HttpClient;
 import com.flat502.rox.encoding.Encoding;
+import com.flat502.rox.http.exception.HttpBufferException;
+import com.flat502.rox.http.exception.InvalidHeaderException;
+import com.flat502.rox.http.exception.MissingHeaderException;
 
 /**
  * This class represents a buffer built up from one or more network messages,

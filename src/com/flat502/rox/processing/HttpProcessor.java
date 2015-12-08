@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Timer;
+import java.util.concurrent.BlockingQueue;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -30,7 +31,6 @@ import com.flat502.rox.http.HttpMessageBuffer;
 import com.flat502.rox.log.Log;
 import com.flat502.rox.log.LogFactory;
 import com.flat502.rox.server.SSLSessionPolicy;
-import com.flat502.rox.utils.BlockingQueue;
 import com.flat502.rox.utils.Profiler;
 import com.flat502.rox.utils.ProfilerCollection;
 import com.flat502.rox.utils.Utils;
@@ -101,7 +101,7 @@ public abstract class HttpProcessor {
 	private ProfilerCollection profilers = new ProfilerCollection();
 
 	// The shared queue events should be delivered via.
-	private BlockingQueue queue;
+	private BlockingQueue<Object> queue;
 	
 	// The Selector worker threads wait on for
 	// socket events.
@@ -547,7 +547,7 @@ public abstract class HttpProcessor {
 	 * @return
 	 * 	A handle to the shared queue.
 	 */
-	protected BlockingQueue getQueue() {
+	protected BlockingQueue<Object> getQueue() {
 		return this.queue;
 	}
 

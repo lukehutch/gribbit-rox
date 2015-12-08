@@ -4,6 +4,7 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
+import com.flat502.rox.client.exception.RequestTimeoutException;
 import com.flat502.rox.processing.ThreadUtils;
 
 public class Test_AsyncClientTimeouts extends TestCase {

@@ -1,11 +1,12 @@
 package com.flat502.rox.processing;
 
+import java.util.concurrent.BlockingQueue;
+
 import com.flat502.rox.http.HttpMessageBuffer;
-import com.flat502.rox.http.HttpMessageException;
-import com.flat502.rox.http.ProcessingException;
+import com.flat502.rox.http.exception.HttpMessageException;
+import com.flat502.rox.http.exception.ProcessingException;
 import com.flat502.rox.log.Log;
 import com.flat502.rox.log.LogFactory;
-import com.flat502.rox.utils.BlockingQueue;
 
 /**
  * An abstract base class used by the default client and server
@@ -14,7 +15,7 @@ import com.flat502.rox.utils.BlockingQueue;
 public abstract class HttpMessageHandler implements Runnable {
 	private static Log log = LogFactory.getLog(HttpMessageHandler.class);
 
-	private BlockingQueue queue;
+	private BlockingQueue<?> queue;
 	private Object terminateMutex = new Object();
 	private boolean shouldTerminate;
 
@@ -27,7 +28,7 @@ public abstract class HttpMessageHandler implements Runnable {
 	 * 	The queue from which this instance should
 	 * 	fetch new work items.
 	 */
-	protected HttpMessageHandler(BlockingQueue queue) {
+	protected HttpMessageHandler(BlockingQueue<?> queue) {
 		this.queue = queue;
 		this.shouldTerminate = false;
 	}

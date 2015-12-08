@@ -11,7 +11,7 @@ import com.flat502.rox.server.response.Response;
 /**
  * A demo synchronous server illustrating the {@link com.flat502.rox.server.SynchronousRequestHandler} interface.
  */
-public class HttpServerDemo {
+public class HttpsServerDemo {
 
     /**
      * Start an instance of this demo server.
@@ -30,7 +30,7 @@ public class HttpServerDemo {
     public static void main(String[] args) {
         try {
             String host = "localhost";
-            int port = 8080;
+            int port = 8443;
 
             if (args != null && args.length > 0) {
                 host = args[0];
@@ -40,7 +40,7 @@ public class HttpServerDemo {
             }
             System.out.println("Starting server on " + host + ":" + port);
 
-            HttpServer server = new HttpServer(InetAddress.getByName(host), port);
+            HttpServer server = new HttpServer(InetAddress.getByName(host), port, /* useHttps = */true);
             server.registerHandler(new AsynchronousRequestHandler() {
                 @Override
                 public Response handleRequest(RequestContext context) throws Exception {

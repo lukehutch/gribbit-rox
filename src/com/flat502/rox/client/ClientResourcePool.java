@@ -6,6 +6,7 @@ package com.flat502.rox.client;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
+import com.flat502.rox.client.exception.ConnectionPoolTimeoutException;
 import com.flat502.rox.processing.HttpMessageHandler;
 import com.flat502.rox.processing.ResourcePool;
 import com.flat502.rox.utils.Profiler;
@@ -104,7 +105,7 @@ public class ClientResourcePool extends ResourcePool {
 	}
 	
 	/**
-	 * Configure a <em>default</em> timeout value for RPC method calls.
+	 * Configure a <em>default</em> timeout value for requests.
 	 * <p>
 	 * All {@link HttpClient} instances sharing a resource pool
 	 * "inherit" this timeout as their initial timeout value.

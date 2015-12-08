@@ -5,8 +5,9 @@ import java.nio.channels.SocketChannel;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
-import com.flat502.rox.utils.BlockingQueue;
 import com.flat502.rox.utils.Profiler;
 import com.flat502.rox.utils.ProfilerCollection;
 
@@ -15,7 +16,7 @@ public abstract class ResourcePool {
 	private Thread processingThread;
 	private ChannelSelector channelSelector;
 	private Timer timer;
-	private BlockingQueue queue;
+	private BlockingQueue<Object> queue;
 	private List<HttpMessageHandler> workers = new LinkedList<>();
 	private boolean hasFirstWorker;
 	// private Map namedMutexes = new HashMap();
@@ -57,7 +58,7 @@ public abstract class ResourcePool {
 		this.processingThread.start();
 	}
 	
-	public BlockingQueue getQueue() {
+	public BlockingQueue<Object> getQueue() {
 		return this.queue;
 	}
 	
@@ -185,7 +186,7 @@ public abstract class ResourcePool {
 	protected void notifyUnownedChannelClosure(SocketChannel channel) {
 	}
 
-	protected BlockingQueue newQueue() {
-		return new BlockingQueue();
+	protected BlockingQueue<Object> newQueue() {
+		return new LinkedBlockingQueue<Object>();
 	}
 }

@@ -6,6 +6,9 @@ import java.io.UnsupportedEncodingException;
 
 import org.custommonkey.xmlunit.XMLTestCase;
 
+import com.flat502.rox.http.exception.HttpResponseException;
+import com.flat502.rox.http.exception.MissingHeaderException;
+
 public class Test_HttpResponseBuffer extends XMLTestCase {
 	public void testSimpleMessage() throws Exception {
 		String[] msg = new String[] {

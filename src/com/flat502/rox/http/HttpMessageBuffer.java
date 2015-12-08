@@ -16,6 +16,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.flat502.rox.http.exception.HttpBufferException;
+import com.flat502.rox.http.exception.InvalidHeaderException;
 import com.flat502.rox.processing.HttpProcessor;
 import com.flat502.rox.utils.Utils;
 

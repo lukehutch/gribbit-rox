@@ -2,6 +2,8 @@ package com.flat502.rox.client;
 
 import java.net.URL;
 
+import com.flat502.rox.client.exception.RequestTimeoutException;
+
 import junit.framework.TestCase;
 
 public class Test_SyncClientTimeouts extends TestCase {

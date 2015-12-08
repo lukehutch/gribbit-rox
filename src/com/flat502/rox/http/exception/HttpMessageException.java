@@ -1,4 +1,6 @@
-package com.flat502.rox.http;
+package com.flat502.rox.http.exception;
+
+import com.flat502.rox.http.HttpMessageBuffer;
 
 
 public class HttpMessageException extends Exception {

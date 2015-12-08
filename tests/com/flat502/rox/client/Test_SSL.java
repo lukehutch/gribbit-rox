@@ -25,6 +25,8 @@ import javax.security.auth.x500.X500Principal;
 import junit.framework.TestCase;
 
 import com.flat502.rox.client.SSLUtils.Identity;
+import com.flat502.rox.client.exception.RequestFailedException;
+import com.flat502.rox.client.exception.RequestTimeoutException;
 import com.flat502.rox.processing.SSLConfiguration;
 import com.flat502.rox.processing.SSLConfiguration.ClientAuth;
 import com.flat502.rox.processing.ThreadUtils;

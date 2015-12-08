@@ -5,6 +5,7 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
+import com.flat502.rox.client.exception.RequestFailedException;
 import com.flat502.rox.processing.RpcFaultException;
 import com.flat502.rox.processing.ThreadUtils;
 

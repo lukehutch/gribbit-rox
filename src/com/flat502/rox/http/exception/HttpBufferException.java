@@ -1,4 +1,5 @@
-package com.flat502.rox.http;
+package com.flat502.rox.http.exception;
+
 
 /**
  * Indicates a problem during unpacking and validating of

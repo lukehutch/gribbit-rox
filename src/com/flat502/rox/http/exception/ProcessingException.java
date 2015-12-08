@@ -1,4 +1,4 @@
-package com.flat502.rox.http;
+package com.flat502.rox.http.exception;
 
 import java.net.Socket;
 

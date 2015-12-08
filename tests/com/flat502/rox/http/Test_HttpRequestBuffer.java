@@ -7,6 +7,8 @@ import java.util.Iterator;
 
 import org.custommonkey.xmlunit.XMLTestCase;
 
+import com.flat502.rox.http.exception.HttpResponseException;
+
 public class Test_HttpRequestBuffer extends XMLTestCase {
 	public void testSimplePOST() throws Exception {
 		String[] msg = new String[] {

@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.flat502.rox.client.exception.ConnectionPoolTimeoutException;
 import com.flat502.rox.log.Log;
 import com.flat502.rox.log.LogFactory;
 import com.flat502.rox.utils.CaptureTimeoutException;

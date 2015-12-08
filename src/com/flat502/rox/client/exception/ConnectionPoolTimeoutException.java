@@ -1,4 +1,5 @@
-package com.flat502.rox.client;
+package com.flat502.rox.client.exception;
+
 
 /**
  * An exception raised to indicate a timeout occurred waiting for

@@ -2,6 +2,8 @@ package com.flat502.rox.client;
 
 import java.io.IOException;
 
+import com.flat502.rox.client.exception.RequestFailedException;
+import com.flat502.rox.client.exception.RequestTimeoutException;
 import com.flat502.rox.http.HttpResponseBuffer;
 import com.flat502.rox.log.Log;
 import com.flat502.rox.log.LogFactory;

@@ -1,4 +1,7 @@
-package com.flat502.rox.http;
+package com.flat502.rox.http.exception;
+
+import com.flat502.rox.http.HttpConstants;
+import com.flat502.rox.http.HttpResponse;
 
 public class MethodNotAllowedResponseException extends HttpResponseException {
 	private String allowed;
