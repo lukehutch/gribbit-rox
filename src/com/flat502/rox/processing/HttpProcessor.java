@@ -163,6 +163,8 @@ public abstract class HttpProcessor {
 
         if (workerPool == null) {
             this.resourcePool = this.newWorkerPool();
+            // By default, add 2x as many workers as there are CPU cores
+            this.resourcePool.addWorkers(Runtime.getRuntime().availableProcessors() * 2);
             this.sharedWorkerPool = false;
         } else {
             this.resourcePool = workerPool;

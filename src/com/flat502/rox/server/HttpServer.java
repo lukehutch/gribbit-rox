@@ -202,7 +202,7 @@ public class HttpServer extends HttpProcessor {
      *            javax.net.ssl.keyStore, javax.net.ssl.keyStorePassword, javax.net.ssl.trustStore and
      *            javax.net.ssl.trustStorePassword.
      * @param workerPool
-     *            The worker pool to use, or null to use hte default pool.
+     *            The worker pool to use, or null to use the default pool.
      * @throws IOException
      *             if an error occurs initializing the underlying server socket.
      * @throws GeneralSecurityException

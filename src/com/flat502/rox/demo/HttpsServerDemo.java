@@ -15,6 +15,7 @@ import com.flat502.rox.processing.SSLConfiguration;
 import com.flat502.rox.server.AsynchronousRequestHandler;
 import com.flat502.rox.server.HttpServer;
 import com.flat502.rox.server.RequestContext;
+import com.flat502.rox.server.ServerResourcePool;
 import com.flat502.rox.server.response.Response;
 
 /**
@@ -58,20 +59,23 @@ public class HttpsServerDemo {
 
             // Redirect HTTP requests to HTTPS
             final String hostFinal = host;
-            new HttpServer(InetAddress.getByName(host), httpPort).registerHandler(new AsynchronousRequestHandler() {
-                @Override
-                public Response handleRequest(RequestContext context) throws Exception {
-                    final HttpRequestBuffer req = context.getHttpRequest();
-                    String redirectURI = "https://" + hostFinal + ":" + httpsPort + req.getURI();
-                    System.out.println("Redirecting HTTP request " + req.getURI() + " to " + redirectURI);
-                    throw new HttpResponseException(HttpConstants.StatusCodes._302_FOUND, "Found") {
+            new HttpServer(InetAddress.getByName(host), httpPort, /* useHttps = */false, //
+                    /* just one worker thread: */new ServerResourcePool()) //
+                    .registerHandler(new AsynchronousRequestHandler() {
                         @Override
-                        protected void setExtraHeaders(HttpResponse rsp) {
-                            rsp.addHeader("Location", redirectURI);
+                        public Response handleRequest(RequestContext context) throws Exception {
+                            final HttpRequestBuffer req = context.getHttpRequest();
+                            // TODO: read host from HTTP request header, if present (allowing for virtual hosts)
+                            String redirectURI = "https://" + hostFinal + ":" + httpsPort + req.getURI();
+                            System.out.println("Redirecting HTTP request " + req.getURI() + " to " + redirectURI);
+                            throw new HttpResponseException(HttpConstants.StatusCodes._302_FOUND, "Found") {
+                                @Override
+                                protected void setExtraHeaders(HttpResponse rsp) {
+                                    rsp.addHeader("Location", redirectURI);
+                                }
+                            };
                         }
-                    };
-                }
-            }).start();
+                    }).start();
 
             HttpServer server = new HttpServer(InetAddress.getByName(host), httpsPort,
                     SSLConfiguration.createSelfSignedCertificate());
