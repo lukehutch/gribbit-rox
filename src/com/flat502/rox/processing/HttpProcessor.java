@@ -1211,11 +1211,7 @@ public abstract class HttpProcessor {
                 if (sessionMetadata.netBuffer.position() == 0) {
                     // We have no outstanding data to write for the handshake (from a previous wrap())
                     // so ask the engine for more.
-                    try {
-                        result = engine.wrap(BLANK, sessionMetadata.netBuffer);
-                    } catch (Exception e) {
-                        throw new SSLException("Error during engine.wrap()", e);
-                    }
+                    result = engine.wrap(BLANK, sessionMetadata.netBuffer);
                     sessionMetadata.netBuffer.flip();
 
                     if (log.logTrace()) {
