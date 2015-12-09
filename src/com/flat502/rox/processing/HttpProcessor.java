@@ -150,14 +150,15 @@ public abstract class HttpProcessor {
             }
         }
 
-        if (log.logDebug()) {
-            log.debug("Initializing SSL:\n" + this.sslConfig);
-        }
-
-        try {
-            this.sslContext = this.sslConfig.createContext();
-        } catch (Exception e) {
-            throw (SSLException) new SSLException("Failed to initialize SSL context").initCause(e);
+        if (this.sslConfig != null) {
+            if (log.logDebug()) {
+                log.debug("Initializing SSL:\n" + this.sslConfig);
+            }
+            try {
+                this.sslContext = this.sslConfig.createContext();
+            } catch (Exception e) {
+                throw (SSLException) new SSLException("Failed to initialize SSL context").initCause(e);
+            }
         }
 
         if (workerPool == null) {
