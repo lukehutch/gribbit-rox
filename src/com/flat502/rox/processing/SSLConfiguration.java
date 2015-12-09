@@ -1,12 +1,8 @@
 package com.flat502.rox.processing;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -18,7 +14,6 @@ import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -133,7 +128,7 @@ public class SSLConfiguration {
 
     public SSLConfiguration(String keyStorePath, String keyStorePassphrase, String keyStoreType,
             String trustStorePath, String trustStorePassphrase, String trustStoreType)
-                    throws GeneralSecurityException, IOException {
+            throws GeneralSecurityException, IOException {
         this();
         this.setKeyStore(keyStorePath, keyStorePassphrase, keyStorePassphrase, keyStoreType);
         this.setTrustStore(keyStorePath, trustStorePassphrase, trustStoreType);
@@ -141,11 +136,7 @@ public class SSLConfiguration {
 
     private static final Provider PROVIDER = new BouncyCastleProvider();
 
-    // The following is taken from:
-    // http://stackoverflow.com/questions/925377/generate-certificates-public-and-private-keys-with-java
-    // N.B. if this fails in a future JDK, replace with:
-    // github.com/netty/netty/blob/master/handler/src/main/java/io/netty/handler/ssl/util/SelfSignedCertificate.java
-    // For complete cert generation using BouncyCastle, see:
+    // TODO: For letsencrypt cert generation using BouncyCastle, see:
     // https://www.mayrhofer.eu.org/create-x509-certs-in-java
     public static SSLConfiguration createSelfSignedCertificate() throws Exception {
         if (log.logInfo()) {
@@ -163,7 +154,13 @@ public class SSLConfiguration {
             // Should not reach here, every Java implementation must have RSA key pair generator
             throw new RuntimeException(e);
         }
-        PrivateKey key = keyPair.getPrivate();
+        PrivateKey privateKey = keyPair.getPrivate();
+
+        //        // Encode the private key into KEY format
+        //        ByteBuffer keyByteBuf = ByteBuffer.allocate(1024);
+        //        keyByteBuf.put("-----BEGIN PRIVATE KEY-----\n".getBytes("ASCII"));
+        //        keyByteBuf.put(Base64.getEncoder().encode(key.getEncoded()));
+        //        keyByteBuf.put("\n-----END PRIVATE KEY-----\n".getBytes("ASCII"));
 
         // Prepare the information required for generating an X.509 certificate
         X500Name owner = new X500Name("CN=" + domain);
@@ -171,69 +168,25 @@ public class SSLConfiguration {
                 new Date(), new Date(System.currentTimeMillis() + 10L * 365 * 24 * 60 * 60 * 1000), owner,
                 keyPair.getPublic());
 
-        ContentSigner signer = new JcaContentSignerBuilder("SHA256WithRSAEncryption").build(key);
+        ContentSigner signer = new JcaContentSignerBuilder("SHA256WithRSAEncryption").build(privateKey);
         X509CertificateHolder certHolder = builder.build(signer);
         X509Certificate cert = new JcaX509CertificateConverter().setProvider(PROVIDER).getCertificate(certHolder);
         cert.verify(keyPair.getPublic());
 
-        // Encode the private key into a file
-        File keyFile = File.createTempFile("selfsigned_" + domain + '_', ".key");
-        keyFile.deleteOnExit();
-        OutputStream keyOut = new FileOutputStream(keyFile);
-        try {
-            ByteBuffer byteBuf = ByteBuffer.allocate(1024);
-            byteBuf.put("-----BEGIN PRIVATE KEY-----\n".getBytes("ASCII"));
-            byteBuf.put(Base64.getEncoder().encode(key.getEncoded()));
-            byteBuf.put("\n-----END PRIVATE KEY-----\n".getBytes("ASCII"));
-            keyOut.write(byteBuf.array(), 0, byteBuf.position());
-            keyOut.close();
-            keyOut = null;
-        } finally {
-            if (keyOut != null) {
-                keyOut.close();
-            }
-        }
+        //        // Encode the certificate into CRT format
+        //        ByteBuffer crtByteBuf = ByteBuffer.allocate(1024);
+        //        crtByteBuf.put("-----BEGIN CERTIFICATE-----\n".getBytes("ASCII"));
+        //        crtByteBuf.put(Base64.getEncoder().encode(cert.getEncoded()));
+        //        crtByteBuf.put("\n-----END CERTIFICATE-----\n".getBytes("ASCII"));
+        //        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+        //        ByteArrayInputStream crtStream = new ByteArrayInputStream(Arrays.copyOf(crtByteBuf.array(),
+        //                crtByteBuf.position()));
+        //        X509Certificate caCert = (X509Certificate) cf.generateCertificate(crtStream);
 
-        // Encode the certificate into a CRT file
-        File certFile = File.createTempFile("selfsigned_" + domain + '_', ".crt");
-        certFile.deleteOnExit();
-        OutputStream crtOut = new FileOutputStream(certFile);
-        try {
-            ByteBuffer byteBuf = ByteBuffer.allocate(1024);
-            byteBuf.put("-----BEGIN CERTIFICATE-----\n".getBytes("ASCII"));
-            byteBuf.put(Base64.getEncoder().encode(cert.getEncoded()));
-            byteBuf.put("\n-----END CERTIFICATE-----\n".getBytes("ASCII"));
-            crtOut.write(byteBuf.array(), 0, byteBuf.position());
-            crtOut.close();
-            crtOut = null;
-        } finally {
-            if (crtOut != null) {
-                crtOut.close();
-            }
-        }
-
-        return new SSLConfiguration(keyFile.getPath(), null, "pkcs12", certFile.getPath(), null, "pkcs12");
-
-        //        KeyStore keyStore = KeyStore.getInstance("JKS");
-        //        keyStore.load(null, null);
-        //
-        //        CertAndKeyGen keypair = new CertAndKeyGen("RSA", "SHA1WithRSA", null);
-        //        keypair.generate(/* keysize = */1024);
-        //        PrivateKey privKey = keypair.getPrivateKey();
-        //
-        //        X509Certificate[] chain = new X509Certificate[1];
-        //        X500Name x500Name = new X500Name(/* commonName = */"localhost", /* organizationalUnit = */
-        //        "None", /* organization = */"None", /* city = */"Nowhere", /* state = */"Nowhere", /* country = */
-        //        "Nowhere");
-        //        chain[0] = keypair.getSelfCertificate(x500Name, /* validity = */(long) 3 * 365 * 24 * 60 * 60);
-        //
-        //        String keyStorePassphrase = "changeit";
-        //        char[] keyPass = keyStorePassphrase.toCharArray();
-        //        keyStore.setKeyEntry(/* alias = */"testkey", privKey, keyPass, chain);
-        //
-        //        keyStore.store(new FileOutputStream("/tmp/.keystore"), keyPass); // TODO
-        //
-        //        return new SSLConfiguration(keyStore, keyStorePassphrase, keyStore);
+        SSLConfiguration cfg = new SSLConfiguration();
+        cfg.addTrustedEntity(cert);
+        cfg.addIdentity(privateKey, new X509Certificate[] { cert });
+        return cfg;
     }
 
     public void setRandomNumberGenerator(SecureRandom rng) {
@@ -319,13 +272,13 @@ public class SSLConfiguration {
         if (this.trustStore == null) {
             this.trustStore = SSLConfiguration.initKeyStore();
         }
-        String alias = cert.getSubjectDN().getName() + ":" + cert.getSerialNumber();
+        String alias = cert.getSubjectX500Principal().getName() + ":" + cert.getSerialNumber();
         this.trustStore.setCertificateEntry(alias, cert);
         this.setTrustStore(this.trustStore);
     }
 
     public void addIdentity(PrivateKey privateKey, X509Certificate[] chain) throws GeneralSecurityException,
-    IOException {
+            IOException {
         if (this.keyStore == null) {
             this.keyStore = SSLConfiguration.initKeyStore();
         }
