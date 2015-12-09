@@ -156,7 +156,7 @@ public class SSLConfiguration {
         }
         PrivateKey privateKey = keyPair.getPrivate();
 
-        //        // Encode the private key into KEY format
+        //        // To encode the private key into KEY format:
         //        ByteBuffer keyByteBuf = ByteBuffer.allocate(1024);
         //        keyByteBuf.put("-----BEGIN PRIVATE KEY-----\n".getBytes("ASCII"));
         //        keyByteBuf.put(Base64.getEncoder().encode(key.getEncoded()));
@@ -173,12 +173,14 @@ public class SSLConfiguration {
         X509Certificate cert = new JcaX509CertificateConverter().setProvider(PROVIDER).getCertificate(certHolder);
         cert.verify(keyPair.getPublic());
 
-        //        // Encode the certificate into CRT format
+        //        // To encode the certificate into CRT format:
         //        ByteBuffer crtByteBuf = ByteBuffer.allocate(1024);
         //        crtByteBuf.put("-----BEGIN CERTIFICATE-----\n".getBytes("ASCII"));
         //        crtByteBuf.put(Base64.getEncoder().encode(cert.getEncoded()));
         //        crtByteBuf.put("\n-----END CERTIFICATE-----\n".getBytes("ASCII"));
         //        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+        
+        //        // To load a CRT format cert back in:
         //        ByteArrayInputStream crtStream = new ByteArrayInputStream(Arrays.copyOf(crtByteBuf.array(),
         //                crtByteBuf.position()));
         //        X509Certificate caCert = (X509Certificate) cf.generateCertificate(crtStream);
