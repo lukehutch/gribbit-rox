@@ -38,7 +38,7 @@ public abstract class ResourcePool {
 
     protected Timer getTimer() {
         synchronized (workers) {
-            // Create this Timer lazily so if callers never use timeouts they 
+            // Create this Timer lazily so if callers never use timeouts they
             // don't have the overhead of an extra thread per client instance.
             if (this.timer == null) {
                 this.timer = new Timer(true);
@@ -83,7 +83,7 @@ public abstract class ResourcePool {
      * <p>
      * If an instance of this class is constructed and started without this method having been invoked it will be
      * invoked before processing begins.
-     * 
+     *
      * @return The number of worker threads backing this instance.
      */
     public int addWorker() {
@@ -105,7 +105,7 @@ public abstract class ResourcePool {
 
     /**
      * A convenience method for adding multiple worker threads in a single call.
-     * 
+     *
      * @param count
      *            The number of worker threads to add.
      * @return The number of worker threads backing this instance.
@@ -120,7 +120,7 @@ public abstract class ResourcePool {
 
     /**
      * Get the number of worker threads currently responsible for this instance.
-     * 
+     *
      * @return The number of worker threads backing this instance.
      */
     public int getWorkerCount() {
@@ -156,7 +156,7 @@ public abstract class ResourcePool {
      * <p>
      * Sub-classes may override this method if an alternative implementation is required, or to alter properties of
      * the thread that is created by default, but they should not invoke the {@link Thread#start()} method.
-     * 
+     *
      * @param target
      * @return This implementation returns a new instance of {@link HttpProcessor}.
      */

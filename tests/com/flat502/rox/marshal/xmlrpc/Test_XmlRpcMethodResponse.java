@@ -209,7 +209,7 @@ public class Test_XmlRpcMethodResponse extends TestBase_XmlRpcMethod {
     	assertXpathEvaluatesTo("date-member", "/methodResponse/params/param/value/struct/member/name", xml);
     	assertXpathEvaluatesTo("test", "/methodResponse/params/param/value/struct/member/value/string", xml);
     }
-    */
+     */
 
     public void testPrimitivesStruct() throws Exception {
         PrimitivesStruct struct = new PrimitivesStruct((byte) 42, (short) 43, 44, 45L, 3.14f, 6.28d, true, '!');

@@ -2,8 +2,6 @@ package com.flat502.rox.client;
 
 import java.net.URL;
 
-import com.flat502.rox.client.exception.ConnectionPoolTimeoutException;
-
 import junit.framework.TestCase;
 
 public class Test_ConnectionPoolTimeouts extends TestCase {

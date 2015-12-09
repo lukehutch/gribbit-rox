@@ -63,7 +63,7 @@ public abstract class HttpProcessor {
 
     private static final String CLOSE_AFTER_WRITE = "CloseAfterWrite";
 
-    // Implementation note: Win32 NIO implementations have had 
+    // Implementation note: Win32 NIO implementations have had
     // problems in the past if OP_READ and OP_WRITE are set at
     // the same time. Interleaving them solves the problem.
     private static final Integer OP_WRITE = new Integer(SelectionKey.OP_WRITE);
@@ -120,7 +120,7 @@ public abstract class HttpProcessor {
 
     /**
      * Initializes a new instance of this class.
-     * 
+     *
      * @param useHttps
      *            A flag indicating whether or not the underlying transport should use HTTPS (HTTP over SSL).
      * @see #setCipherSuitePattern(String)
@@ -134,7 +134,8 @@ public abstract class HttpProcessor {
         this(/* useHttps = */sslConfig != null, sslConfig, workerPool);
     }
 
-    protected HttpProcessor(boolean useHttps, SSLConfiguration sslConfig, ResourcePool workerPool) throws IOException {
+    protected HttpProcessor(boolean useHttps, SSLConfiguration sslConfig, ResourcePool workerPool)
+            throws IOException {
         this.useHttps = useHttps;
         this.sslConfig = sslConfig;
 
@@ -178,7 +179,7 @@ public abstract class HttpProcessor {
      * <p>
      * If an instance of this class is constructed and started without this method having been invoked it will be
      * invoked before processing begins.
-     * 
+     *
      * @return The number of worker threads backing this instance.
      */
     public int addWorker() {
@@ -189,7 +190,7 @@ public abstract class HttpProcessor {
 
     /**
      * A convenience method for adding multiple worker threads in a single call.
-     * 
+     *
      * @param count
      *            The number of worker threads to add.
      * @return The number of worker threads backing this instance.
@@ -202,7 +203,7 @@ public abstract class HttpProcessor {
 
     /**
      * Get the number of worker threads currently responsible for this instance.
-     * 
+     *
      * @return The number of worker threads backing this instance.
      */
     public int getWorkerCount() {
@@ -217,7 +218,7 @@ public abstract class HttpProcessor {
      * It's possible to reduce the size of the thread pool to zero, stopping all HTTP message processing. Incoming
      * data will still be accepted, as will new connections (if this applies), but no processing will occur until
      * the thread pool size is increased again.
-     * 
+     *
      * @throws IllegalStateException
      *             if this method is invoked while the thread pool is empty.
      * @return The number of worker threads backing this instance.
@@ -231,7 +232,7 @@ public abstract class HttpProcessor {
     /**
      * Set the regular expression used to select the SSL cipher suites to use for all connections from this point
      * on.
-     * 
+     *
      * @param cipherSuitePattern
      *            A regular expression for selecting the set of SSL cipher suites. A <code>null</code> value will
      *            treated as matching <i>all</i> cipher suites.
@@ -260,7 +261,7 @@ public abstract class HttpProcessor {
      * This timeout defaults to 10 seconds.
      * <p>
      * The new timeout affects only connections initiated subsequent to the completion of this method call.
-     * 
+     *
      * @param timeout
      *            The timeout (in milliseconds). A value of 0 indicates no timeout should be enforced (not
      *            recommended).
@@ -364,7 +365,7 @@ public abstract class HttpProcessor {
                         log.trace("Registering channel (wq=" + wq + ") for " + Utils.toString(channel.socket()));
                     }
                     if (channel.isConnected()) {
-                        // A registration is re-queued after an SSL I/O 
+                        // A registration is re-queued after an SSL I/O
                         // operation to avoid a CancelledKeyException.
                         // In that case we are interested in reads, not
                         // connections.
@@ -472,7 +473,7 @@ public abstract class HttpProcessor {
      * Sub-classes <i>must</i> invoke this method after their constructor has completed it's initialization.
      * <p>
      * This implementation invokes {@link #initSelector(Selector)} to initialize the underlying {@link Selector}.
-     * 
+     *
      * @throws IOException
      *             if an error occurs during initialization.
      */
@@ -488,7 +489,7 @@ public abstract class HttpProcessor {
      * <p>
      * The update is queued internally and the selecting thread is awoken to apply the change. This removes any risk
      * of platform specific NIO implementation discrepancies from blocking indefinitely.
-     * 
+     *
      * @param channel
      *            The {@link SocketChannel} to register.
      */
@@ -514,7 +515,7 @@ public abstract class HttpProcessor {
 
     /**
      * Returns a handle to the shared queue used by worker threads.
-     * 
+     *
      * @return A handle to the shared queue.
      */
     protected BlockingQueue<Object> getQueue() {
@@ -523,7 +524,7 @@ public abstract class HttpProcessor {
 
     /**
      * Returns a handle to the {@link Selector} this thread is using for all I/O.
-     * 
+     *
      * @return A handle to the {@link Selector}.
      */
     protected Selector getSocketSelector() {
@@ -538,7 +539,7 @@ public abstract class HttpProcessor {
      * <p>
      * If a sub-class overrides this method it should defer to it if it is not interested in the
      * {@link SelectionKey} presented.
-     * 
+     *
      * @param key
      *            The {@link SelectionKey} for the socket on which an I/O operation is pending.
      * @throws IOException
@@ -557,7 +558,7 @@ public abstract class HttpProcessor {
      * <p>
      * This implementation checks for data using the {@link #getWriteBuffer(Socket)} method. If data is available as
      * much as possible is written to the socket.
-     * 
+     *
      * @param key
      *            The {@link SelectionKey} indicating the socket available for writing.
      * @throws IOException
@@ -568,7 +569,7 @@ public abstract class HttpProcessor {
         Socket socket = socketChannel.socket();
         ByteBuffer buf = null;
 
-        // If we're using HTTPS and handshaking is still happening then we need to call 
+        // If we're using HTTPS and handshaking is still happening then we need to call
         // SSLEngine.wrap() which will write the next chunk of handshake data.
         if (this.useHttps && this.isHandshaking(socket)) {
             if (log.logTrace()) {
@@ -649,7 +650,7 @@ public abstract class HttpProcessor {
      * This implementation retrieves an {@link HttpMessageBuffer} instance for the indicated socket using the
      * {@link #getReadBuffer(Socket)} method. Data present on the socket is added to this buffer and if a complete
      * HTTP message has been received it is enqueued on the {@link #getQueue() shared queue}.
-     * 
+     *
      * @param key
      *            The {@link SelectionKey} indicating the socket available for writing.
      * @throws IOException
@@ -828,7 +829,7 @@ public abstract class HttpProcessor {
      * <p>
      * The data is queued internally and the interest operations set on the associated {@link SocketChannel} is
      * updated to indicate that a write operation is desired.
-     * 
+     *
      * @param socket
      *            The socket to which the data should be written.
      * @param data
@@ -865,14 +866,14 @@ public abstract class HttpProcessor {
             }
         }
 
-        // Indicate that we're interested in writing on this socket. The socket 
-        // itself may not be connected (or even registered) at this point, but at 
-        // the very least a registration has been queued (otherwise there would 
-        // be no socket to begin with). If so then the registration will be 
+        // Indicate that we're interested in writing on this socket. The socket
+        // itself may not be connected (or even registered) at this point, but at
+        // the very least a registration has been queued (otherwise there would
+        // be no socket to begin with). If so then the registration will be
         // processed and this OP_WRITE will be ignored (if the socket is not
         // yet connected) or applied (if it is).
         //
-        // We have to do this because the connection operation may finish on this 
+        // We have to do this because the connection operation may finish on this
         // socket before this method is called, in which case this write would
         // never happen.
         this.queueInterestOpsUpdate(socket, OP_WRITE);
@@ -880,7 +881,7 @@ public abstract class HttpProcessor {
 
     /**
      * Create and initialize a {@link Selector} for all I/O operations.
-     * 
+     *
      * @param selector
      * @throws IOException
      *             If an error occurs while attempting to create the {@link Selector}.
@@ -892,7 +893,7 @@ public abstract class HttpProcessor {
      * Factory method for new worker pools.
      * <p>
      * This is invoked from the constructor to create a new worker pool when one is not provided.
-     * 
+     *
      * @return A new {@link ResourcePool}.
      */
     protected abstract ResourcePool newWorkerPool();
@@ -904,7 +905,7 @@ public abstract class HttpProcessor {
     /**
      * An error handler invoked when an attempt to determine if an HTTP message buffer constitutes a complete HTTP
      * message.
-     * 
+     *
      * @param msg
      *            The message buffer the exception is associated with.
      * @param e
@@ -917,7 +918,7 @@ public abstract class HttpProcessor {
 
     /**
      * An error handler invoked when an error occurs within the main processing loop.
-     * 
+     *
      * @param socket
      *            The socket the exception is associated with. This may be <code>null</code> if the exception is not
      *            specific to a particular socket.
@@ -930,7 +931,7 @@ public abstract class HttpProcessor {
 
     /**
      * Called when a complete HTTP message has been identified.
-     * 
+     *
      * @param socket
      *            The socket on which a complete message has been received.
      */
@@ -938,7 +939,7 @@ public abstract class HttpProcessor {
 
     /**
      * Called when a a socket is deregistered and any buffers associated with it should be released.
-     * 
+     *
      * @param socket
      *            The socket on which a complete message has been received.
      */
@@ -950,7 +951,7 @@ public abstract class HttpProcessor {
      * Implementations must return a buffer, even if this means creating a new instance. The same buffer should be
      * returned for a given socket until the {@link #removeReadBuffer(Socket)} method is invoked, ensuring that
      * message fragmentation is correctly handled.
-     * 
+     *
      * @param socket
      *            The socket on which data has arrived.
      * @return A message buffer for the given socket.
@@ -959,7 +960,7 @@ public abstract class HttpProcessor {
 
     /**
      * Called when data is available to be written to a socket.
-     * 
+     *
      * @param socket
      *            The socket on which the data should be sent.
      * @param data
@@ -969,7 +970,7 @@ public abstract class HttpProcessor {
 
     /**
      * Called to find out if data is queued to be written to a socket.
-     * 
+     *
      * @param socket
      *            The socket on which the data should be sent.
      * @return <code>true</code> if there is a buffer waiting to be written on the given socket
@@ -978,7 +979,7 @@ public abstract class HttpProcessor {
 
     /**
      * Called when a all of the data in a pending write buffer has been written to a socket.
-     * 
+     *
      * @param socket
      *            The socket the buffer was associated with.
      */
@@ -986,7 +987,7 @@ public abstract class HttpProcessor {
 
     /**
      * Called when a a socket is deregistered and any buffers associated with it should be released.
-     * 
+     *
      * @param socket
      *            The socket the buffer was associated with.
      */
@@ -999,7 +1000,7 @@ public abstract class HttpProcessor {
      * {@link #putWriteBuffer(Socket, ByteBuffer)}. The same buffer should be returned for a given socket until the
      * {@link #removeWriteBuffer(Socket)} method is invoked, ensuring that large messages that must be written in
      * multiple fragments are correctly handled.
-     * 
+     *
      * @param socket
      *            The socket that is available for writing.
      * @return A data buffer for the given socket.
@@ -1011,7 +1012,7 @@ public abstract class HttpProcessor {
      * <p>
      * The update is queued internally and the selecting thread is awoken to apply the change. This removes any risk
      * of platform specific NIO implementation discrepancies from blocking indefinitely.
-     * 
+     *
      * @param socket
      *            The {@link Socket} the change is intended for.
      * @param interestOp

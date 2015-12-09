@@ -96,7 +96,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
         String[] xmlLines = new String[] { "<?xml version=\"1.0\"?>", "<methodCall>",
                 "	<methodName>server.delay</methodName>", "	<params>", "		<param>",
                 "			<value><int>1000</int><string>first call</string></value>", "		</param>", "	</params>",
-                "</methodCall>" };
+        "</methodCall>" };
         String xml = toString(xmlLines);
 
         try {
@@ -226,7 +226,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
         this.testEmptyTypedValueTags("base64");
     }
 
-    // Template test method for testing an empty parameter tag with an 
+    // Template test method for testing an empty parameter tag with an
     // explicit type (of the form <type/>)
     private void testEmptyTypedValueTags(String type) throws Exception {
         String[] xmlLines = new String[] { "<?xml version=\"1.0\"?>", "<methodCall>",
@@ -367,7 +367,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
         String[] xmlLines = new String[] { "<?xml version=\"1.0\"?>", "<methodCall>",
                 "	<methodName>testMethod</methodName>", "	<params>", "		<param>", "			<value>",
                 "				<string>three\nblind\nmice</string>", "			</value>", "		</param>", "	</params>",
-                "</methodCall>" };
+        "</methodCall>" };
         String xml = toString(xmlLines);
 
         Request call = this.unmarshal(xml, null);
@@ -386,7 +386,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
         String[] xmlLines = new String[] { "<?xml version=\"1.0\"?>", "<methodCall>",
                 "	<methodName>testMethod</methodName>", "	<params>", "		<param>",
                 "			<value><string>" + sb.toString() + "</string></value>", "		</param>", "	</params>",
-                "</methodCall>" };
+        "</methodCall>" };
         String xml = toString(xmlLines);
 
         Request call = this.unmarshal(xml, null);
@@ -427,7 +427,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
         String[] xmlLines = new String[] { "<?xml version=\"1.0\"?>", "<methodCall>",
                 "	<methodName>testMethod</methodName>", "	<params>", "		<param>",
                 "			<value><base64>eW91IGNhbid0IHJlYWQgdGhpcyE=</base64></value>", "		</param>", "	</params>",
-                "</methodCall>" };
+        "</methodCall>" };
         String xml = toString(xmlLines);
 
         Request call = this.unmarshal(xml, null);
@@ -616,7 +616,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
                 "								<data>", "									<value><double>3.14</double></value>",
                 "									<value><double>6.28</double></value>", "								</data>", "							</array>",
                 "						</value>", "					</member>", "				</struct>", "			</value>", "		</param>", "	</params>",
-                "</methodCall>" };
+        "</methodCall>" };
         String xml = toString(xmlLines);
 
         Request call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });
@@ -637,7 +637,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
                 "								<data>", "									<value><double>3.14</double></value>",
                 "									<value><double>6.28</double></value>", "								</data>", "							</array>",
                 "						</value>", "					</member>", "				</struct>", "			</value>", "		</param>", "	</params>",
-                "</methodCall>" };
+        "</methodCall>" };
         String xml = toString(xmlLines);
 
         Request call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });
@@ -658,7 +658,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
                 "								<data>", "									<value><boolean>1</boolean></value>",
                 "									<value><boolean>1</boolean></value>", "								</data>", "							</array>",
                 "						</value>", "					</member>", "				</struct>", "			</value>", "		</param>", "	</params>",
-                "</methodCall>" };
+        "</methodCall>" };
         String xml = toString(xmlLines);
 
         Request call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });
@@ -679,7 +679,7 @@ public abstract class TestBase_MethodCallUnmarshaller extends TestBase_Unmarshal
                 "								<data>", "									<value><boolean>1</boolean></value>",
                 "									<value><boolean>1</boolean></value>", "								</data>", "							</array>",
                 "						</value>", "					</member>", "				</struct>", "			</value>", "		</param>", "	</params>",
-                "</methodCall>" };
+        "</methodCall>" };
         String xml = toString(xmlLines);
 
         Request call = this.unmarshal(xml, new Class[] { PrimitiveArraysStruct.class });

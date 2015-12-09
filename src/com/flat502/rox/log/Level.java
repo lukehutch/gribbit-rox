@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Logging level constants.
  * <p>
- * 
+ *
  * @see com.flat502.rox.log.Log
  */
 public class Level {
@@ -63,7 +63,7 @@ public class Level {
      * If the indicated <code>level</code> is less verbose than the level this instance indicates then this method
      * will return <code>true</code>. The intention is to invoke this method on a configured level and pass it the
      * level constant representing the severity of the message being logged.
-     * 
+     *
      * @param level
      *            The level to compare this instance's verbosity against.
      * @return <code>true</code> if the verbosity of <code>level</code> is less than that of this instance.
@@ -82,7 +82,7 @@ public class Level {
      * <p>
      * Names are case-insensitive and are named for the constant members of this class (so the string value
      * <code>trace</code> is mapped to {@link #TRACE}.
-     * 
+     *
      * @param name
      *            The name of the desired level.
      * @param defaultLevel

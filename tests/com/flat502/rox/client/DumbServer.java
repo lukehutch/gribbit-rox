@@ -70,8 +70,9 @@ public class DumbServer extends Thread {
         if (this.exception != null) {
             throw this.exception;
         }
-        while (this.serverSocket == null)
+        while (this.serverSocket == null) {
             Thread.yield();
+        }
         this.serverSocket.close();
     }
 }

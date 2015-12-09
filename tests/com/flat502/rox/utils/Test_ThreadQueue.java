@@ -20,8 +20,9 @@ public class Test_ThreadQueue extends TestCase {
             ThreadQueue q = new ThreadQueue();
             List<Serializable> releaseOrder = Collections.synchronizedList(new LinkedList<Serializable>());
             new TestThread("A", q, releaseOrder, false).start();
-            while (q.isEmpty())
+            while (q.isEmpty()) {
                 ;
+            }
             q.release();
 
             waitForRelease(releaseOrder);
@@ -35,8 +36,9 @@ public class Test_ThreadQueue extends TestCase {
             ThreadQueue q = new ThreadQueue();
             List<Serializable> releaseOrder = Collections.synchronizedList(new LinkedList<Serializable>());
             new TestThread("A", q, releaseOrder, true).start();
-            while (q.isEmpty())
+            while (q.isEmpty()) {
                 ;
+            }
             Thread.sleep(750);
             q.release();
 
@@ -51,8 +53,9 @@ public class Test_ThreadQueue extends TestCase {
             ThreadQueue q = new ThreadQueue();
             List<Serializable> releaseOrder = Collections.synchronizedList(new LinkedList<Serializable>());
             new TestThread("A", q, releaseOrder, true).start();
-            while (q.isEmpty())
+            while (q.isEmpty()) {
                 ;
+            }
             Thread.sleep(1250);
             q.release();
 
@@ -70,8 +73,9 @@ public class Test_ThreadQueue extends TestCase {
             List<Serializable> releaseOrder = new LinkedList<>();
             for (int i = 0; i < CAPTURE_COUNT; i++) {
                 new TestThread(String.valueOf(i), q, releaseOrder, false).start();
-                while (q.size() < i + 1)
+                while (q.size() < i + 1) {
                     ;
+                }
             }
 
             for (int i = 0; i < CAPTURE_COUNT; i++) {
@@ -88,14 +92,17 @@ public class Test_ThreadQueue extends TestCase {
             ThreadQueue q = new ThreadQueue();
             List<Serializable> releaseOrder = Collections.synchronizedList(new LinkedList<Serializable>());
             new TestThread("A", q, releaseOrder, false).start();
-            while (q.size() < 1)
+            while (q.size() < 1) {
                 ;
+            }
             new TestThread("B", q, releaseOrder, true).start();
-            while (q.size() < 2)
+            while (q.size() < 2) {
                 ;
+            }
             new TestThread("C", q, releaseOrder, false).start();
-            while (q.size() < 3)
+            while (q.size() < 3) {
                 ;
+            }
 
             q.release();
             Thread.sleep(1250);
@@ -115,11 +122,13 @@ public class Test_ThreadQueue extends TestCase {
             ThreadQueue q = new ThreadQueue();
             List<Serializable> releaseOrder = Collections.synchronizedList(new LinkedList<Serializable>());
             new TestThread("A", q, releaseOrder, false).start();
-            while (q.size() < 1)
+            while (q.size() < 1) {
                 ;
+            }
             new TestThread("B", q, releaseOrder, false).start();
-            while (q.size() < 2)
+            while (q.size() < 2) {
                 ;
+            }
 
             q.release();
             q.release();

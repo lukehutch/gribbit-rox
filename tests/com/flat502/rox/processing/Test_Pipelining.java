@@ -17,8 +17,8 @@ import junit.framework.TestCase;
 import com.flat502.rox.http.HttpRequest;
 import com.flat502.rox.server.AsynchronousRequestHandler;
 import com.flat502.rox.server.ManualSynchronousHandler;
-import com.flat502.rox.server.ResponseChannel;
 import com.flat502.rox.server.RequestContext;
+import com.flat502.rox.server.ResponseChannel;
 import com.flat502.rox.utils.Utils;
 
 public class Test_Pipelining extends TestCase {
@@ -48,7 +48,7 @@ public class Test_Pipelining extends TestCase {
                 "</methodCall>POST / HTTP/1.0", "Host: name", "Content-Type: text/xml", "Content-Length: 188", "",
                 "<?xml version=\"1.0\"?>", "<methodCall>", "	<methodName>server.toUpper</methodName>", "	<params>",
                 "		<param>", "			<value><string>second call</string></value>", "		</param>", "	</params>",
-                "</methodCall>" };
+        "</methodCall>" };
 
         ManualSynchronousHandler handler = new ManualSynchronousHandler();
         server.addWorker();
@@ -208,8 +208,8 @@ public class Test_Pipelining extends TestCase {
 
     private void writeMessage(String[] request, Socket socket) throws IOException, UnsupportedEncodingException {
         OutputStream os = socket.getOutputStream();
-        for (int i = 0; i < request.length; i++) {
-            byte[] req = (request[i] + "\r\n").getBytes("ASCII");
+        for (String element : request) {
+            byte[] req = (element + "\r\n").getBytes("ASCII");
             os.write(req);
         }
         os.flush();

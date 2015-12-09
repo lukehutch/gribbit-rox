@@ -36,7 +36,7 @@ public abstract class HttpMessage {
      * Constructs an instance
      * <p>
      * This method sets the <code>Date</code> header to the current date.
-     * 
+     *
      * @param encoding
      *            An {@link Encoding} describing the encoding to use when constructing this message. This also
      *            informs the <code>Content-Encoding</code> header value. May be <code>null</code>.
@@ -56,7 +56,7 @@ public abstract class HttpMessage {
      * <p>
      * The actual format used is that described in RC 822 and mentioned in section 3.1.1 of RFC 2616 as the
      * preferred format.
-     * 
+     *
      * @param date
      *            The date to format.
      * @return A date formatted for use in an HTTP header.
@@ -67,7 +67,7 @@ public abstract class HttpMessage {
 
     /**
      * Set a header value, replacing any previously set value.
-     * 
+     *
      * @param name
      *            The header name.
      * @param value
@@ -96,7 +96,7 @@ public abstract class HttpMessage {
      * unimportant.
      * <p>
      * {@link #setHeader(String, String)} allows for the replacement of headers.
-     * 
+     *
      * @param name
      *            The header name.
      * @param value
@@ -131,7 +131,7 @@ public abstract class HttpMessage {
      * The name is split into words using the '-' character. Each word is then normalized by converting the first
      * character to uppercase and all remaining characters to lowercase. The resulting words are joined again using
      * the '-' character. The result is returned.
-     * 
+     *
      * @param name
      *            The header name.
      * @return The normalized header name.
@@ -145,7 +145,7 @@ public abstract class HttpMessage {
      * <p>
      * This method sets the <code>Content-Length</code> header (using {@link #setHeader(String, String)}) to the
      * length of <code>content</code>.
-     * 
+     *
      * @param content
      *            The content to include in this HTTP message.
      */
@@ -159,7 +159,7 @@ public abstract class HttpMessage {
 
     /**
      * Writes the HTTP message represented by this instance to a given {@link java.io.OutputStream}.
-     * 
+     *
      * @param os
      *            The stream to write to.
      * @throws IOException
@@ -194,7 +194,7 @@ public abstract class HttpMessage {
      * <p>
      * The "start line" is described in <a
      * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.1">section 4.1</a> of RFC 2616.
-     * 
+     *
      * @param os
      *            The stream to write the start line to.
      */
@@ -202,7 +202,7 @@ public abstract class HttpMessage {
 
     /**
      * Implementation should return the HTTP start line for this message (without a newline marker).
-     * 
+     *
      * @return The start line for this message.
      */
     protected String getStartLine() {
@@ -225,7 +225,7 @@ public abstract class HttpMessage {
      * Headers are rendered in the order in which they were <i>first</i> added (using either
      * {@link #addHeader(String, String)} or {@link #setHeader(String, String)}). If an existing header is replaced
      * with a call to {@link #setHeader(String, String)} it's rendered order is <i>not</i> affected.
-     * 
+     *
      * @param os
      *            The stream to write the start line to.
      * @throws IOException
@@ -257,7 +257,7 @@ public abstract class HttpMessage {
      * Writes this instance's content to the given stream.
      * <p>
      * If {@link #setContent(byte[])} has not been invoked this method returns without doing anything.
-     * 
+     *
      * @param contentStream
      *            The stream to write to.
      * @throws IOException
@@ -274,7 +274,7 @@ public abstract class HttpMessage {
      * <p>
      * This method is equivalent to invoking {@link #marshal(OutputStream)} to a {@link ByteArrayOutputStream}
      * instance and retrieving the byte array.
-     * 
+     *
      * @return A byte array representing this instance "on the wire".
      * @throws IOException
      *             If an error occurs writing to the stream or if any required character set cannot be loaded.
@@ -291,7 +291,7 @@ public abstract class HttpMessage {
 
     /**
      * Get the HTTP version string for this instance.
-     * 
+     *
      * @return Always returns <code>HTTP/1.1</code>.
      */
     protected String getVersionString() {
@@ -302,7 +302,7 @@ public abstract class HttpMessage {
      * Check if a header has been set.
      * <p>
      * Case is unimportant.
-     * 
+     *
      * @param name
      *            The header name.
      * @return <code>true</code> if the named header has been set.

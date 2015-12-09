@@ -43,8 +43,8 @@ public abstract class TestBase_Unmarshaller extends TestCase {
 
     protected String toString(String[] lines) {
         StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < lines.length; i++) {
-            sb.append(lines[i]);
+        for (String line : lines) {
+            sb.append(line);
         }
         return sb.toString();
     }

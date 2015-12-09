@@ -30,7 +30,7 @@ public class ProcessingException extends Exception {
 
     /**
      * Get the socket the processing exception is associated with.
-     * 
+     *
      * @return The socket associated with this exception. May be <code>null</code>.
      */
     public Socket getSocket() {

@@ -108,7 +108,7 @@ public class HttpServer extends HttpProcessor {
      * <p>
      * The server will not attempt to bind to a local port or being accepting connections (and by implication
      * processing requests) until {@link Thread#start()} is invoked on this instance.
-     * 
+     *
      * @param port
      *            The port to listen on.
      * @throws IOException
@@ -123,7 +123,7 @@ public class HttpServer extends HttpProcessor {
      * <p>
      * The server will not attempt to bind to a local port or being accepting connections (and by implication
      * processing requests) until {@link Thread#start()} is invoked on this instance.
-     * 
+     *
      * @param hostAddress
      *            The address to listen on. If this is <code>null</code> this instance will listen on all local
      *            addresses.
@@ -141,7 +141,7 @@ public class HttpServer extends HttpProcessor {
      * <p>
      * The server will not attempt to bind to a local port or being accepting connections (and by implication
      * processing requests) until {@link Thread#start()} is invoked on this instance.
-     * 
+     *
      * @param hostAddress
      *            The address to listen on. If this is <code>null</code> this instance will listen on all local
      *            addresses.
@@ -157,7 +157,7 @@ public class HttpServer extends HttpProcessor {
      *             if an error occurs while loading the keys or certs from the keystore or the trust store.
      */
     public HttpServer(InetAddress hostAddress, int port, boolean useHttps) throws IOException,
-            GeneralSecurityException {
+    GeneralSecurityException {
         this(hostAddress, port, useHttps, null, null);
     }
 
@@ -166,7 +166,7 @@ public class HttpServer extends HttpProcessor {
      * <p>
      * The server will not attempt to bind to a local port or being accepting connections (and by implication
      * processing requests) until {@link Thread#start()} is invoked on this instance.
-     * 
+     *
      * @param hostAddress
      *            The address to listen on. If this is <code>null</code> this instance will listen on all local
      *            addresses.
@@ -182,7 +182,7 @@ public class HttpServer extends HttpProcessor {
      *             if an error occurs while loading the keys or certs from the keystore or the trust store.
      */
     public HttpServer(InetAddress hostAddress, int port, SSLConfiguration sslConfig) throws IOException,
-            GeneralSecurityException {
+    GeneralSecurityException {
         this(hostAddress, port, (sslConfig != null), sslConfig, null);
     }
 
@@ -191,7 +191,7 @@ public class HttpServer extends HttpProcessor {
      * <p>
      * The server will not attempt to bind to a local port or being accepting connections (and by implication
      * processing requests) until {@link Thread#start()} is invoked on this instance.
-     * 
+     *
      * @param hostAddress
      *            An {@link InetAddress} this instance should bind to when listening for connections.
      *            <code>null</code> is interpreted as "listen on all interfaces".
@@ -218,7 +218,7 @@ public class HttpServer extends HttpProcessor {
      * <p>
      * The server will not attempt to bind to a local port or being accepting connections (and by implication
      * processing requests) until {@link Thread#start()} is invoked on this instance.
-     * 
+     *
      * @param hostAddress
      *            An {@link InetAddress} this instance should bind to when listening for connections.
      *            <code>null</code> is interpreted as "listen on all interfaces".
@@ -350,7 +350,7 @@ public class HttpServer extends HttpProcessor {
     /**
      * This package private method exists purely to route calls to the protected {@link #queueWrite(Socket, byte[])}
      * method from classes within this package without forcing it to be public.
-     * 
+     *
      * @param socket
      * @param rspData
      */
@@ -363,7 +363,7 @@ public class HttpServer extends HttpProcessor {
      * <p>
      * This implementation encodes the response using <code>UTF-8</code>, sets the status code to <code>200</code>,
      * and sets <code>Content-Type</code> header to <code>text/xml</code> as required. No other headers are set.
-     * 
+     *
      * @param rsp
      *            The XML-RPC method response to be returned in the HTTP response.
      * @param encoding
@@ -409,7 +409,7 @@ public class HttpServer extends HttpProcessor {
     /**
      * This implementation defers to the {@link #accept(SelectionKey)} method if a connection is pending. In all
      * other cases it defers to its parent.
-     * 
+     *
      * @param key
      *            The {@link SelectionKey} for the socket on which an I/O operation is pending.
      * @throws IOException
@@ -456,7 +456,7 @@ public class HttpServer extends HttpProcessor {
 
     /**
      * Called when a new connection is pending on the underlying {@link ServerSocketChannel}.
-     * 
+     *
      * @param key
      *            The {@link SelectionKey} for the socket on which a connection is pending.
      * @throws IOException
@@ -537,7 +537,7 @@ public class HttpServer extends HttpProcessor {
                 }
                 SocketChannel socketChannel = this.socket.getChannel();
                 socketChannel.keyFor(HttpServer.this.getSocketSelector()).cancel();
-                // This (shutting down the output stream) seems unnecessary but 
+                // This (shutting down the output stream) seems unnecessary but
                 // without it the client never sees a disconnect under Linux.
                 // For good measure we shutdown the input stream too.
                 socketChannel.socket().shutdownOutput();
@@ -554,7 +554,7 @@ public class HttpServer extends HttpProcessor {
      * Converts an exception raised while processing an HTTP request into a suitable HTTP response.
      * <p>
      * The response is marshalled and queued for writing on the socket associated with the original request.
-     * 
+     *
      * @param msg
      *            The HTTP request being processed when the exception occurred.
      * @param e

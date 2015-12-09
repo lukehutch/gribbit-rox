@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.flat502.rox.marshal;
 

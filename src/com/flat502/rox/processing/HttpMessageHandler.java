@@ -22,7 +22,7 @@ public abstract class HttpMessageHandler implements Runnable {
 
     /**
      * Constructs a new instance coupled to a {@link BlockingQueue}.
-     * 
+     *
      * @param queue
      *            The queue from which this instance should fetch new work items.
      */
@@ -97,7 +97,7 @@ public abstract class HttpMessageHandler implements Runnable {
 
     /**
      * Called to handle complete HTTP messages.
-     * 
+     *
      * @param msg
      *            The complete HTTP message.
      * @throws Exception
@@ -109,7 +109,7 @@ public abstract class HttpMessageHandler implements Runnable {
      * Called when an error occurs while handling an HTTP message.
      * <p>
      * The default implementation raises an {@link IllegalStateException}.
-     * 
+     *
      * @param msg
      *            The HTTP message that was being processed when the exception was raised.
      * @param exception
@@ -117,19 +117,19 @@ public abstract class HttpMessageHandler implements Runnable {
      */
     protected void handleHttpMessageException(HttpMessageBuffer msg, Throwable exception) {
         throw (IllegalStateException) new IllegalStateException("Queue exception was unhandled")
-                .initCause(exception);
+        .initCause(exception);
     }
 
     /**
      * Called when an error occurs that is not related to an HTTP message.
      * <p>
      * The default implementation raises an {@link IllegalStateException}.
-     * 
+     *
      * @param exception
      *            The exception that was raised.
      */
     protected void handleProcessingException(ProcessingException exception) {
         throw (IllegalStateException) new IllegalStateException("Queue exception was unhandled")
-                .initCause(exception);
+        .initCause(exception);
     }
 }

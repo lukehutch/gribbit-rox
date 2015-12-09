@@ -77,7 +77,7 @@ public class Test_ServerMiscellaneous extends TestCase {
         String[] request = new String[] { "POST / HTTP/1.0", "Content-Type: text/xml", "Content-Length: 188", "",
                 "<?xml version=\"1.0\"?>", "<methodCall>", "	<methodName>server.toUpper</methodName>", "	<params>",
                 "		<param>", "			<value><string>hello world</string></value>", "		</param>", "	</params>",
-                "</methodCall>" };
+        "</methodCall>" };
 
         ManualSynchronousHandler handler = new ManualSynchronousHandler();
         server.registerHandler(null, "^server\\.", handler);
@@ -157,8 +157,8 @@ public class Test_ServerMiscellaneous extends TestCase {
             Thread.sleep(500);
 
             for (int iters = 0; iters < 2; iters++) {
-                for (int i = 0; i < request.length; i++) {
-                    byte[] req = (request[i] + "\r\n").getBytes("ASCII");
+                for (String element : request) {
+                    byte[] req = (element + "\r\n").getBytes("ASCII");
                     os.write(req);
                 }
                 os.flush();
@@ -200,8 +200,8 @@ public class Test_ServerMiscellaneous extends TestCase {
 
     private void writeMessage(String[] request, Socket socket) throws IOException, UnsupportedEncodingException {
         OutputStream os = socket.getOutputStream();
-        for (int i = 0; i < request.length; i++) {
-            byte[] req = (request[i] + "\r\n").getBytes("ASCII");
+        for (String element : request) {
+            byte[] req = (element + "\r\n").getBytes("ASCII");
             os.write(req);
         }
         os.flush();

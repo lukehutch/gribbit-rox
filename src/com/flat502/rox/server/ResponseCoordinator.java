@@ -105,9 +105,9 @@ class ResponseCoordinator {
             }
         } finally {
             if (this.queuedResponses.isEmpty()) {
-                // All responses were sent release the resources associated with 
+                // All responses were sent release the resources associated with
                 // this instance. A new one will be created if any later responses
-                // ultimately become available to be delivered on this channel 
+                // ultimately become available to be delivered on this channel
                 this.server.deregisterResponseCoordinator(this);
             }
         }

@@ -133,7 +133,7 @@ public class SSLConfiguration {
 
     public SSLConfiguration(String keyStorePath, String keyStorePassphrase, String keyStoreType,
             String trustStorePath, String trustStorePassphrase, String trustStoreType)
-            throws GeneralSecurityException, IOException {
+                    throws GeneralSecurityException, IOException {
         this();
         this.setKeyStore(keyStorePath, keyStorePassphrase, keyStorePassphrase, keyStoreType);
         this.setTrustStore(keyStorePath, trustStorePassphrase, trustStoreType);
@@ -252,7 +252,7 @@ public class SSLConfiguration {
      * This timeout defaults to 10 seconds.
      * <p>
      * The new timeout affects only connections initiated subsequent to the completion of this method call.
-     * 
+     *
      * @param timeout
      *            The timeout (in milliseconds). A value of 0 indicates no timeout should be enforced (not
      *            recommended).
@@ -273,7 +273,7 @@ public class SSLConfiguration {
 
     /**
      * Set the regular expression used to select the SSL cipher suites to use during SSL handshaking.
-     * 
+     *
      * @param cipherSuitePattern
      *            A regular expression for selecting the set of SSL cipher suites. A <code>null</code> value will
      *            treated as matching <i>all</i> cipher suites.
@@ -292,7 +292,7 @@ public class SSLConfiguration {
 
     /**
      * Set the regular expression used to select the SSL protocol suites to use during SSL handshaking.
-     * 
+     *
      * @param protocolPattern
      *            A regular expression for selecting the set of SSL protocols. A <code>null</code> value will
      *            treated as matching <i>all</i> protocols.
@@ -317,7 +317,7 @@ public class SSLConfiguration {
 
     public void addTrustedEntity(X509Certificate cert) throws GeneralSecurityException, IOException {
         if (this.trustStore == null) {
-            this.trustStore = this.initKeyStore();
+            this.trustStore = SSLConfiguration.initKeyStore();
         }
         String alias = cert.getSubjectDN().getName() + ":" + cert.getSerialNumber();
         this.trustStore.setCertificateEntry(alias, cert);
@@ -325,9 +325,9 @@ public class SSLConfiguration {
     }
 
     public void addIdentity(PrivateKey privateKey, X509Certificate[] chain) throws GeneralSecurityException,
-            IOException {
+    IOException {
         if (this.keyStore == null) {
-            this.keyStore = this.initKeyStore();
+            this.keyStore = SSLConfiguration.initKeyStore();
         }
         String alias = privateKey.getAlgorithm() + ":" + privateKey.hashCode();
         this.keyStore.setKeyEntry(alias, privateKey, "".toCharArray(), chain);
@@ -427,12 +427,12 @@ public class SSLConfiguration {
                 log.trace("Selecting cipher suites using pattern [" + this.cipherSuitePattern + "]");
             }
             List<String> ciphers = new ArrayList<>(supportedCipherSuites.length);
-            for (int i = 0; i < supportedCipherSuites.length; i++) {
-                if (this.cipherSuitePattern.matcher(supportedCipherSuites[i]).find()) {
+            for (String supportedCipherSuite : supportedCipherSuites) {
+                if (this.cipherSuitePattern.matcher(supportedCipherSuite).find()) {
                     if (log.logTrace()) {
-                        log.trace("Matched " + supportedCipherSuites[i]);
+                        log.trace("Matched " + supportedCipherSuite);
                     }
-                    ciphers.add(supportedCipherSuites[i]);
+                    ciphers.add(supportedCipherSuite);
                 }
             }
             return ciphers.toArray(new String[0]);
@@ -445,12 +445,12 @@ public class SSLConfiguration {
                 log.trace("Selecting protocols using pattern [" + this.protocolPattern + "]");
             }
             List<String> protocols = new ArrayList<>(supportedProtocols.length);
-            for (int i = 0; i < supportedProtocols.length; i++) {
-                if (this.protocolPattern.matcher(supportedProtocols[i]).find()) {
+            for (String supportedProtocol : supportedProtocols) {
+                if (this.protocolPattern.matcher(supportedProtocol).find()) {
                     if (log.logTrace()) {
-                        log.trace("Matched " + supportedProtocols[i]);
+                        log.trace("Matched " + supportedProtocol);
                     }
-                    protocols.add(supportedProtocols[i]);
+                    protocols.add(supportedProtocol);
                 }
             }
             return protocols.toArray(new String[0]);

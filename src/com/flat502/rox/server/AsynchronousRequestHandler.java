@@ -4,7 +4,7 @@ import com.flat502.rox.server.response.Response;
 
 /**
  * Interface for asynchronous RPC method call handlers.
- * 
+ *
  * @see com.flat502.rox.server.HttpRpcServer#registerHandler(String, String, AsynchronousRequestHandler)
  */
 public interface AsynchronousRequestHandler {
@@ -15,7 +15,7 @@ public interface AsynchronousRequestHandler {
      * application thread, so implementing classes may block before returning.
      * <p>
      * If an exception is raised it will be returned to the caller as a request fault.
-     * 
+     *
      * @param context
      *            An {@link RequestContext} instance providing information about the call context.
      * @return Returns a Response object if this handler was able to handle the URI in

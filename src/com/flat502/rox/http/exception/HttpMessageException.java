@@ -16,7 +16,7 @@ public class HttpMessageException extends Exception {
     }
 
     /**
-     * 
+     *
      * @return The associated {@link HttpMessageBuffer} if this exception resulted from the processing of that
      *         message, or <code>null</code> if none existed.
      */

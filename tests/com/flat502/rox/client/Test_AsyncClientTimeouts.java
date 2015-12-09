@@ -4,7 +4,6 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import com.flat502.rox.client.exception.RequestTimeoutException;
 import com.flat502.rox.processing.ThreadUtils;
 
 public class Test_AsyncClientTimeouts extends TestCase {
@@ -94,7 +93,7 @@ public class Test_AsyncClientTimeouts extends TestCase {
     }
 
     public void testTimeoutExceededDuringWrite() throws Throwable {
-        // Accept but don't read 
+        // Accept but don't read
         DumbServer server = new DumbServer(PORT, true);
         XmlRpcClient client = new XmlRpcClient(new URL(URL));
         client.setRequestTimeout(_1_SECOND.longValue());

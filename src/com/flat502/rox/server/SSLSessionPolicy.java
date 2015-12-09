@@ -19,7 +19,7 @@ public interface SSLSessionPolicy {
      * <p>
      * Implementations should avoid any calls on the channel that may block. Blocking the calling thread will have a
      * significant impact on throughput on the server.
-     * 
+     *
      * @param channel
      *            The {@link SocketChannel} that has just been accepted.
      * @param session

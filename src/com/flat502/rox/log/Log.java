@@ -15,7 +15,7 @@ package com.flat502.rox.log;
  * <p>
  * This deliberately mimics the levels available in log4j, it being the most widely deployed logging framework (and
  * reasonably representative of such frameworks).
- * 
+ *
  * @see com.flat502.rox.log.LogFactory
  */
 public interface Log {

@@ -5,8 +5,6 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import com.flat502.rox.http.MethodCallURI;
-
 public class Test_CgiMethodCallUnmarshaller extends TestCase {
     public Test_CgiMethodCallUnmarshaller(String name) {
         super(name);

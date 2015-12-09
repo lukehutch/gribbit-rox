@@ -24,7 +24,7 @@ public class MinHeap {
 
     /**
      * Constructs a new MinimumBinaryHeap instance the specified initial size and a growth increment of 10.
-     * 
+     *
      * @param initial_size
      *            The initial size of the heap.
      */
@@ -34,7 +34,7 @@ public class MinHeap {
 
     /**
      * Constructs a new MinimumBinaryHeap instance the specified initial size and growth increment
-     * 
+     *
      * @param initial_size
      *            The initial size of the heap.
      * @param growth_step

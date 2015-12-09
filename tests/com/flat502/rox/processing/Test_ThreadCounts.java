@@ -4,7 +4,6 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import com.flat502.rox.client.ClientResourcePool;
 import com.flat502.rox.client.TestServer;
 
 public class Test_ThreadCounts extends TestCase {

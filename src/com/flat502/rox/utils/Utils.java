@@ -48,7 +48,7 @@ public class Utils {
      * <p>
      * If no character set is specified then <code>ISO-8859-1</code> is returned as per <a
      * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7.1">section 3.7.1</a> of RFC 2616.
-     * 
+     *
      * @param contentType
      *            The value of the <code>Content-Type</code> header.
      * @return The character set specified by the value or <code>ISO-8859-1</code> if none was found.
@@ -69,7 +69,7 @@ public class Utils {
      * Any additional parameters (such as character set information) is discarded.
      * <p>
      * An example of a return value would be <code>text/xml</code>.
-     * 
+     *
      * @param contentType
      *            The value of the <code>Content-Type</code> header.
      * @return The content type.
@@ -100,7 +100,7 @@ public class Utils {
             uri = new URI(uri).normalize().getPath();
         } catch (URISyntaxException e) {
             throw (IllegalArgumentException) new IllegalArgumentException("Malformed URI [" + uri + "]")
-                    .initCause(e);
+            .initCause(e);
         }
         if (uri.equals("")) {
             uri = "/";
@@ -117,7 +117,7 @@ public class Utils {
      * The encoding is determined as specified by <a
      * href="http://www.w3.org/TR/1998/REC-xml-19980210.html#sec-guessing">appendix F</a> of version 1.0 of the XML
      * specification.
-     * 
+     *
      * @param in
      *            The input stream the XML document should be read from.
      * @param hint
@@ -179,15 +179,15 @@ public class Utils {
                 }
                 break;
             case 0x4C:
-                // 4C 6F A7 94: EBCDIC (in some flavor; the full encoding declaration must be read 
+                // 4C 6F A7 94: EBCDIC (in some flavor; the full encoding declaration must be read
                 // to tell which code page is in use)
                 if (byteTwo == 0x6F && byteThree == 0xA7 && byteFour == 0x94) {
                     throw new UnsupportedEncodingException("EBCDIC");
                 }
                 break;
             default:
-                // other: UTF-8 without an encoding declaration, 
-                // or else the data stream is corrupt, fragmentary, 
+                // other: UTF-8 without an encoding declaration,
+                // or else the data stream is corrupt, fragmentary,
                 // or enclosed in a wrapper of some kind
                 charSet = Charset.forName("UTF-8");
                 break;
@@ -247,7 +247,7 @@ public class Utils {
      * The message is printed to stdout, prefixed with the name of the calling thread and the interval in
      * milliseconds since this class was loaded. This is handy for simple "println" style debugging when relative
      * timing is a factor.
-     * 
+     *
      * @param msg
      *            The message to display.
      */
@@ -264,7 +264,7 @@ public class Utils {
      * The name is split into words using the '-' character. Each word is then normalized by converting the first
      * character to uppercase and all remaining characters to lowercase. The resulting words are joined again using
      * the '-' character. The result is returned.
-     * 
+     *
      * @param name
      *            The header name.
      * @return The normalized header name.

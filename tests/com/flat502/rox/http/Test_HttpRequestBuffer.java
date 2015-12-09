@@ -264,7 +264,7 @@ public class Test_HttpRequestBuffer extends XMLTestCase {
         String[] msg = new String[] { "POST / HTTP/1.1", "Host: hostname", "Content-Type: text/xml",
                 "Content-Length: 5",
                 "Accept-Encoding: first;q=0.5, second;q=0.3, third;q=0.4, fourth, fifth;q=0.1, repeat, again", "",
-                "Hello" };
+        "Hello" };
         HttpRequestBuffer httpReq = this.newHttpRequestBuffer(msg);
         assertTrue(httpReq.isComplete());
         assertNotNull(httpReq.getAcceptedEncodings());

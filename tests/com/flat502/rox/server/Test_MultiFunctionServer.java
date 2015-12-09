@@ -87,7 +87,7 @@ public class Test_MultiFunctionServer extends TestCase {
 
     public void testCGIMap() throws Exception {
         URLConnection conn = new URL(URL + "server.map?foo=bar&key=value&list=one&list=two&list=three")
-                .openConnection();
+        .openConnection();
         InputStream is = null;
         try {
             conn.connect();

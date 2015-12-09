@@ -71,7 +71,7 @@ public class ThreadQueue {
 
             // A more efficient approach might be to block captured threads
             // on their own Object and queue those Objects. However, this
-            // requires slightly more complex synchronization which further 
+            // requires slightly more complex synchronization which further
             // complicates the case where a caller wants to share our mutex.
             // Since we're not expecting to deal with more than a few dozen
             // threads this will do until we can prove otherwise.

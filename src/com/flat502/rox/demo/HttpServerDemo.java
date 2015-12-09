@@ -22,7 +22,7 @@ public class HttpServerDemo {
      * <li>{@link RMIServerInterface#getDate() rmi.getDate}</li>
      * <li>{@link RMIServerInterface#getVersionInfo(boolean) rmi.getVersion}</li>
      * </ul>
-     * 
+     *
      * @param args
      *            A list of parameters indicating the <code>host/address</code> and <code>port</code> to bind to.
      *            These default to <code>localhost</code> and <code>8080</code> if not specified.

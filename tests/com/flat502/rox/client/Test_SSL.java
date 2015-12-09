@@ -25,8 +25,6 @@ import javax.security.auth.x500.X500Principal;
 import junit.framework.TestCase;
 
 import com.flat502.rox.client.SSLUtils.Identity;
-import com.flat502.rox.client.exception.RequestFailedException;
-import com.flat502.rox.client.exception.RequestTimeoutException;
 import com.flat502.rox.processing.SSLConfiguration;
 import com.flat502.rox.processing.SSLConfiguration.ClientAuth;
 import com.flat502.rox.processing.ThreadUtils;
@@ -356,7 +354,7 @@ public class Test_SSL extends TestCase {
         String[] request = new String[] { "POST / HTTP/1.0", "Content-Type: text/xml", "Content-Length: 188", "",
                 "<?xml version=\"1.0\"?>", "<methodCall>", "	<methodName>server.toUpper</methodName>", "	<params>",
                 "		<param>", "			<value><string>hello world</string></value>", "		</param>", "	</params>",
-                "</methodCall>" };
+        "</methodCall>" };
 
         ManualSynchronousHandler handler = new ManualSynchronousHandler();
         XmlRpcServer server = new XmlRpcServer(null, PORT, true);
@@ -392,8 +390,8 @@ public class Test_SSL extends TestCase {
 
     private void writeMessage(String[] request, Socket socket) throws IOException, UnsupportedEncodingException {
         OutputStream os = socket.getOutputStream();
-        for (int i = 0; i < request.length; i++) {
-            byte[] req = (request[i] + "\r\n").getBytes("ASCII");
+        for (String element : request) {
+            byte[] req = (element + "\r\n").getBytes("ASCII");
             os.write(req);
         }
         os.flush();

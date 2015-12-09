@@ -23,7 +23,7 @@ public abstract class Context {
      * Get the SSL session the requested was delivered over.
      * <p>
      * If no SSL session exists (for example, if HTTP is used) this parameter will be <code>null</code>.
-     * 
+     *
      * @return An {@link SSLSession} instance or <code>null</code>
      */
     public SSLSession getSSLSession() {

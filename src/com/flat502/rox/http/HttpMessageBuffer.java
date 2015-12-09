@@ -42,7 +42,7 @@ public abstract class HttpMessageBuffer {
 
     /**
      * Construct a new buffer for the given socket.
-     * 
+     *
      * @param processor
      * @param socket
      *            The socket from which data for this buffer will be gathered.
@@ -55,7 +55,7 @@ public abstract class HttpMessageBuffer {
 
     /**
      * Get the socket data for this buffer was collected from.
-     * 
+     *
      * @return The socket data for this buffer was collected from.
      */
     public Socket getSocket() {
@@ -72,7 +72,7 @@ public abstract class HttpMessageBuffer {
      * <p>
      * This method gathers message fragments together. A call to this method is typically followed by a call to
      * {@link #isComplete()} to determine whether or not the buffer contains a complete HTTP message.
-     * 
+     *
      * @param newData
      *            The data to add to this buffer.
      * @param offset
@@ -126,7 +126,7 @@ public abstract class HttpMessageBuffer {
      * <li>A test if the <code>Content-Length</code> header is present.</li>
      * <li>A test if the <code>Content-Length</code> header value and the content of the HTTP message are equal.</li>
      * </ol>
-     * 
+     *
      * @return <code>true</code> if this buffer holds a complete HTTP message, otherwise <code>false</code>.
      * @throws Exception
      *             if a problem occurs applying any of the tests mention above.
@@ -168,7 +168,7 @@ public abstract class HttpMessageBuffer {
      * <p>
      * Duplicate headers will have been combined into a single value as per <a
      * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2">section 4.2 of RFC 2616</a>.
-     * 
+     *
      * @return An unmodifiable {@link Map} containing the headers in the underlying HTTP message.
      * @throws IllegalStateException
      *             if this request is not yet complete.
@@ -204,7 +204,7 @@ public abstract class HttpMessageBuffer {
 
     /**
      * Get <code>Content-Type</code> defined in this message.
-     * 
+     *
      * @return The <code>Content-Type</code> or <code>null</code> if it is not specified.
      */
     public String getContentType() {
@@ -247,7 +247,7 @@ public abstract class HttpMessageBuffer {
 
     /**
      * This is easy: just look for two CRLF pairs.
-     * 
+     *
      * @return The index of the first byte of data after the headers or -1 if the headers are not all present.
      */
     private int seekToContentStart() {
@@ -376,7 +376,7 @@ public abstract class HttpMessageBuffer {
      * The header name is normalized as though the value were converted to lowercase split on the '-' character, the
      * first letter of each item in the resulting list capitalized, and the updated list rejoined using the '-' as a
      * separator.
-     * 
+     *
      * @param name
      *            The header name to normalize.
      * @return The header name with the leading character of each "word" capitalized.

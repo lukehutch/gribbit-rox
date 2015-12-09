@@ -47,9 +47,9 @@ public class ThreadUtils {
         Thread[] list = new Thread[100];
         Thread.enumerate(list);
         int matches = 0;
-        for (int i = 0; i < list.length; i++) {
-            if (list[i] != null) {
-                if (list[i].getName().matches(namePattern) || list[i].getClass().getName().matches(namePattern)) {
+        for (Thread element : list) {
+            if (element != null) {
+                if (element.getName().matches(namePattern) || element.getClass().getName().matches(namePattern)) {
                     matches++;
                 }
             }

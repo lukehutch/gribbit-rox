@@ -93,7 +93,7 @@ public class Test_AutomaticSyncServer extends TestCase {
     //			client.stop();
     //		}
     //	}
-    //	
+    //
     //	public void testNoArgsMethodLookup() throws Exception {
     //		XmlRpcClient client = new XmlRpcClient(new URL(URL+"foobar"));
     //		ProxiedHandler handler = new ProxiedHandler();
@@ -106,7 +106,7 @@ public class Test_AutomaticSyncServer extends TestCase {
     //			client.stop();
     //		}
     //	}
-    //	
+    //
     //	public void testNoArgsMethodLookupPassedArgs() throws Exception {
     //		XmlRpcClient client = new XmlRpcClient(new URL(URL+"foobar"));
     //		ProxiedHandler handler = new ProxiedHandler();
@@ -147,7 +147,7 @@ public class Test_AutomaticSyncServer extends TestCase {
     //			client.stop();
     //		}
     //	}
-    //	
+    //
     //	public void testArgsMethodLookupCoercedFloatToDouble() throws Exception {
     //		XmlRpcClient client = new XmlRpcClient(new URL(URL+"foobar"));
     //		ProxiedHandler handler = new ProxiedHandler();
@@ -160,7 +160,7 @@ public class Test_AutomaticSyncServer extends TestCase {
     //			client.stop();
     //		}
     //	}
-    //	
+    //
     //	public void testArgsMethodLookupCoercedIntegerToDouble() throws Exception {
     //		XmlRpcClient client = new XmlRpcClient(new URL(URL+"foobar"));
     //		ProxiedHandler handler = new ProxiedHandler();

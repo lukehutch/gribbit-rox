@@ -9,7 +9,6 @@ import javax.net.ssl.SSLServerSocketFactory;
 
 import junit.framework.TestCase;
 
-import com.flat502.rox.client.exception.ConnectionPoolTimeoutException;
 import com.flat502.rox.utils.LoggingProfiler;
 
 public class Test_SharedSocketChannelPool extends TestCase {
@@ -435,8 +434,9 @@ public class Test_SharedSocketChannelPool extends TestCase {
             if (this.exception != null) {
                 throw this.exception;
             }
-            while (this.serverSocket == null)
+            while (this.serverSocket == null) {
                 Thread.yield();
+            }
             this.serverSocket.close();
         }
     }

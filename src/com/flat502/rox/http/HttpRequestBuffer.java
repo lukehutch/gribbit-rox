@@ -64,7 +64,7 @@ public class HttpRequestBuffer extends HttpMessageBuffer {
 
     /**
      * Construct a new buffer for requests on the given socket.
-     * 
+     *
      * @param server
      * @param socket
      *            The socket from which data for this buffer will be gathered.
@@ -124,7 +124,7 @@ public class HttpRequestBuffer extends HttpMessageBuffer {
      * appears first.
      * <p>
      * The map instance returned is unmodifiable.
-     * 
+     *
      * @return <code>null</code> if no <code>Accept-Encoding</code> header was present, or a map of accepted
      *         encodings.
      */
@@ -283,8 +283,8 @@ public class HttpRequestBuffer extends HttpMessageBuffer {
         this.acceptedEncodings = new LinkedHashMap<>();
         if (!acceptEncoding.equals("")) {
             String[] encodings = COMMA_DELIM.split(acceptEncoding);
-            for (int i = 0; i < encodings.length; i++) {
-                String[] parts = SEMICOLON_DELIM.split(encodings[i]);
+            for (String encoding2 : encodings) {
+                String[] parts = SEMICOLON_DELIM.split(encoding2);
                 if (parts.length > 2) {
                     throw new InvalidHeaderException(HttpConstants.Headers.ACCEPT_ENCODING, acceptEncoding);
                 }
@@ -323,7 +323,7 @@ public class HttpRequestBuffer extends HttpMessageBuffer {
                 public int compare(String name1, String name2) {
                     Float q1 = acceptedEncodings.get(name1);
                     Float q2 = acceptedEncodings.get(name2);
-                    // We want them sorted highest to lowest and they can't be equal 
+                    // We want them sorted highest to lowest and they can't be equal
                     // or we break the Map interface so tiebreak by sorted name1 ahead
                     // of name2 which means we fall back to order of occurrence
                     // in the Accept-Encoding header.

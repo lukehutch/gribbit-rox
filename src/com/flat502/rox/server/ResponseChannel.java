@@ -16,7 +16,7 @@ import com.flat502.rox.server.response.Response;
 public interface ResponseChannel {
     /**
      * Deliver an HTTP response to a remote caller.
-     * 
+     *
      * @param rsp
      *            The response to marshal and send back.
      * @throws IOException
@@ -27,7 +27,7 @@ public interface ResponseChannel {
 
     /**
      * Deliver an HTTP error response to a remote caller.
-     * 
+     *
      * @param e
      *            The response to marshal and send back.
      * @throws IOException
@@ -40,7 +40,7 @@ public interface ResponseChannel {
      * <p>
      * Implementations are not required to close this channel under normal operations. Typically closing this
      * channel is only required when an error occurs that may corrupt this channel's state.
-     * 
+     *
      * @throws IOException
      *             An exception may be raised while attempting to close the underlying channel.
      */

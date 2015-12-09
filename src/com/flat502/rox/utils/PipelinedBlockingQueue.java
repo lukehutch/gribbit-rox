@@ -36,7 +36,7 @@ public class PipelinedBlockingQueue {
 
     /**
      * Adds the specified element to this queue
-     * 
+     *
      * @param element
      *            The element to enqueue
      * @param origin
@@ -60,7 +60,7 @@ public class PipelinedBlockingQueue {
      * <p>
      * An element is considered free if the origin it is associated with is not shared by another element that was
      * previously dequeued by a thread that has not yet "returned" to this queue
-     * 
+     *
      * @return the first free element on this queue
      * @throws InterruptedException
      *             if interrupted while waiting.

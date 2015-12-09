@@ -42,7 +42,7 @@ public class Test_XmlRpcMethodCall extends TestBase_XmlRpcMethod {
     public void testTypedStructParamField() throws Exception {
         TestStruct struct = new TestStruct(new Integer(42), 24, new Double(3.14), 6.28, new Float(3.24), 6.48f,
                 Boolean.TRUE, true, newDate(2006, 1, 12, 14, 8, 55), "string value", new char[] { 'h', 'e', 'l',
-                        'l', 'o' }, "Hello".getBytes("UTF-8"), new Object[] { "Object1", "Object2" });
+            'l', 'o' }, "Hello".getBytes("UTF-8"), new Object[] { "Object1", "Object2" });
         XmlRpcMethodCall call = new XmlRpcMethodCall("testName", new Object[] { struct });
         String xml = new String(call.marshal(), "UTF-8");
 
@@ -78,7 +78,7 @@ public class Test_XmlRpcMethodCall extends TestBase_XmlRpcMethod {
         List<String> list = Arrays.asList(new String[] { "hey", "there" });
         TestObject object = new TestObject(new Integer(42), 24, new Double(3.14), 6.28, new Float(3.24), 6.48f,
                 Boolean.TRUE, true, newDate(2006, 1, 12, 14, 8, 55), "string value", new char[] { 'h', 'e', 'l',
-                        'l', 'o' }, "Hello".getBytes("UTF-8"), list);
+            'l', 'o' }, "Hello".getBytes("UTF-8"), list);
         XmlRpcMethodCall call = new XmlRpcMethodCall("testName", new Object[] { object });
         String xml = new String(call.marshal(), "UTF-8");
 
@@ -457,7 +457,7 @@ public class Test_XmlRpcMethodCall extends TestBase_XmlRpcMethod {
         String xml = new String(call.marshal(), "UTF-8");
 
         assertXpathEvaluatesTo("testName", "/methodCall/methodName", xml);
-        // XMLUnit appears to unescape escaped XML before the comparison. GAH. 
+        // XMLUnit appears to unescape escaped XML before the comparison. GAH.
         assertXpathEvaluatesTo("<div>foo&bar</div>", "/methodCall/params/param/value/string", xml);
     }
 

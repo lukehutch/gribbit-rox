@@ -17,7 +17,7 @@ public class HttpRequest extends HttpMessage {
      * Constructs a new instance using a given HTTP method and URI.
      * <p>
      * The URI provided is normalized by a call to {@link Utils#normalizeURIPath(String)}.
-     * 
+     *
      * @param method
      *            The HTTP method to use in this request. May not be <code>null</code>.
      * @param uri
@@ -52,7 +52,7 @@ public class HttpRequest extends HttpMessage {
      * <li>The request URI set in the {@link #HttpRequest(String, String, Encoding) constructor}.</li>
      * <li>The HTTP version returned by {@link HttpMessage#getVersionString()}.</li>
      * </ol>
-     * 
+     *
      * @throws IOException
      */
     @Override

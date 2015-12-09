@@ -5,7 +5,6 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import com.flat502.rox.client.exception.RequestFailedException;
 import com.flat502.rox.processing.ThreadUtils;
 
 public class Test_SyncClientWithoutURI extends TestCase {
@@ -116,7 +115,7 @@ public class Test_SyncClientWithoutURI extends TestCase {
             // Execute a simple request. This should result in a pooled connection
             Object rsp = client.execute("test.stringResponse", null);
 
-            // Forcibly terminate the server 
+            // Forcibly terminate the server
             server2.stop();
 
             // Ensure the next error we get is a connection refused
