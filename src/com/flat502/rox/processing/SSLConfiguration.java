@@ -154,7 +154,6 @@ public class SSLConfiguration {
             // Should not reach here, every Java implementation must have RSA key pair generator
             throw new RuntimeException(e);
         }
-        PrivateKey privateKey = keyPair.getPrivate();
 
         //        // To encode the private key into KEY format:
         //        ByteBuffer keyByteBuf = ByteBuffer.allocate(1024);
@@ -168,7 +167,8 @@ public class SSLConfiguration {
                 new Date(), new Date(System.currentTimeMillis() + 10L * 365 * 24 * 60 * 60 * 1000), owner,
                 keyPair.getPublic());
 
-        ContentSigner signer = new JcaContentSignerBuilder("SHA256WithRSAEncryption").build(privateKey);
+        // Sign a certificate using the private key
+        ContentSigner signer = new JcaContentSignerBuilder("SHA256WithRSAEncryption").build(keyPair.getPrivate());
         X509CertificateHolder certHolder = builder.build(signer);
         X509Certificate cert = new JcaX509CertificateConverter().setProvider(PROVIDER).getCertificate(certHolder);
         cert.verify(keyPair.getPublic());
@@ -179,7 +179,7 @@ public class SSLConfiguration {
         //        crtByteBuf.put(Base64.getEncoder().encode(cert.getEncoded()));
         //        crtByteBuf.put("\n-----END CERTIFICATE-----\n".getBytes("ASCII"));
         //        CertificateFactory cf = CertificateFactory.getInstance("X.509");
-        
+
         //        // To load a CRT format cert back in:
         //        ByteArrayInputStream crtStream = new ByteArrayInputStream(Arrays.copyOf(crtByteBuf.array(),
         //                crtByteBuf.position()));
@@ -187,7 +187,7 @@ public class SSLConfiguration {
 
         SSLConfiguration cfg = new SSLConfiguration();
         cfg.addTrustedEntity(cert);
-        cfg.addIdentity(privateKey, new X509Certificate[] { cert });
+        cfg.addIdentity(keyPair.getPrivate(), new X509Certificate[] { cert });
         return cfg;
     }
 
