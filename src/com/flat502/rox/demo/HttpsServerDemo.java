@@ -2,7 +2,10 @@ package com.flat502.rox.demo;
 
 import java.net.InetAddress;
 
+import com.flat502.rox.http.HttpConstants;
 import com.flat502.rox.http.HttpRequestBuffer;
+import com.flat502.rox.http.HttpResponse;
+import com.flat502.rox.http.exception.HttpResponseException;
 import com.flat502.rox.log.Level;
 import com.flat502.rox.log.Log;
 import com.flat502.rox.log.LogFactory;
@@ -42,17 +45,35 @@ public class HttpsServerDemo {
         });
         try {
             String host = "localhost";
-            int port = 8443;
+            int httpPort = 8080;
+            int httpsPort = 8443;
 
             if (args != null && args.length > 0) {
                 host = args[0];
                 if (args.length > 1) {
-                    port = Integer.parseInt(args[1]);
+                    httpPort = Integer.parseInt(args[1]);
                 }
             }
-            System.out.println("Starting server on " + host + ":" + port);
+            System.out.println("Starting server on " + host + ":" + httpsPort);
 
-            HttpServer server = new HttpServer(InetAddress.getByName(host), port,
+            // Redirect HTTP requests to HTTPS
+            final String hostFinal = host;
+            new HttpServer(InetAddress.getByName(host), httpPort).registerHandler(new AsynchronousRequestHandler() {
+                @Override
+                public Response handleRequest(RequestContext context) throws Exception {
+                    final HttpRequestBuffer req = context.getHttpRequest();
+                    String redirectURI = "https://" + hostFinal + ":" + httpsPort + req.getURI();
+                    System.out.println("Redirecting HTTP request " + req.getURI() + " to " + redirectURI);
+                    throw new HttpResponseException(HttpConstants.StatusCodes._302_FOUND, "Found") {
+                        @Override
+                        protected void setExtraHeaders(HttpResponse rsp) {
+                            rsp.addHeader("Location", redirectURI);
+                        }
+                    };
+                }
+            }).start();
+
+            HttpServer server = new HttpServer(InetAddress.getByName(host), httpsPort,
                     SSLConfiguration.createSelfSignedCertificate());
             server.registerHandler(new AsynchronousRequestHandler() {
                 @Override
@@ -74,8 +95,8 @@ public class HttpsServerDemo {
                         }
                     };
                 }
-            });
-            server.start();
+            }).start();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -45,7 +45,11 @@ public class HttpResponseException extends HttpMessageException {
     public String getReasonPhrase() {
         return this.reasonPhrase;
     }
-
+    
+    /** Override in subclasses if needed */
+    protected void setExtraHeaders(HttpResponse rsp) {
+    }
+    
     public HttpResponse toHttpResponse(String httpVersion) {
         HttpResponse rsp = new HttpResponse(httpVersion, this.getStatusCode(), this.getReasonPhrase());
         if (this.headers != null) {
@@ -54,11 +58,12 @@ public class HttpResponseException extends HttpMessageException {
                 Entry<String, String> entry = iter.next();
                 rsp.addHeader(entry.getKey(), entry.getValue());
             }
-
+            
             if (!this.headers.containsKey(HttpConstants.Headers.CONNECTION)) {
                 rsp.addHeader(HttpConstants.Headers.CONNECTION, "close");
             }
         }
+        setExtraHeaders(rsp);
         return rsp;
     }
 }

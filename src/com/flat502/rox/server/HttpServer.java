@@ -279,8 +279,9 @@ public class HttpServer extends HttpProcessor {
         this.idleClientTimeout = timeout;
     }
 
-    public void registerHandler(AsynchronousRequestHandler handler) {
+    public HttpServer registerHandler(AsynchronousRequestHandler handler) {
         this.uriHandlers.add(handler);
+        return this;
     }
 
     /**
@@ -702,7 +703,7 @@ public class HttpServer extends HttpProcessor {
     protected ByteBuffer getWriteBuffer(Socket socket) {
         synchronized (this.responseBuffers) {
             List<ByteBuffer> writeBufferList = this.responseBuffers.get(socket);
-            if (writeBufferList.isEmpty()) {
+            if (writeBufferList == null || writeBufferList.isEmpty()) {
                 return null;
             } else {
                 return writeBufferList.get(0);
