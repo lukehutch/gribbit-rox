@@ -109,7 +109,7 @@ public abstract class HttpProcessor {
     private SSLContext sslContext;
 
     // true if we're using SSL
-    private boolean useHttps = true;
+    private boolean useHttps;
 
     // Non-null if we're using SSL
     private SSLConfiguration sslConfig;
@@ -127,13 +127,36 @@ public abstract class HttpProcessor {
      */
     // TODO: Document extra param
     protected HttpProcessor(boolean useHttps, ResourcePool workerPool) throws IOException {
-        this(useHttps, workerPool, null);
+        this(useHttps, null, workerPool);
     }
 
-    protected HttpProcessor(boolean useHttps, ResourcePool workerPool, SSLConfiguration sslCfg) throws IOException {
+    protected HttpProcessor(SSLConfiguration sslConfig, ResourcePool workerPool) throws IOException {
+        this(/* useHttps = */sslConfig != null, sslConfig, workerPool);
+    }
+
+    protected HttpProcessor(boolean useHttps, SSLConfiguration sslConfig, ResourcePool workerPool) throws IOException {
         this.useHttps = useHttps;
-        if (sslCfg != null) {
-            this.initHttps(sslCfg);
+        this.sslConfig = sslConfig;
+
+        if (this.useHttps && this.sslConfig == null) {
+            // Use a default configuration
+            try {
+                this.sslConfig = new SSLConfiguration(System.getProperties());
+            } catch (SSLException e) {
+                throw (SSLException) new SSLException("Default SSL initialization failed").initCause(e);
+            } catch (GeneralSecurityException e) {
+                throw (SSLException) new SSLException("Default SSL initialization failed").initCause(e);
+            }
+        }
+
+        if (log.logDebug()) {
+            log.debug("Initializing SSL:\n" + this.sslConfig);
+        }
+
+        try {
+            this.sslContext = this.sslConfig.createContext();
+        } catch (Exception e) {
+            throw (SSLException) new SSLException("Failed to initialize SSL context").initCause(e);
         }
 
         if (workerPool == null) {
@@ -145,20 +168,6 @@ public abstract class HttpProcessor {
         }
 
         this.queue = this.resourcePool.getQueue();
-    }
-
-    private void initHttps(SSLConfiguration config) throws SSLException {
-        this.sslConfig = config;
-
-        if (log.logDebug()) {
-            log.debug("Initializing SSL:\n" + config);
-        }
-
-        try {
-            this.sslContext = this.sslConfig.createContext();
-        } catch (Exception e) {
-            throw (SSLException) new SSLException("Failed to initialize SSL context").initCause(e);
-        }
     }
 
     /**
@@ -266,14 +275,6 @@ public abstract class HttpProcessor {
         this.sslConfig.setHandshakeTimeout(timeout);
     }
 
-    //	public void configureSSL(SSLConfiguration config) throws SSLException {
-    //		if (!this.useHttps) {
-    //			throw new IllegalStateException("This instance is not configured to use HTTPS");
-    //		}
-    //		
-    //		this.initHttps(config);
-    //	}
-
     public SSLConfiguration getSSLConfiguration() {
         return this.sslConfig;
     }
@@ -300,21 +301,10 @@ public abstract class HttpProcessor {
         }
     }
 
-    public void start() throws IOException {
+    public void start() {
         synchronized (this.workerPoolMutex) {
             if (this.started) {
                 throw new IllegalStateException("Already started");
-            }
-
-            if (this.useHttps && this.sslConfig == null) {
-                // Use a default configuration
-                try {
-                    this.initHttps(new SSLConfiguration(System.getProperties()));
-                } catch (SSLException e) {
-                    throw (IOException) new IOException("Default SSL Initialization Failed").initCause(e);
-                } catch (GeneralSecurityException e) {
-                    throw (IOException) new IOException("Default SSL Initialization Failed").initCause(e);
-                }
             }
 
             // Always make sure there's at least one worker. The
@@ -1220,7 +1210,11 @@ public abstract class HttpProcessor {
                 if (sessionMetadata.netBuffer.position() == 0) {
                     // We have no outstanding data to write for the handshake (from a previous wrap())
                     // so ask the engine for more.
-                    result = engine.wrap(BLANK, sessionMetadata.netBuffer);
+                    try {
+                        result = engine.wrap(BLANK, sessionMetadata.netBuffer);
+                    } catch (Exception e) {
+                        throw new SSLException("Error during engine.wrap()", e);
+                    }
                     sessionMetadata.netBuffer.flip();
 
                     if (log.logTrace()) {

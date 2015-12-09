@@ -3,6 +3,12 @@ package com.flat502.rox.demo;
 import java.net.InetAddress;
 
 import com.flat502.rox.http.HttpRequestBuffer;
+import com.flat502.rox.log.Level;
+import com.flat502.rox.log.Log;
+import com.flat502.rox.log.LogFactory;
+import com.flat502.rox.log.LogFactoryImpl;
+import com.flat502.rox.log.StreamLog;
+import com.flat502.rox.processing.SSLConfiguration;
 import com.flat502.rox.server.AsynchronousRequestHandler;
 import com.flat502.rox.server.HttpServer;
 import com.flat502.rox.server.RequestContext;
@@ -28,6 +34,12 @@ public class HttpsServerDemo {
      *            These default to <code>localhost</code> and <code>8080</code> if not specified.
      */
     public static void main(String[] args) {
+        LogFactory.configure(new LogFactoryImpl() {
+            @Override
+            public Log newLog(String name) {
+                return new StreamLog(System.out, Level.TRACE);
+            }
+        });
         try {
             String host = "localhost";
             int port = 8443;
@@ -40,7 +52,8 @@ public class HttpsServerDemo {
             }
             System.out.println("Starting server on " + host + ":" + port);
 
-            HttpServer server = new HttpServer(InetAddress.getByName(host), port, /* useHttps = */true);
+            HttpServer server = new HttpServer(InetAddress.getByName(host), port,
+                    SSLConfiguration.createSelfSignedCertificate());
             server.registerHandler(new AsynchronousRequestHandler() {
                 @Override
                 public Response handleRequest(RequestContext context) throws Exception {

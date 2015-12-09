@@ -1,15 +1,26 @@
 package com.flat502.rox.processing;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
@@ -21,9 +32,21 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.X509v3CertificateBuilder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+
+// import sun.security.tools.keytool.CertAndKeyGen;
+// import sun.security.x509.X500Name;
 import com.flat502.rox.log.Log;
 import com.flat502.rox.log.LogFactory;
 
+//@SuppressWarnings("restriction")
 public class SSLConfiguration {
     public static enum ClientAuth {
         NONE, REQUEST, REQUIRE
@@ -87,19 +110,130 @@ public class SSLConfiguration {
 
     public SSLConfiguration(Properties props) throws GeneralSecurityException, IOException {
         this();
-        String ts = getProperty(props, "javax.net.ssl.trustStore", null);
-        String tsp = getProperty(props, "javax.net.ssl.trustStorePassword", null);
-        String tst = getProperty(props, "javax.net.ssl.trustStoreType", "JKS");
-        if (ts != null && tsp != null && tst != null) {
-            this.setTrustStore(ts, tsp, tst);
-        }
-
         String ks = getProperty(props, "javax.net.ssl.keyStore", null);
         String ksp = getProperty(props, "javax.net.ssl.keyStorePassword", null);
         String kst = getProperty(props, "javax.net.ssl.keyStoreType", "JKS");
         if (ks != null && ksp != null && kst != null) {
             this.setKeyStore(ks, ksp, ksp, kst);
         }
+        String ts = getProperty(props, "javax.net.ssl.trustStore", null);
+        String tsp = getProperty(props, "javax.net.ssl.trustStorePassword", null);
+        String tst = getProperty(props, "javax.net.ssl.trustStoreType", "JKS");
+        if (ts != null && tsp != null && tst != null) {
+            this.setTrustStore(ts, tsp, tst);
+        }
+    }
+
+    public SSLConfiguration(KeyStore keyStore, String keyStorePassphrase, KeyStore trustStore) {
+        this();
+        this.keyStore = keyStore;
+        this.keyStorePassphrase = keyStorePassphrase;
+        this.trustStore = trustStore;
+    }
+
+    public SSLConfiguration(String keyStorePath, String keyStorePassphrase, String keyStoreType,
+            String trustStorePath, String trustStorePassphrase, String trustStoreType)
+            throws GeneralSecurityException, IOException {
+        this();
+        this.setKeyStore(keyStorePath, keyStorePassphrase, keyStorePassphrase, keyStoreType);
+        this.setTrustStore(keyStorePath, trustStorePassphrase, trustStoreType);
+    }
+
+    private static final Provider PROVIDER = new BouncyCastleProvider();
+
+    // The following is taken from:
+    // http://stackoverflow.com/questions/925377/generate-certificates-public-and-private-keys-with-java
+    // N.B. if this fails in a future JDK, replace with:
+    // github.com/netty/netty/blob/master/handler/src/main/java/io/netty/handler/ssl/util/SelfSignedCertificate.java
+    // For complete cert generation using BouncyCastle, see:
+    // https://www.mayrhofer.eu.org/create-x509-certs-in-java
+    public static SSLConfiguration createSelfSignedCertificate() throws Exception {
+        if (log.logInfo()) {
+            log.info("Generating self-signed SSL key pair");
+        }
+
+        String domain = "localhost";
+        SecureRandom random = new SecureRandom();
+        final KeyPair keyPair;
+        try {
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+            keyGen.initialize(/* bits = */1024, random);
+            keyPair = keyGen.generateKeyPair();
+        } catch (NoSuchAlgorithmException e) {
+            // Should not reach here, every Java implementation must have RSA key pair generator
+            throw new RuntimeException(e);
+        }
+        PrivateKey key = keyPair.getPrivate();
+
+        // Prepare the information required for generating an X.509 certificate
+        X500Name owner = new X500Name("CN=" + domain);
+        X509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(owner, new BigInteger(64, random),
+                new Date(), new Date(System.currentTimeMillis() + 10L * 365 * 24 * 60 * 60 * 1000), owner,
+                keyPair.getPublic());
+
+        ContentSigner signer = new JcaContentSignerBuilder("SHA256WithRSAEncryption").build(key);
+        X509CertificateHolder certHolder = builder.build(signer);
+        X509Certificate cert = new JcaX509CertificateConverter().setProvider(PROVIDER).getCertificate(certHolder);
+        cert.verify(keyPair.getPublic());
+
+        // Encode the private key into a file
+        File keyFile = File.createTempFile("selfsigned_" + domain + '_', ".key");
+        keyFile.deleteOnExit();
+        OutputStream keyOut = new FileOutputStream(keyFile);
+        try {
+            ByteBuffer byteBuf = ByteBuffer.allocate(1024);
+            byteBuf.put("-----BEGIN PRIVATE KEY-----\n".getBytes("ASCII"));
+            byteBuf.put(Base64.getEncoder().encode(key.getEncoded()));
+            byteBuf.put("\n-----END PRIVATE KEY-----\n".getBytes("ASCII"));
+            keyOut.write(byteBuf.array(), 0, byteBuf.position());
+            keyOut.close();
+            keyOut = null;
+        } finally {
+            if (keyOut != null) {
+                keyOut.close();
+            }
+        }
+
+        // Encode the certificate into a CRT file
+        File certFile = File.createTempFile("selfsigned_" + domain + '_', ".crt");
+        certFile.deleteOnExit();
+        OutputStream crtOut = new FileOutputStream(certFile);
+        try {
+            ByteBuffer byteBuf = ByteBuffer.allocate(1024);
+            byteBuf.put("-----BEGIN CERTIFICATE-----\n".getBytes("ASCII"));
+            byteBuf.put(Base64.getEncoder().encode(cert.getEncoded()));
+            byteBuf.put("\n-----END CERTIFICATE-----\n".getBytes("ASCII"));
+            crtOut.write(byteBuf.array(), 0, byteBuf.position());
+            crtOut.close();
+            crtOut = null;
+        } finally {
+            if (crtOut != null) {
+                crtOut.close();
+            }
+        }
+
+        return new SSLConfiguration(keyFile.getPath(), null, "pkcs12", certFile.getPath(), null, "pkcs12");
+
+        //        KeyStore keyStore = KeyStore.getInstance("JKS");
+        //        keyStore.load(null, null);
+        //
+        //        CertAndKeyGen keypair = new CertAndKeyGen("RSA", "SHA1WithRSA", null);
+        //        keypair.generate(/* keysize = */1024);
+        //        PrivateKey privKey = keypair.getPrivateKey();
+        //
+        //        X509Certificate[] chain = new X509Certificate[1];
+        //        X500Name x500Name = new X500Name(/* commonName = */"localhost", /* organizationalUnit = */
+        //        "None", /* organization = */"None", /* city = */"Nowhere", /* state = */"Nowhere", /* country = */
+        //        "Nowhere");
+        //        chain[0] = keypair.getSelfCertificate(x500Name, /* validity = */(long) 3 * 365 * 24 * 60 * 60);
+        //
+        //        String keyStorePassphrase = "changeit";
+        //        char[] keyPass = keyStorePassphrase.toCharArray();
+        //        keyStore.setKeyEntry(/* alias = */"testkey", privKey, keyPass, chain);
+        //
+        //        keyStore.store(new FileOutputStream("/tmp/.keystore"), keyPass); // TODO
+        //
+        //        return new SSLConfiguration(keyStore, keyStorePassphrase, keyStore);
     }
 
     public void setRandomNumberGenerator(SecureRandom rng) {
@@ -212,13 +346,15 @@ public class SSLConfiguration {
     }
 
     // Convenience method
-    public void setKeyStore(String storeFile, String storePassphrase, String entryPassphrase, String storeType)
+    public void setKeyStore(String storeFile, String keyStorePassphrase, String entryPassphrase, String storeType)
             throws GeneralSecurityException, IOException {
         KeyStore ks = KeyStore.getInstance(storeType);
-        ks.load(new FileInputStream(storeFile), storePassphrase.toCharArray());
+        ks.load(new FileInputStream(storeFile),
+                keyStorePassphrase == null ? null : keyStorePassphrase.toCharArray());
         this.setKeyStore(ks, entryPassphrase);
 
         this.keystoreName = storeFile;
+        this.keyStorePassphrase = keyStorePassphrase;
     }
 
     // Keystore.load must have been called.
@@ -231,7 +367,7 @@ public class SSLConfiguration {
     public void setTrustStore(String storeFile, String passphrase, String storeType)
             throws GeneralSecurityException, IOException {
         KeyStore ks = KeyStore.getInstance(storeType);
-        ks.load(new FileInputStream(storeFile), passphrase.toCharArray());
+        ks.load(new FileInputStream(storeFile), passphrase == null ? null : passphrase.toCharArray());
         this.setTrustStore(ks);
 
         this.truststoreName = storeFile;
@@ -246,34 +382,21 @@ public class SSLConfiguration {
             return this.explicitContext;
         }
 
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-
-        List<KeyManager> keyManagers = new ArrayList<>();
-        List<TrustManager> trustManagers = new ArrayList<>();
-
+        KeyManager[] km = null;
         if (this.keyStore != null) {
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-            kmf.init(this.keyStore, this.keyStorePassphrase.toCharArray());
-
-            KeyManager[] km = kmf.getKeyManagers();
-            for (int i = 0; i < km.length; i++) {
-                keyManagers.add(km[i]);
-            }
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            kmf.init(this.keyStore, this.keyStorePassphrase == null ? null : this.keyStorePassphrase.toCharArray());
+            km = kmf.getKeyManagers();
         }
 
+        TrustManager[] tm = null;
         if (this.trustStore != null) {
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             tmf.init(this.trustStore);
-
-            TrustManager[] tm = tmf.getTrustManagers();
-            for (int i = 0; i < tm.length; i++) {
-                trustManagers.add(tm[i]);
-            }
+            tm = tmf.getTrustManagers();
         }
 
-        KeyManager[] km = keyManagers.isEmpty() ? null : keyManagers.toArray(new KeyManager[0]);
-        TrustManager[] tm = trustManagers.isEmpty() ? null : trustManagers.toArray(new TrustManager[0]);
-
+        SSLContext sslContext = SSLContext.getInstance("TLS");
         sslContext.init(km, tm, this.rng);
         return sslContext;
     }
@@ -337,13 +460,13 @@ public class SSLConfiguration {
     //setProtocolPattern etc
     //
 
-    private KeyStore initKeyStore() throws GeneralSecurityException, IOException {
-        KeyStore ks = KeyStore.getInstance("JKS");
+    private static KeyStore initKeyStore() throws GeneralSecurityException, IOException {
+        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
         ks.load(null);
         return ks;
     }
 
-    private String getProperty(Properties props, String name, String defVal) throws SSLException {
+    private static String getProperty(Properties props, String name, String defVal) throws SSLException {
         String v = props.getProperty(name, defVal);
         if (v == null) {
             log.warn("No value for property " + name);

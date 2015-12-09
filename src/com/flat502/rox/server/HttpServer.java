@@ -9,6 +9,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -103,9 +104,10 @@ public class HttpServer extends HttpProcessor {
     private ExecutorService applicationThreadPool = Executors.newCachedThreadPool();
 
     /**
-     * Initialize an instance listening for connections on all local addresses.
+     * Initialize an instance listening for connections on all local addresses. HTTPS (SSL) is disabled.
      * <p>
-     * HTTPS (SSL) and logging are disabled and no {@link AcceptPolicy accept policy} is installed.
+     * The server will not attempt to bind to a local port or being accepting connections (and by implication
+     * processing requests) until {@link Thread#start()} is invoked on this instance.
      * 
      * @param port
      *            The port to listen on.
@@ -117,9 +119,10 @@ public class HttpServer extends HttpProcessor {
     }
 
     /**
-     * Initialize an instance listening for connections on a specified local address.
+     * Initialize an instance listening for connections on a specified local address. HTTPS (SSL) is disabled.
      * <p>
-     * HTTPS (SSL) is disabled and no {@link AcceptPolicy accept policy} is installed.
+     * The server will not attempt to bind to a local port or being accepting connections (and by implication
+     * processing requests) until {@link Thread#start()} is invoked on this instance.
      * 
      * @param hostAddress
      *            The address to listen on. If this is <code>null</code> this instance will listen on all local
@@ -136,7 +139,8 @@ public class HttpServer extends HttpProcessor {
     /**
      * Initialize an instance listening for connections on a specified local address.
      * <p>
-     * HTTPS (SSL) is disabled and no {@link AcceptPolicy accept policy} is installed.
+     * The server will not attempt to bind to a local port or being accepting connections (and by implication
+     * processing requests) until {@link Thread#start()} is invoked on this instance.
      * 
      * @param hostAddress
      *            The address to listen on. If this is <code>null</code> this instance will listen on all local
@@ -144,16 +148,42 @@ public class HttpServer extends HttpProcessor {
      * @param port
      *            The port to listen on.
      * @param useHttps
-     *            Whether to use HTTPS.
+     *            Whether to use HTTPS. If true, looks up the keystore and truststore in the system properties
+     *            javax.net.ssl.keyStore, javax.net.ssl.keyStorePassword, javax.net.ssl.trustStore and
+     *            javax.net.ssl.trustStorePassword.
      * @throws IOException
      *             if an error occurs initializing the underlying server socket.
+     * @throws GeneralSecurityException
+     *             if an error occurs while loading the keys or certs from the keystore or the trust store.
      */
-    public HttpServer(InetAddress hostAddress, int port, boolean useHttps) throws IOException {
+    public HttpServer(InetAddress hostAddress, int port, boolean useHttps) throws IOException,
+            GeneralSecurityException {
         this(hostAddress, port, useHttps, null, null);
     }
 
-    public HttpServer(InetAddress hostAddress, int port, SSLConfiguration sslCfg) throws IOException {
-        this(hostAddress, port, (sslCfg != null), null, sslCfg);
+    /**
+     * Initialize an instance listening for connections on a specified local address.
+     * <p>
+     * The server will not attempt to bind to a local port or being accepting connections (and by implication
+     * processing requests) until {@link Thread#start()} is invoked on this instance.
+     * 
+     * @param hostAddress
+     *            The address to listen on. If this is <code>null</code> this instance will listen on all local
+     *            addresses.
+     * @param port
+     *            The port to listen on.
+     * @param useHttps
+     *            Whether to use HTTPS. If true, looks up the keystore and truststore in the system properties
+     *            javax.net.ssl.keyStore, javax.net.ssl.keyStorePassword, javax.net.ssl.trustStore and
+     *            javax.net.ssl.trustStorePassword.
+     * @throws IOException
+     *             if an error occurs initializing the underlying server socket.
+     * @throws GeneralSecurityException
+     *             if an error occurs while loading the keys or certs from the keystore or the trust store.
+     */
+    public HttpServer(InetAddress hostAddress, int port, SSLConfiguration sslConfig) throws IOException,
+            GeneralSecurityException {
+        this(hostAddress, port, (sslConfig != null), sslConfig, null);
     }
 
     /**
@@ -166,19 +196,51 @@ public class HttpServer extends HttpProcessor {
      *            An {@link InetAddress} this instance should bind to when listening for connections.
      *            <code>null</code> is interpreted as "listen on all interfaces".
      * @param port
+     *            The port to listen on.
      * @param useHttps
+     *            Whether to use HTTPS. If true, looks up the keystore and truststore in the system properties
+     *            javax.net.ssl.keyStore, javax.net.ssl.keyStorePassword, javax.net.ssl.trustStore and
+     *            javax.net.ssl.trustStorePassword.
      * @param workerPool
+     *            The worker pool to use, or null to use hte default pool.
      * @throws IOException
+     *             if an error occurs initializing the underlying server socket.
+     * @throws GeneralSecurityException
+     *             if an error occurs while loading the keys or certs from the keystore or the trust store.
      */
-    // TODO: Document parameters
     public HttpServer(InetAddress hostAddress, int port, boolean useHttps, ServerResourcePool workerPool)
-            throws IOException {
-        this(hostAddress, port, useHttps, workerPool, null);
+            throws IOException, GeneralSecurityException {
+        this(hostAddress, port, useHttps, null, workerPool);
     }
 
-    public HttpServer(InetAddress hostAddress, int port, boolean useHttps, ServerResourcePool workerPool,
-            SSLConfiguration sslCfg) throws IOException {
-        super(useHttps, workerPool, useHttps && sslCfg == null ? new SSLConfiguration() : null);
+    /**
+     * Initialize a new HTTP RPC server.
+     * <p>
+     * The server will not attempt to bind to a local port or being accepting connections (and by implication
+     * processing requests) until {@link Thread#start()} is invoked on this instance.
+     * 
+     * @param hostAddress
+     *            An {@link InetAddress} this instance should bind to when listening for connections.
+     *            <code>null</code> is interpreted as "listen on all interfaces".
+     * @param port
+     *            The port to listen on.
+     * @param useHttps
+     *            Whether to use HTTPS. If true, looks up the keystore and truststore in the system properties
+     *            javax.net.ssl.keyStore, javax.net.ssl.keyStorePassword, javax.net.ssl.trustStore and
+     *            javax.net.ssl.trustStorePassword, unless a non-null value is given for sslConfig.
+     * @param sslConfig
+     *            The SSLConfiguration to use, or null to use the system properties specified under useHttps, if
+     *            useHttps is true.
+     * @param workerPool
+     *            The worker pool to use, or null to use hte default pool.
+     * @throws IOException
+     *             if an error occurs initializing the underlying server socket.
+     * @throws GeneralSecurityException
+     *             if an error occurs while loading the keys or certs from the keystore or the trust store.
+     */
+    private HttpServer(InetAddress hostAddress, int port, boolean useHttps, SSLConfiguration sslConfig,
+            ServerResourcePool workerPool) throws IOException {
+        super(useHttps, sslConfig, workerPool);
 
         this.hostAddress = hostAddress;
         if (hostAddress != null) {
@@ -639,7 +701,12 @@ public class HttpServer extends HttpProcessor {
     @Override
     protected ByteBuffer getWriteBuffer(Socket socket) {
         synchronized (this.responseBuffers) {
-            return this.responseBuffers.get(socket).get(0);
+            List<ByteBuffer> writeBufferList = this.responseBuffers.get(socket);
+            if (writeBufferList.isEmpty()) {
+                return null;
+            } else {
+                return writeBufferList.get(0);
+            }
         }
     }
 
